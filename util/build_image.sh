@@ -5,6 +5,7 @@
 # Environment:
 #   COMPOSER_MAX_PARALLEL_HTTP  parallel composer downloads (default 12; try 2 on a flaky network)
 #   BUILD_ATTEMPTS              retries on failure; finished layers are cached (default 1)
+#   BUILDX_BUILDER              buildx builder to use (default: the current one)
 set -euo pipefail
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
@@ -12,7 +13,7 @@ TAG="${1:-azuracast-retail:dev}"
 ATTEMPTS="${BUILD_ATTEMPTS:-1}"
 
 for ((i = 1; i <= ATTEMPTS; i++)); do
-    if docker build --target final -t "$TAG" \
+    if docker buildx build --load --target final -t "$TAG" \
         --build-arg GIT_COMMIT="$(git log --pretty=%H -n1 HEAD)" \
         --build-arg GIT_COMMIT_DATE="$(git log -n1 --pretty=%ci HEAD)" \
         --build-arg GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" \
