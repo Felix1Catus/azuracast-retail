@@ -8,6 +8,7 @@ use App\Container\ContainerAwareTrait;
 use App\Container\EntityManagerAwareTrait;
 use App\Container\EnvironmentAwareTrait;
 use App\Container\LoggerAwareTrait;
+use App\Container\SettingsAwareTrait;
 use App\Entity\ApiGenerator\NowPlayingApiGenerator;
 use App\Entity\Station;
 use App\Entity\StationWebhook;
@@ -26,6 +27,7 @@ final class Dispatcher
     use ContainerAwareTrait;
     use EntityManagerAwareTrait;
     use EnvironmentAwareTrait;
+    use SettingsAwareTrait;
 
     public function __construct(
         private readonly RouterInterface $router,
@@ -75,6 +77,13 @@ final class Dispatcher
 
         if ($this->environment->isTesting()) {
             $this->logger->notice('In testing mode; no webhooks dispatched.');
+            return;
+        }
+
+        // Global "enable all webhooks" switch (Administration > Settings). The local handler above
+        // still runs: it writes the station's now-playing files, which are not outgoing webhooks.
+        if (!$this->readSettings()->enable_all_webhooks) {
+            $this->logger->debug('Webhook dispatch skipped: webhooks are disabled globally.');
             return;
         }
 
