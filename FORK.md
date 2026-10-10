@@ -13,6 +13,14 @@ A retail / in-store-radio focused fork of [AzuraCast](https://github.com/AzuraCa
 | Source of truth | This is the exact build running on tradelineradio.com (Docker image `8d536dd5f800`, label `org.opencontainers.image.revision`) |
 | Parity check | The live server's `/var/azuracast/www` was pulled on 2026-10-10 and compared file by file with this commit: **no differences** apart from build outputs (`web/static/vite_dist`, generated `translations/`, `.gitinfo`) and the separately mounted Tracker plugin. Production has no core modifications |
 
+## Current base
+
+| | |
+|---|---|
+| Upstream | **`ebf75a267`** (2026-10-06), merged on top of the baseline below. No new database migrations since the baseline |
+| Fork release | `0.23.8-retail.1`, see [docs/retail/FIXLOG.md](docs/retail/FIXLOG.md) |
+| Install | [docs/retail/INSTALL.md](docs/retail/INSTALL.md) |
+
 ## Branches and remotes
 
 ```
@@ -62,6 +70,8 @@ The local TLRadio stack (`~/tradelineradio/server/docker-compose.yml`) can point
 
 ## Docs
 
+- [docs/retail/INSTALL.md](docs/retail/INSTALL.md): build, install, switch an existing server, troubleshooting
+- [docs/retail/FIXLOG.md](docs/retail/FIXLOG.md): every fork change, with issue and verification
 - [docs/retail/ARCHITECTURE.md](docs/retail/ARCHITECTURE.md): component map
 - [docs/retail/REVIEW.md](docs/retail/REVIEW.md): bugs and improvements (R-1 … R-14)
 - [docs/retail/REDESIGN.md](docs/retail/REDESIGN.md): retail edition plan and phases

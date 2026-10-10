@@ -3,7 +3,7 @@
 This review covers AzuraCast 0.23.8 (upstream `5ca47e6`) as forked into azuracast-retail. Each finding has an ID that is referenced from the GitHub issues and [REDESIGN.md](REDESIGN.md).
 
 **Status values:**
-- **Fixed:** fixed on `retail/foundation`.
+- **Fixed:** fixed in the fork; see [FIXLOG.md](FIXLOG.md).
 - **Upstream:** fixed upstream but not merged yet.
 - **Open:** still to do.
 
@@ -42,7 +42,7 @@ We hit this on both the production server and the local clone.
 
 **Fix:** the final `azuracast:setup --update` step is now wrapped in `try/finally`, which turns sync back on even if the update fails.
 
-### R-4 · Static Now Playing files ignore the station's "public API" setting: **Upstream**
+### R-4 · Static Now Playing files ignore the station's "public API" setting: **Fixed** (upstream merged)
 Upstream `ebf75a267` (#8604) touches `backend/src/Webhook/LocalWebhookHandler.php` and `backend/src/VueComponent/NowPlayingComponent.php`.
 
 The static `/api/nowplaying_static/*.json` files and the Centrifugo channel kept publishing data for stations whose API is set to private.
@@ -65,19 +65,19 @@ A plain `docker build` therefore produced a panel with no JavaScript.
 - `util/build_image.sh` passes the git info in.
 - Translations come from the `.po` files committed in the repo, not from Crowdin.
 
-### R-6 · Branch presence depends on the analytics setting: **Open**
+### R-6 · Branch presence depends on the analytics setting: **Fixed**
 `Listener` rows, which the branch board uses to show whether a store is online, are only written when **Administration → Settings → Analytics** is not `none` (`NowPlayingTask.php:71`, `isAnalyticsEnabled()`). An admin who turns analytics off "for privacy" silently breaks the board.
 
 **Options:**
 - Always record listeners. They are needed for presence, not just for analytics.
 - Or have the board show a warning when analytics is off.
 
-### R-7 · Route cache is not cleared when plugins change: **Open**
+### R-7 · Route cache is not cleared when plugins change: **Fixed**
 `AppFactory` caches routes in `www_tmp/app_routes.cache.php`. Installing, updating or removing a plugin that adds routes leaves stale routes until the file is deleted by hand, which happened several times while developing the Tracker plugin.
 
 **Fix:** include a hash of the plugin list and plugin route files in the cache file name, or clear it in the startup script after the composer plugin step.
 
-### R-8 · The built-in updater targets upstream images: **Open**
+### R-8 · The built-in updater targets upstream images: **Fixed**
 `Sync/Task/CheckUpdatesTask.php` asks AzuraCast Central for updates, and `Service/WebUpdater.php` (enabled by `ENABLE_WEB_UPDATER=true`) replaces the container with the **upstream** image. On a fork, one click on "Update" in the panel would wipe the retail changes.
 
 **Fix:**
@@ -85,12 +85,12 @@ A plain `docker build` therefore produced a panel with no JavaScript.
 - Hide the update UI.
 - Later, point update checks at this repo's releases.
 
-### R-9 · Classmap-authoritative autoloading: **Open (docs)**
+### R-9 · Classmap-authoritative autoloading: **Fixed (documented)**
 The image uses `composer dump-autoload --classmap-authoritative`. Copying a new PHP class into a running container (hot-fix or dev) gives `Callable … does not exist` until `composer dump-autoload` is rerun. Document this in FORK.md, or use the dev image for iterating.
 
 ## Security and hardening
 
-### R-10 · Station ports 8000–8499 are published: **Open**
+### R-10 · Station ports 8000–8499 are published: **Fixed**
 `docker-compose.sample.yml` publishes 8000, 8005, 8006… for direct Icecast access. Nginx already proxies every mount at `/listen/{station}/{mount}` over 80/443. A retail deployment only needs **80/443**; the extra ports add attack surface and firewall work.
 
 ### R-11 · Unused services still run and still expose surface: **Open**
@@ -104,7 +104,7 @@ These services run for nothing in retail:
 
 Removing them shrinks the image, the attack surface and the panel. See [REDESIGN.md](REDESIGN.md).
 
-### R-12 · AGPL source offer only in the panel footer: **Open**
+### R-12 · AGPL source offer only in the panel footer: **Fixed**
 The new `/source` endpoint is linked from the logged-in panel footer. Public players and the branch board are also network interactions with the modified program, so they should carry a small "Source" link too: the Vue `Public/` layout and the Tracker plugin pages.
 
 ## Extensibility
