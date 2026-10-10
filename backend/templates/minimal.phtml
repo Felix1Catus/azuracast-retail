@@ -53,12 +53,18 @@ $hide_footer ??= false;
 
     <?php
     $hide_footer ??= false;
-    if (!$customization->hideProductName() && !$hide_footer): ?>
+    // The source link stays even when the product name is hidden (AGPL-3.0 section 13, see /source).
+    if (!$hide_footer): ?>
         <footer id="footer" class="footer-alt" role="contentinfo" aria-label="<?= __('Footer') ?>">
-            <?= sprintf(
-                __('Powered by %s'),
-                '<a href="https://azuracast.com/" target="_blank">' . $environment->getAppName() . '</a>' . ' '
-            ) ?>
+            <?php
+            if (!$customization->hideProductName()): ?>
+                <?= sprintf(
+                    __('Powered by %s'),
+                    '<a href="https://azuracast.com/" target="_blank">' . $environment->getAppName() . '</a>' . ' '
+                ) ?> &bull;
+            <?php
+            endif; ?>
+            <a href="<?= $router->named('public:source') ?>"><?= __('Source code') ?></a>
         </footer>
     <?php
     endif; ?>
