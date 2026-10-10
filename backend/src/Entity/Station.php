@@ -294,7 +294,11 @@ final class Station implements Stringable, IdentifiableEntityInterface
         ORM\Column,
         Serializer\Groups([EntityGroupsInterface::GROUP_GENERAL, EntityGroupsInterface::GROUP_ALL])
     ]
-    public bool $enable_requests = false;
+    public bool $enable_requests = false {
+        // Retail edition: no listener requests. The column stays for upstream compatibility.
+        get => false;
+        set => false;
+    }
 
     #[
         OA\Property(example: 5),
@@ -333,12 +337,14 @@ final class Station implements Stringable, IdentifiableEntityInterface
         Serializer\Groups([EntityGroupsInterface::GROUP_GENERAL, EntityGroupsInterface::GROUP_ALL])
     ]
     public bool $enable_streamers = false {
+        // Retail edition: no live streamers/DJs. The column stays for upstream compatibility.
+        get => false;
         set {
-            if ($this->enable_streamers !== $value) {
+            if ($this->enable_streamers) {
                 $this->needs_restart = true;
             }
 
-            $this->enable_streamers = $value;
+            $this->enable_streamers = false;
         }
     }
 
@@ -390,7 +396,11 @@ final class Station implements Stringable, IdentifiableEntityInterface
         ORM\Column,
         Serializer\Groups([EntityGroupsInterface::GROUP_GENERAL, EntityGroupsInterface::GROUP_ALL])
     ]
-    public bool $enable_on_demand = false;
+    public bool $enable_on_demand = false {
+        // Retail edition: no on-demand page. The column stays for upstream compatibility.
+        get => false;
+        set => false;
+    }
 
     #[
         OA\Property(
@@ -410,7 +420,11 @@ final class Station implements Stringable, IdentifiableEntityInterface
         ORM\Column,
         Serializer\Groups([EntityGroupsInterface::GROUP_GENERAL, EntityGroupsInterface::GROUP_ALL])
     ]
-    public bool $enable_hls = false;
+    public bool $enable_hls = false {
+        // Retail edition: no HLS. The column stays for upstream compatibility.
+        get => false;
+        set => false;
+    }
 
     #[
         ORM\Column,

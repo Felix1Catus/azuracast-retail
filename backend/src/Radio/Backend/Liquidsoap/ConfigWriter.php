@@ -15,6 +15,7 @@ use App\Entity\StationBackendConfiguration;
 use App\Entity\StationPlaylist;
 use App\Entity\StationSchedule;
 use App\Entity\StationStreamerBroadcast;
+use App\Enums\StationFeatures;
 use App\Event\Radio\AnnotateNextSong;
 use App\Event\Radio\WriteLiquidsoapConfiguration;
 use App\Radio\Backend\Liquidsoap;
@@ -716,8 +717,11 @@ final class ConfigWriter implements EventSubscriberInterface
         // @var Collection<EncodableInterface> $encodables
         $encodables = [
             $station->mounts,
-            $station->remotes,
         ];
+
+        if (StationFeatures::RemoteRelays->supportedForStation($station, $this->readSettings())) {
+            $encodables[] = $station->remotes;
+        }
 
         if ($station->enable_hls) {
             $encodables[] = $station->hls_streams;
@@ -906,6 +910,10 @@ final class ConfigWriter implements EventSubscriberInterface
     public function writeRemoteBroadcastConfiguration(WriteLiquidsoapConfiguration $event): void
     {
         $station = $event->getStation();
+
+        if (!StationFeatures::RemoteRelays->supportedForStation($station, $this->readSettings())) {
+            return;
+        }
 
         $lsConfig = [
             '# Remote Relays',

@@ -1239,7 +1239,8 @@ final class QueueBuilder implements EventSubscriberInterface
         $expectedPlayTime = $event->getExpectedPlayTime();
         $station = $event->getStation();
 
-        if ($station->requests_only_via_playlists) {
+        // Requests are off (always, in the retail edition): leftover request rows are never queued.
+        if (!$station->enable_requests || $station->requests_only_via_playlists) {
             return;
         }
 
