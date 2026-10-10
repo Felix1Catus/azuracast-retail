@@ -157,10 +157,19 @@ final class RestoreCommand extends AbstractDatabaseCommand
             'azuracast:settings:set sync_disabled true',
         );
 
-        $this->runCommand(
-            $output,
-            'azuracast:setup --update'
-        );
+        try {
+            $this->runCommand(
+                $output,
+                'azuracast:setup --update'
+            );
+        } finally {
+            // Sync was paused for the restore; turn it back on, or now-playing, AutoDJ queues and
+            // scheduled tasks stay frozen until someone runs `azuracast:settings:set sync_disabled false`.
+            $this->runCommand(
+                $output,
+                'azuracast:settings:set sync_disabled false',
+            );
+        }
 
         $endTime = microtime(true);
         $timeDiff = $endTime - $startTime;
