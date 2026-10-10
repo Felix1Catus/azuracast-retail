@@ -165,6 +165,41 @@ ENTRYPOINT ["tini", "--", "/usr/local/bin/my_init"]
 CMD ["--no-main-command"]
 
 #
+# Static assets build step (retail fork).
+# Upstream builds the frontend, translations, API docs and .gitinfo in GitHub Actions and drops them
+# into the build context. Building them here makes `docker build` self-contained.
+#
+FROM pre-final AS assets
+
+COPY --from=node:24-trixie-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:24-trixie-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
+USER azuracast
+
+WORKDIR /var/azuracast/www
+
+COPY --chown=azuracast:azuracast . .
+
+# .git is not in the build context; pass these from the host (see util/build_image.sh).
+ARG GIT_COMMIT=""
+ARG GIT_COMMIT_DATE=""
+ARG GIT_BRANCH=""
+
+RUN composer install --no-dev --no-ansi --no-interaction \
+    && npm ci --include=dev \
+    && chmod a+x backend/bin/* \
+    && backend/bin/console locale:import \
+    && npm run build \
+    && backend/bin/console azuracast:api:docs \
+    && if [ -n "$GIT_COMMIT" ]; then \
+        printf 'COMMIT_LONG="%s"\nCOMMIT_DATE="%s"\nBRANCH="%s"\n' "$GIT_COMMIT" "$GIT_COMMIT_DATE" "$GIT_BRANCH" > .gitinfo; \
+    else \
+        touch .gitinfo; \
+    fi
+
+#
 # Final build (Just environment vars and squishing the FS)
 #
 FROM pre-final AS final
@@ -178,6 +213,11 @@ COPY --chown=azuracast:azuracast . .
 RUN composer install --no-dev --no-ansi --no-autoloader --no-interaction \
     && composer dump-autoload --optimize --classmap-authoritative \
     && composer clear-cache
+
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/vite_dist ./web/static/vite_dist
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/api ./web/static/api
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/translations ./translations
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/.gitinfo ./.gitinfo
 
 USER root
 
