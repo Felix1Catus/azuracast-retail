@@ -35,7 +35,6 @@ final class SourceCodeAction implements SingleActionInterface
         './node_modules',
         './frontend/node_modules',
         './web/static/vite_dist',
-        './web/static/api',
         './www_tmp',
     ];
 

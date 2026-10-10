@@ -182,6 +182,12 @@ WORKDIR /var/azuracast/www
 
 COPY --chown=azuracast:azuracast . .
 
+# The asset commands (azuracast:locale:import, azuracast:api:docs) are dev commands: they are only
+# registered outside production and need composer dev packages. Nothing from this stage ships except
+# the files copied into "final". No Redis or database runs during the build.
+ENV APPLICATION_ENV="development" \
+    ENABLE_REDIS="false"
+
 # .git is not in the build context; pass these from the host (see util/build_image.sh).
 ARG GIT_COMMIT=""
 ARG GIT_COMMIT_DATE=""
@@ -189,10 +195,10 @@ ARG GIT_BRANCH=""
 # Parallel downloads for composer (its default is 12); lower it on unreliable networks.
 ARG COMPOSER_MAX_PARALLEL_HTTP=12
 
-RUN composer install --no-dev --no-ansi --no-interaction \
+RUN composer install --no-ansi --no-interaction \
     && npm ci --include=dev \
     && chmod a+x backend/bin/* \
-    && backend/bin/console locale:import \
+    && backend/bin/console azuracast:locale:import \
     && npm run build \
     && backend/bin/console azuracast:api:docs \
     && if [ -n "$GIT_COMMIT" ]; then \
@@ -219,7 +225,7 @@ RUN composer install --no-dev --no-ansi --no-autoloader --no-interaction \
     && composer clear-cache
 
 COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/vite_dist ./web/static/vite_dist
-COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/api ./web/static/api
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/openapi.yml ./web/static/openapi.yml
 COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/translations ./translations
 COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/.gitinfo ./.gitinfo
 
