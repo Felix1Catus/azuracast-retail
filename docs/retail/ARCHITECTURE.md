@@ -120,7 +120,7 @@ Station ─┬─ StationMount / StationRemote / StationHlsStream     (outputs)
 
 | Stage | Input | Output |
 |---|---|---|
-| `assets` (retail) | repo + Node 24 + composer | `web/static/vite_dist`, `web/static/api/openapi.yml`, `translations/*`, `.gitinfo` |
+| `assets` (retail) | repo + Node 24 + composer | `web/static/vite_dist`, `web/static/openapi.yml`, `translations/*`, `.gitinfo` |
 | `final` | repo + composer `--no-dev` + `assets` | runnable image |
 
 ```bash

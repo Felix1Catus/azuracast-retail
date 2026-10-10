@@ -134,7 +134,9 @@ Use this when the build machine's DNS keeps failing:
 mkdir -p ~/.config/azuracast-retail
 printf '[dns]\n  nameservers = ["1.1.1.1", "8.8.8.8"]\n' > ~/.config/azuracast-retail/buildkitd.toml
 docker buildx create --name retail-builder --driver docker-container \
-  --buildkitd-config ~/.config/azuracast-retail/buildkitd.toml
+  --buildkitd-config ~/.config/azuracast-retail/buildkitd.toml --bootstrap
+# Registry logins use the builder container's own resolver; point it at public DNS too (resets if the builder restarts).
+docker exec buildx_buildkit_retail-builder0 sh -c 'printf "nameserver 1.1.1.1\nnameserver 8.8.8.8\n" > /etc/resolv.conf'
 BUILDX_BUILDER=retail-builder BUILD_ATTEMPTS=4 util/build_image.sh azuracast-retail:dev
 ```
 
