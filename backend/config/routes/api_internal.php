@@ -36,21 +36,6 @@ return static function (RouteCollectorProxy $group) {
                     )->setName('api:internal:hls-listener-auth');
                 }
             )->add(Middleware\GetStation::class);
-
-            $group->post('/sftp-auth', Controller\Api\Internal\SftpAuthAction::class)
-                ->setName('api:internal:sftp-auth')
-                ->add(Middleware\RequireInternalConnection::class);
-
-            $group->post('/sftp-event', Controller\Api\Internal\SftpEventAction::class)
-                ->setName('api:internal:sftp-event')
-                ->add(Middleware\RequireInternalConnection::class);
-
-            $group->get('/relays', Controller\Api\Internal\RelaysController::class)
-                ->setName('api:internal:relays')
-                ->add(Middleware\RequireLogin::class);
-
-            $group->post('/relays', Controller\Api\Internal\RelaysController::class . ':updateAction')
-                ->add(Middleware\RequireLogin::class);
         }
     );
 };
