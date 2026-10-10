@@ -40,17 +40,31 @@ Resolve conflicts, rebuild, run the plugin's test suite and the checks below, th
 
 ## Building and running
 
-AzuraCast builds its own image from this repo (`Dockerfile`, multi-stage: PHP deps, frontend build, runtime).
+Upstream builds the frontend, translations, API docs and `.gitinfo` in GitHub Actions and only then runs
+`docker build`. This fork does those steps in the Dockerfile `assets` stage, so a clean checkout builds on its own:
 
 ```bash
-docker build -t azuracast-retail:dev .     # full image, same layout as ghcr.io/azuracast/azuracast
+util/build_image.sh                          # -> azuracast-retail:dev, version info from git
+util/build_image.sh azuracast-retail:0.1.0   # any tag
 ```
+
+The script is `docker build --target final` plus the git commit, date and branch as build args (`.git` is not in
+the build context). Translations come from the `.po` files in `translations/`; upstream's Crowdin pull is skipped.
+
+The image uses a classmap-authoritative autoloader: a PHP class copied into a running container is not found until
+`composer dump-autoload --classmap-authoritative` is rerun. Rebuild, or use the dev compose file, instead.
 
 For development, `docker-compose.dev.yml` mounts the source tree into the container, so PHP changes apply without a
 rebuild (frontend changes need `npm run build` or the dev server).
 
 The local TLRadio stack (`~/tradelineradio/server/docker-compose.yml`) can point its `image:` at
 `azuracast-retail:dev` to test the fork with the real (copied) production data and the Tracker plugin.
+
+## Docs
+
+- [docs/retail/ARCHITECTURE.md](docs/retail/ARCHITECTURE.md): component map
+- [docs/retail/REVIEW.md](docs/retail/REVIEW.md): bugs and improvements (R-1 … R-14)
+- [docs/retail/REDESIGN.md](docs/retail/REDESIGN.md): retail edition plan and phases
 
 ## License: AGPL-3.0-or-later
 
@@ -59,3 +73,8 @@ not as legal advice: when a **modified** version is run for users over a network
 those users must be offered the corresponding source code of that modified version, for example through a public
 repository or a "Source code" link on the site. Keeping this repository private during development is fine;
 publish the source (or provide the link) before modified code is put in front of users.
+
+The fork does this with `GET /source` (`backend/src/Controller/Frontend/SourceCodeAction.php`). It serves a
+`.tar.gz` of the code in the running container, without `vendor/`, `node_modules/` or build output (those are pinned
+by `composer.lock` and `package-lock.json`). It is linked as "Source code" in the panel footer. Every deployment of
+the fork must keep that route reachable.
