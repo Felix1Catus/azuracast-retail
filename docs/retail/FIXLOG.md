@@ -8,6 +8,44 @@ These are the changes AzuraCast Retail makes to upstream AzuraCast, newest first
 
 Upstream syncs are listed too.
 
+## Unreleased: retail edition, feature strip (#11)
+
+The panel now offers what a store chain needs and nothing else:
+- stations
+- media
+- playlists and schedules
+- mount points
+- the AutoDJ and its queue
+- reports
+- branding
+- users, backups and storage
+
+The features below are switched off server-side, and every way into them is removed: menus, pages, form fields, API and public routes, background tasks and processes. Their code is still in the tree, to be deleted with the slim image (#13), so upstream merges stay workable. Database columns and tables are untouched, so there are no migrations and the change can be rolled back.
+
+| Removed | How | Files |
+|---|---|---|
+| **Live streaming / DJs, Web DJ** | `StationFeatures::Streamers` is off. `Station::$enable_streamers` always reads and stores `false`, so Liquidsoap opens no live (harbor) input. The streamer, broadcast and DJ sync tasks are dropped | `StationFeatures.php`, `Station.php`, `events.php` |
+| **Song requests** | Feature off. `enable_requests` is always `false`. The AutoDJ never queues leftover request rows. The requests report, form tab and playlist option are gone | `Station.php`, `QueueBuilder.php`, frontend |
+| **On-demand page** | Feature off. `enable_on_demand` is always `false`. The menu items, form fieldset and playlist option are gone | `Station.php`, frontend |
+| **Podcasts** | Feature off. The public pages, feeds and both podcast API groups require the feature. The podcast playlist sync task is dropped | `routes/api_station.php`, `routes/public.php`, `events.php` |
+| **HLS** | Feature off. `enable_hls` is always `false` (no HLS output, nginx location or log rotation) | `Station.php` |
+| **Remote relays / AzuraRelay** | Feature off. Existing relay rows no longer get Liquidsoap outputs. The admin relay page, the relay API (admin and internal) and the relay cleanup task are gone | `ConfigWriter.php`, `routes/api_admin.php`, `routes/api_internal.php` |
+| **Webhooks** | Feature off. The dispatcher sends nothing (the local now-playing handler still runs). The settings switch is gone | `Webhook/Dispatcher.php`, frontend |
+| **SFTP** | SFTPGo is no longer installed or started. The SFTP internal endpoints, the SFTP user pages and port 2022 are gone | `util/docker/web/*`, `ServiceControl.php`, `Dockerfile` |
+| **Shoutcast, RSAS, Stereo Tool, GeoLite installers** | The admin pages and APIs ("Third-Party Software") are gone, along with the GeoLite update task. The Stereo Tool station page is gone | `routes/api_admin.php`, frontend |
+| **Update page and checks** | The admin update page, its APIs and the update-check settings are gone (see R-8) | `routes/api_admin*.php`, frontend |
+| **SoundExchange report** | The report page is gone | frontend |
+
+Also: requests for a feature a station doesn't offer now return **404** instead of 500 (`StationUnsupportedException`).
+
+**Verified** on a copy of production data (`azuracast-retail:dev` plus hot-loaded backend):
+- The feature flags read `false` even when set to 1 in the database, and saving a station stores 0.
+- Liquidsoap config has no harbor, HLS or relay output, and the stream plays.
+- Removed pages and APIs answer 404/405, while kept APIs answer 200: playlists, files, mounts, queue, schedule, reports, listeners, history and admin.
+- The kept sync tasks run cleanly.
+- Tracker plugin tests pass: 38/38, 16/16 and 22/22.
+- `vue-tsc` reports no errors and `biome lint` is clean.
+
 ## 0.23.8-retail.1 (2026-10-10)
 
 Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267`.
