@@ -451,15 +451,9 @@ final class Environment
 
     public function enableWebUpdater(): bool
     {
-        if (!$this->isDocker()) {
-            return false;
-        }
-
-        return Types::bool(
-            $this->data[self::ENABLE_WEB_UPDATER] ?? null,
-            false,
-            true
-        );
+        // Retail fork: the web updater replaces the container with the upstream AzuraCast image,
+        // which would remove every fork change. Updates ship as fork image builds instead.
+        return false;
     }
 
     public static function getDefaultsForEnvironment(Environment $existingEnv): self

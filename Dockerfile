@@ -126,7 +126,7 @@ ENV LANG="en_US.UTF-8" \
     PROFILING_EXTENSION_ALWAYS_ON=0 \
     PROFILING_EXTENSION_HTTP_KEY=dev \
     PROFILING_EXTENSION_HTTP_IP_WHITELIST=* \
-    ENABLE_WEB_UPDATER="true"
+    ENABLE_WEB_UPDATER="false"
 
 #
 # Development Build
@@ -186,6 +186,8 @@ COPY --chown=azuracast:azuracast . .
 ARG GIT_COMMIT=""
 ARG GIT_COMMIT_DATE=""
 ARG GIT_BRANCH=""
+# Parallel downloads for composer (its default is 12); lower it on unreliable networks.
+ARG COMPOSER_MAX_PARALLEL_HTTP=12
 
 RUN composer install --no-dev --no-ansi --no-interaction \
     && npm ci --include=dev \
@@ -209,6 +211,8 @@ USER azuracast
 WORKDIR /var/azuracast/www
 
 COPY --chown=azuracast:azuracast . .
+
+ARG COMPOSER_MAX_PARALLEL_HTTP=12
 
 RUN composer install --no-dev --no-ansi --no-autoloader --no-interaction \
     && composer dump-autoload --optimize --classmap-authoritative \
