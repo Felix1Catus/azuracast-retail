@@ -16,6 +16,7 @@ use App\Http\RouterInterface;
 use App\Message;
 use App\Webhook\Connector\AbstractConnector;
 use App\Webhook\Enums\WebhookTriggers;
+use Doctrine\Common\Collections\Collection;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use RuntimeException;
@@ -87,7 +88,7 @@ final class Dispatcher
             return;
         }
 
-        /** @var StationWebhook[] $enabledWebhooks */
+        /** @var Collection<int, StationWebhook> $enabledWebhooks */
         $enabledWebhooks = $station->webhooks->filter(
             function (StationWebhook $webhook) {
                 return $webhook->is_enabled;
