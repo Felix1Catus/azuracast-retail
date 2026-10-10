@@ -70,12 +70,14 @@ return static function (RouteCollectorProxy $app) {
 
             foreach ($routes as $routeName => $routePath) {
                 $group->get($routePath, Controller\Frontend\PublicPages\PodcastsAction::class)
-                    ->setName($routeName);
+                    ->setName($routeName)
+                    ->add(new Middleware\StationSupportsFeature(App\Enums\StationFeatures::Podcasts));
             }
 
             $group->get('/podcast/{podcast_id}/feed', Controller\Frontend\PublicPages\PodcastFeedAction::class)
                 ->setName('public:podcast:feed')
-                ->add(Middleware\GetAndRequirePodcast::class);
+                ->add(Middleware\GetAndRequirePodcast::class)
+                ->add(new Middleware\StationSupportsFeature(App\Enums\StationFeatures::Podcasts));
         }
     )
         ->add(Middleware\StationPublicPage::class)

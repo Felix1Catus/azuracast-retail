@@ -135,7 +135,7 @@ return static function (RouteCollectorProxy $group) {
                             )->add(Middleware\RequirePublishedPodcastEpisodeMiddleware::class)
                                 ->add(Middleware\GetAndRequirePodcast::class);
                         }
-                    );
+                    )->add(new Middleware\StationSupportsFeature(StationFeatures::Podcasts));
                 }
             )->add(Middleware\StationPublicApi::class);
 
@@ -327,7 +327,8 @@ return static function (RouteCollectorProxy $group) {
                                 }
                             )->add(Middleware\GetAndRequirePodcast::class);
                         }
-                    )->add(new Middleware\Permissions(StationPermissions::Podcasts, true));
+                    )->add(new Middleware\Permissions(StationPermissions::Podcasts, true))
+                        ->add(new Middleware\StationSupportsFeature(StationFeatures::Podcasts));
 
                     // Files/Media
                     $group->get('/quota[/{type}]', Controller\Api\Stations\GetQuotaAction::class)
