@@ -25,6 +25,11 @@ return static function (RouteCollectorProxy $app) {
         }
     )->setName('public:sw');
 
+    // Source code of the running version (AGPL-3.0 section 13). Linked from the panel footer.
+    $app->get('/source', Controller\Frontend\SourceCodeAction::class)
+        ->setName('public:source')
+        ->add(Middleware\RateLimit::forDownloads());
+
     $app->group(
         '/public/{station_id}',
         function (RouteCollectorProxy $group) {

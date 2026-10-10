@@ -8,7 +8,12 @@
         &bull;
         <span v-html="version"/>
         &bull;
-        <span v-html="platform"/><br>
+        <span v-html="platform"/>
+        &bull;
+        <a
+            href="/source"
+            :title="$gettext('Download the source code of this version (GNU AGPL v3)')"
+        >{{ $gettext('Source code') }}</a><br>
         {{ $gettext('Like our software?') }}
         <a
             href="https://donate.azuracast.com/"
