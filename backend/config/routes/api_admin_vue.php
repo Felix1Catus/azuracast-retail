@@ -31,10 +31,6 @@ return static function (RouteCollectorProxy $app) {
                 ->setName('api:vue:admin:stations')
                 ->add(new Middleware\Permissions(GlobalPermissions::Stations));
 
-            $group->get('/updates', Controller\Api\Admin\Vue\UpdatesAction::class)
-                ->setName('api:vue:admin:updates')
-                ->add(new Middleware\Permissions(GlobalPermissions::All));
-
             $group->get('/users', Controller\Api\Admin\Vue\UsersAction::class)
                 ->setName('api:vue:admin:users')
                 ->add(new Middleware\Permissions(GlobalPermissions::All));

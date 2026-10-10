@@ -3,40 +3,6 @@
         :label="$gettext('Services')"
         :item-header-class="tabClass"
     >
-        <form-fieldset>
-            <template #label>
-                {{ $gettext('AzuraCast Update Checks') }}
-            </template>
-
-            <div class="row g-3">
-                <form-markup
-                    id="form_release_channel"
-                    class="col-md-6"
-                    :label="$gettext('Release Channel')"
-                >
-                    <template #description>
-                        <a
-                            href="/docs/getting-started/updates/release-channels/"
-                            target="_blank"
-                        >
-                            {{ $gettext('Learn more about release channels in the AzuraCast docs.') }}
-                        </a>
-                    </template>
-
-                    <p class="card-text font-weight-bold">
-                        {{ langReleaseChannel }}
-                    </p>
-                </form-markup>
-
-                <form-group-checkbox
-                    id="edit_form_check_for_updates"
-                    class="col-md-6"
-                    :field="r$.check_for_updates"
-                    :label="$gettext('Show Update Announcements')"
-                    :description="$gettext('Show new releases within your update channel on the AzuraCast homepage.')"
-                />
-            </div>
-        </form-fieldset>
 
         <form-fieldset>
             <template #label>
@@ -285,12 +251,6 @@ const { form, r$ } = storeToRefs(useAdminSettingsForm());
 const tabClass = useFormTabClass(computed(() => r$.value.$groups.servicesTab));
 
 const { $gettext } = useTranslate();
-
-const langReleaseChannel = computed(() => {
-    return props.releaseChannel === "stable"
-        ? $gettext("Stable")
-        : $gettext("Rolling Release");
-});
 
 const avatarServiceOptions = computed(() => {
     return [

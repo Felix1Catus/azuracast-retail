@@ -51,11 +51,6 @@ export default function useAdminRoutes(): RouteRecordRaw[] {
                     name: "admin:debug:index",
                 },
                 {
-                    path: "updates",
-                    component: () => import("~/components/Admin/Updates.vue"),
-                    name: "admin:updates:index",
-                },
-                {
                     path: "users",
                     component: () => import("~/components/Admin/Users.vue"),
                     name: "admin:users:index",
@@ -86,32 +81,6 @@ export default function useAdminRoutes(): RouteRecordRaw[] {
                     component: () =>
                         import("~/components/Admin/CustomFields.vue"),
                     name: "admin:custom_fields:index",
-                },
-                {
-                    path: "relays",
-                    component: () => import("~/components/Admin/Relays.vue"),
-                    name: "admin:relays:index",
-                },
-                {
-                    path: "install_shoutcast",
-                    component: () => import("~/components/Admin/Shoutcast.vue"),
-                    name: "admin:install_shoutcast:index",
-                },
-                {
-                    path: "install_rsas",
-                    component: () => import("~/components/Admin/Rsas.vue"),
-                    name: "admin:install_rsas:index",
-                },
-                {
-                    path: "install_stereo_tool",
-                    component: () =>
-                        import("~/components/Admin/StereoTool.vue"),
-                    name: "admin:stereo_tool:index",
-                },
-                {
-                    path: "install_geolite",
-                    component: () => import("~/components/Admin/GeoLite.vue"),
-                    name: "admin:install_geolite:index",
                 },
             ],
         },

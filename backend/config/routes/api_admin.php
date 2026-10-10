@@ -141,20 +141,6 @@ return static function (RouteCollectorProxy $group) {
             $group->get('/permissions', Controller\Api\Admin\PermissionsAction::class)
                 ->add(new Middleware\Permissions(GlobalPermissions::All));
 
-            $group->get('/relays/list', Controller\Api\Admin\RelaysAction::class)
-                ->setName('api:admin:relays')
-                ->add(new Middleware\Permissions(GlobalPermissions::Stations));
-
-            $group->map(
-                ['GET', 'POST'],
-                '/relays',
-                function (ServerRequest $request, Response $response) {
-                    return $response->withRedirect(
-                        $request->getRouter()->fromHere('api:internal:relays')
-                    );
-                }
-            );
-
             $group->group(
                 '',
                 function (RouteCollectorProxy $group) {
@@ -195,71 +181,6 @@ return static function (RouteCollectorProxy $group) {
                     $group->delete(
                         '/custom_assets/{type}',
                         Controller\Api\Admin\CustomAssets\DeleteCustomAssetAction::class
-                    );
-
-                    $group->get(
-                        '/geolite',
-                        Controller\Api\Admin\GeoLite\GetAction::class
-                    )->setName('api:admin:geolite');
-
-                    $group->post(
-                        '/geolite',
-                        Controller\Api\Admin\GeoLite\PostAction::class
-                    );
-
-                    $group->get(
-                        '/rsas',
-                        Controller\Api\Admin\Rsas\GetAction::class
-                    )->setName('api:admin:rsas');
-
-                    $group->post(
-                        '/rsas',
-                        Controller\Api\Admin\Rsas\PostAction::class
-                    );
-
-                    $group->delete(
-                        '/rsas',
-                        Controller\Api\Admin\Rsas\DeleteAction::class
-                    );
-
-                    $group->post(
-                        '/rsas/license',
-                        Controller\Api\Admin\Rsas\PostLicenseAction::class
-                    )->setName('api:admin:rsas-license');
-
-                    $group->delete(
-                        '/rsas/license',
-                        Controller\Api\Admin\Rsas\DeleteLicenseAction::class
-                    );
-
-                    $group->get(
-                        '/shoutcast',
-                        Controller\Api\Admin\Shoutcast\GetAction::class
-                    )->setName('api:admin:shoutcast');
-
-                    $group->post(
-                        '/shoutcast',
-                        Controller\Api\Admin\Shoutcast\PostAction::class
-                    );
-
-                    $group->delete(
-                        '/shoutcast',
-                        Controller\Api\Admin\Shoutcast\DeleteAction::class
-                    );
-
-                    $group->get(
-                        '/stereo_tool',
-                        Controller\Api\Admin\StereoTool\GetAction::class
-                    )->setName('api:admin:stereo_tool');
-
-                    $group->post(
-                        '/stereo_tool',
-                        Controller\Api\Admin\StereoTool\PostAction::class
-                    );
-
-                    $group->delete(
-                        '/stereo_tool',
-                        Controller\Api\Admin\StereoTool\DeleteAction::class
                     );
                 }
             )->add(new Middleware\Permissions(GlobalPermissions::Settings));
@@ -324,16 +245,6 @@ return static function (RouteCollectorProxy $group) {
                         ->setName('api:admin:log');
                 }
             )->add(new Middleware\Permissions(GlobalPermissions::Logs));
-
-            $group->group(
-                '/updates',
-                function (RouteCollectorProxy $group) {
-                    $group->get('', Controller\Api\Admin\Updates\GetUpdatesAction::class)
-                        ->setName('api:admin:updates');
-
-                    $group->put('', Controller\Api\Admin\Updates\PutUpdatesAction::class);
-                }
-            )->add(new Middleware\Permissions(GlobalPermissions::All));
 
             call_user_func(include(__DIR__ . '/api_admin_vue.php'), $group);
         }
