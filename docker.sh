@@ -572,7 +572,20 @@ install-dev() {
 # Update the Docker images and codebase.
 # Usage: ./docker.sh update
 #
+#
+# AzuraCast Retail: `update` and `update-self` download upstream AzuraCast files and images, which
+# would replace the fork. Refuse them on a retail install (see docs/retail/INSTALL.md).
+#
+retail-guard() {
+  if grep -qs "azuracast-retail" docker-compose.yml; then
+    echo "This is an AzuraCast Retail install; '$1' would switch it to upstream AzuraCast."
+    echo "Update it with a new fork image instead (docs/retail/INSTALL.md, \"Updating\")."
+    exit 1
+  fi
+}
+
 update() {
+  retail-guard update
   echo "[NOTICE] Before you continue, please make sure you have a recent snapshot of your system and or backed it up."
   if ask "Are you ready to continue with the update?" Y; then
 
@@ -665,6 +678,7 @@ update() {
 # Usage: ./docker.sh update-self
 #
 update-self() {
+  retail-guard update-self
   local AZURACAST_RELEASE_BRANCH
   AZURACAST_RELEASE_BRANCH=$(get-release-branch-name)
 

@@ -68,7 +68,10 @@ final class NowPlayingTask implements NowPlayingTaskInterface, EventSubscriberIn
             return;
         }
 
-        $includeClients = $this->settingsRepo->readSettings()->isAnalyticsEnabled();
+        // Retail: always collect connected clients. Open listener rows are how branch presence is
+        // tracked, so they are kept even when analytics is off; RunAnalyticsTask still purges closed
+        // rows for the "none" and "no IP" levels.
+        $includeClients = true;
 
         // Build the new "raw" NowPlaying data.
         try {

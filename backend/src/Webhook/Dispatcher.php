@@ -8,6 +8,7 @@ use App\Container\ContainerAwareTrait;
 use App\Container\EntityManagerAwareTrait;
 use App\Container\EnvironmentAwareTrait;
 use App\Container\LoggerAwareTrait;
+use App\Container\SettingsAwareTrait;
 use App\Entity\ApiGenerator\NowPlayingApiGenerator;
 use App\Entity\Station;
 use App\Entity\StationWebhook;
@@ -15,6 +16,7 @@ use App\Http\RouterInterface;
 use App\Message;
 use App\Webhook\Connector\AbstractConnector;
 use App\Webhook\Enums\WebhookTriggers;
+use Doctrine\Common\Collections\Collection;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use RuntimeException;
@@ -26,6 +28,7 @@ final class Dispatcher
     use ContainerAwareTrait;
     use EntityManagerAwareTrait;
     use EnvironmentAwareTrait;
+    use SettingsAwareTrait;
 
     public function __construct(
         private readonly RouterInterface $router,
@@ -78,7 +81,14 @@ final class Dispatcher
             return;
         }
 
-        /** @var StationWebhook[] $enabledWebhooks */
+        // Global "enable all webhooks" switch (Administration > Settings). The local handler above
+        // still runs: it writes the station's now-playing files, which are not outgoing webhooks.
+        if (!$this->readSettings()->enable_all_webhooks) {
+            $this->logger->debug('Webhook dispatch skipped: webhooks are disabled globally.');
+            return;
+        }
+
+        /** @var Collection<int, StationWebhook> $enabledWebhooks */
         $enabledWebhooks = $station->webhooks->filter(
             function (StationWebhook $webhook) {
                 return $webhook->is_enabled;

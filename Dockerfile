@@ -8,7 +8,7 @@ FROM mariadb:lts-noble AS mariadb
 #
 # Built-in docs build step
 #
-FROM ghcr.io/azuracast/azuracast.com:builtin@sha256:f7c41278613d113375ca285ba85f770c6f1daf2a08d8a3da42540389b15a2647 AS docs
+FROM ghcr.io/azuracast/azuracast.com:builtin@sha256:583c41a0229d19ebf13ba0fee1057b3e6e6b58a6b080093c531b74dd6a72fab5 AS docs
 
 #
 # Icecast-KH with AzuraCast customizations build step
@@ -126,7 +126,7 @@ ENV LANG="en_US.UTF-8" \
     PROFILING_EXTENSION_ALWAYS_ON=0 \
     PROFILING_EXTENSION_HTTP_KEY=dev \
     PROFILING_EXTENSION_HTTP_IP_WHITELIST=* \
-    ENABLE_WEB_UPDATER="true"
+    ENABLE_WEB_UPDATER="false"
 
 #
 # Development Build
@@ -165,6 +165,49 @@ ENTRYPOINT ["tini", "--", "/usr/local/bin/my_init"]
 CMD ["--no-main-command"]
 
 #
+# Static assets build step (retail fork).
+# Upstream builds the frontend, translations, API docs and .gitinfo in GitHub Actions and drops them
+# into the build context. Building them here makes `docker build` self-contained.
+#
+FROM pre-final AS assets
+
+COPY --from=node:24-trixie-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:24-trixie-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
+USER azuracast
+
+WORKDIR /var/azuracast/www
+
+COPY --chown=azuracast:azuracast . .
+
+# The asset commands (azuracast:locale:import, azuracast:api:docs) are dev commands: they are only
+# registered outside production and need composer dev packages. Nothing from this stage ships except
+# the files copied into "final". No Redis or database runs during the build.
+ENV APPLICATION_ENV="development" \
+    ENABLE_REDIS="false"
+
+# .git is not in the build context; pass these from the host (see util/build_image.sh).
+ARG GIT_COMMIT=""
+ARG GIT_COMMIT_DATE=""
+ARG GIT_BRANCH=""
+# Parallel downloads for composer (its default is 12); lower it on unreliable networks.
+ARG COMPOSER_MAX_PARALLEL_HTTP=12
+
+RUN composer install --no-ansi --no-interaction \
+    && npm ci --include=dev \
+    && chmod a+x backend/bin/* \
+    && backend/bin/console azuracast:locale:import \
+    && npm run build \
+    && backend/bin/console azuracast:api:docs \
+    && if [ -n "$GIT_COMMIT" ]; then \
+        printf 'COMMIT_LONG="%s"\nCOMMIT_DATE="%s"\nBRANCH="%s"\n' "$GIT_COMMIT" "$GIT_COMMIT_DATE" "$GIT_BRANCH" > .gitinfo; \
+    else \
+        touch .gitinfo; \
+    fi
+
+#
 # Final build (Just environment vars and squishing the FS)
 #
 FROM pre-final AS final
@@ -175,9 +218,16 @@ WORKDIR /var/azuracast/www
 
 COPY --chown=azuracast:azuracast . .
 
+ARG COMPOSER_MAX_PARALLEL_HTTP=12
+
 RUN composer install --no-dev --no-ansi --no-autoloader --no-interaction \
     && composer dump-autoload --optimize --classmap-authoritative \
     && composer clear-cache
+
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/vite_dist ./web/static/vite_dist
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/openapi.yml ./web/static/openapi.yml
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/translations ./translations
+COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/.gitinfo ./.gitinfo
 
 USER root
 

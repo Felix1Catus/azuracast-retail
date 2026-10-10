@@ -352,6 +352,7 @@ final class RunAnalyticsTask extends AbstractTask
 
     private function purgeListeners(): void
     {
-        $this->listenerRepo->clearAll();
+        // Retail: keep rows for open connections, they drive branch presence.
+        $this->listenerRepo->clearClosed();
     }
 }

@@ -77,13 +77,33 @@ final class AppFactory
 
         $environment = $container->get(Environment::class);
         if ($environment->isProduction()) {
-            $routeCollector->setCacheFile($environment->getTempDirectory() . '/app_routes.cache.php');
+            $routeCollector->setCacheFile(self::getRouteCacheFile($environment));
         }
 
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
         $eventDispatcher->dispatch(new Event\BuildRoutes($app, $container));
 
         return $app;
+    }
+
+    /**
+     * Route cache file keyed on the route definitions (core route files and each plugin's events.php),
+     * so installing, updating or removing a plugin never serves stale routes.
+     */
+    private static function getRouteCacheFile(Environment $environment): string
+    {
+        $baseDir = $environment->getBaseDirectory();
+        $sources = array_merge(
+            glob($baseDir . '/backend/config/routes/*.php') ?: [],
+            glob($baseDir . '/plugins/*/events.php') ?: []
+        );
+
+        $key = '';
+        foreach ($sources as $source) {
+            $key .= $source . ':' . (int)@filemtime($source) . ';';
+        }
+
+        return $environment->getTempDirectory() . '/app_routes.' . substr(md5($key), 0, 12) . '.cache.php';
     }
 
     /**

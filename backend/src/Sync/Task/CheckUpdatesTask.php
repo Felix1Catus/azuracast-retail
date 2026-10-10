@@ -52,6 +52,10 @@ final class CheckUpdatesTask extends AbstractTask
 
     public function run(bool $force = false): void
     {
+        // Retail fork: AzuraCast Central only knows upstream releases and would prompt admins to
+        // "update" to an image without the fork changes. Upstream is merged into the fork instead.
+        return;
+
         $settings = $this->readSettings();
 
         try {

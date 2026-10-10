@@ -1,3 +1,14 @@
+> **This is AzuraCast Retail**, a fork of [AzuraCast](https://github.com/AzuraCast/AzuraCast) for in-store
+> radio across a chain of branches: one server, many shops, each branch player signed in with a PIN and tracked on a
+> live board (via the [Tracker plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin)). The long-term aim
+> is a retail edition with only what a store operator needs.
+>
+> - [Install and troubleshooting](docs/retail/INSTALL.md) · [Fix log](docs/retail/FIXLOG.md) · [Fork notes](FORK.md)
+> - [Architecture](docs/retail/ARCHITECTURE.md) · [Review](docs/retail/REVIEW.md) · [Redesign plan](docs/retail/REDESIGN.md)
+> - License: GNU AGPL v3 or later, like AzuraCast. Every install serves its own source code at `/source`.
+>
+> The rest of this file is the upstream AzuraCast README.
+
 ![](https://github.com/AzuraCast/AzuraCast/raw/main/resources/azuracast.png)![](https://static.scarf.sh/a.png?x-pxid=d5169ead-cdcf-482c-ab64-c7137d3f8769)
 
 # AzuraCast: A Simple, Self-Hosted Web Radio Management Suite

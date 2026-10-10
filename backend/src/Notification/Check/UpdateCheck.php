@@ -23,6 +23,9 @@ final class UpdateCheck
 
     public function __invoke(GetNotifications $event): void
     {
+        // Retail fork: no upstream update prompts (see CheckUpdatesTask).
+        return;
+
         // This notification is for full administrators only.
         $acl = $event->getRequest()->getAcl();
         if (!$acl->isAllowed(GlobalPermissions::All)) {

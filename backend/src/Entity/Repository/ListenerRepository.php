@@ -330,6 +330,19 @@ final class ListenerRepository extends Repository
         )->execute();
     }
 
+    /**
+     * Delete listener rows for connections that have ended; rows for current connections stay.
+     */
+    public function clearClosed(): void
+    {
+        $this->em->createQuery(
+            <<<DQL
+                DELETE FROM App\Entity\Listener l
+                WHERE l.timestamp_end IS NOT NULL
+            DQL
+        )->execute();
+    }
+
     public function cleanup(int $daysToKeep): void
     {
         $threshold = Time::nowUtc()->subDays($daysToKeep);

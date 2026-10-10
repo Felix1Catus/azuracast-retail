@@ -1,0 +1,59 @@
+#
+# AzuraCast Retail: Docker Compose file for a deployment.
+#
+# Copy it to the install directory as docker-compose.yml, next to .env and azuracast.env
+# (see docs/retail/INSTALL.md). It follows docker-compose.sample.yml so docker.sh, backups and
+# plugin installers keep working, with these differences:
+#   - image: the fork image built with util/build_image.sh, never the upstream image
+#   - ports: only HTTP/HTTPS. Players reach every station through nginx at /listen/{station}/{mount}
+#     (Administration > Settings > "Use Web Proxy for Radio" must stay on). No SFTP port.
+#   - no `updater` container: it would replace this image with upstream AzuraCast.
+#
+# Plugins (e.g. the Tracker plugin) are mounted from docker-compose.override.yml.
+#
+
+name: azuracast
+
+services:
+  web:
+    container_name: azuracast
+    image: "${AZURACAST_RETAIL_IMAGE:-azuracast-retail:latest}"
+    pull_policy: never
+    ports:
+      - '${AZURACAST_HTTP_PORT:-80}:${AZURACAST_HTTP_PORT:-80}'
+      - '${AZURACAST_HTTPS_PORT:-443}:${AZURACAST_HTTPS_PORT:-443}'
+    env_file:
+      - azuracast.env
+      - .env
+    volumes:
+      - station_data:/var/azuracast/stations
+      - backups:/var/azuracast/backups
+      - db_data:/var/lib/mysql
+      - www_uploads:/var/azuracast/storage/uploads
+      - shoutcast2_install:/var/azuracast/storage/shoutcast2
+      - stereo_tool_install:/var/azuracast/storage/stereo_tool
+      - rsas_install:/var/azuracast/storage/rsas
+      - geolite_install:/var/azuracast/storage/geoip
+      - sftpgo_data:/var/azuracast/storage/sftpgo
+      - acme:/var/azuracast/storage/acme
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    logging:
+      options:
+        max-size: "1m"
+        max-file: "5"
+
+volumes:
+  db_data: { }
+  acme: { }
+  shoutcast2_install: { }
+  stereo_tool_install: { }
+  rsas_install: { }
+  geolite_install: { }
+  sftpgo_data: { }
+  station_data: { }
+  www_uploads: { }
+  backups: { }
