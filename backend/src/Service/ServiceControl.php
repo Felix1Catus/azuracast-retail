@@ -84,7 +84,6 @@ final class ServiceControl
             'php-nowplaying' => __('Now Playing manager service'),
             'php-worker' => __('PHP queue processing worker'),
             'redis' => __('Cache'),
-            'sftpgo' => __('SFTP service'),
             'centrifugo' => __('Live Now Playing updates'),
             'vite' => __('Frontend Assets'),
         ];

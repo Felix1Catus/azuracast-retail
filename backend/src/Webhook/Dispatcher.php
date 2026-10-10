@@ -12,6 +12,7 @@ use App\Container\SettingsAwareTrait;
 use App\Entity\ApiGenerator\NowPlayingApiGenerator;
 use App\Entity\Station;
 use App\Entity\StationWebhook;
+use App\Enums\StationFeatures;
 use App\Http\RouterInterface;
 use App\Message;
 use App\Webhook\Connector\AbstractConnector;
@@ -81,10 +82,11 @@ final class Dispatcher
             return;
         }
 
-        // Global "enable all webhooks" switch (Administration > Settings). The local handler above
-        // still runs: it writes the station's now-playing files, which are not outgoing webhooks.
-        if (!$this->readSettings()->enable_all_webhooks) {
-            $this->logger->debug('Webhook dispatch skipped: webhooks are disabled globally.');
+        // Outgoing webhooks follow the Webhooks station feature (the global "enable all webhooks" switch;
+        // always off in the retail edition). The local handler above still runs: it writes the station's
+        // now-playing files, which are not outgoing webhooks.
+        if (!StationFeatures::Webhooks->supportedForStation($station, $this->readSettings())) {
+            $this->logger->debug('Webhook dispatch skipped: webhooks are not enabled.');
             return;
         }
 

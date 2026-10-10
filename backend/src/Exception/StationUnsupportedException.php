@@ -12,7 +12,8 @@ final class StationUnsupportedException extends Exception
 {
     public function __construct(
         string $message = 'This feature is not currently supported on this station.',
-        int $code = 500,
+        // A feature the station doesn't offer is "not here" (404), not a server error (upstream used 500).
+        int $code = 404,
         ?Throwable $previous = null,
         Level $loggerLevel = Level::Info
     ) {

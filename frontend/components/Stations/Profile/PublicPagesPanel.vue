@@ -30,24 +30,6 @@
                             >{{ stationData.publicPageUrl }}</a>
                         </td>
                     </tr>
-                    <tr v-if="stationData.enableOnDemand">
-                        <td>{{ $gettext('On-Demand Media') }}</td>
-                        <td>
-                            <a
-                                :href="stationData.onDemandUrl"
-                                target="_blank"
-                            >{{ stationData.onDemandUrl }}</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{ $gettext('Podcasts') }}</td>
-                        <td>
-                            <a
-                                :href="stationData.publicPodcastsUrl"
-                                target="_blank"
-                            >{{ stationData.publicPodcastsUrl }}</a>
-                        </td>
-                    </tr>
                     <tr>
                         <td>{{ $gettext('Schedule') }}</td>
                         <td>

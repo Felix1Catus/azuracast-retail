@@ -71,7 +71,7 @@ In-store music for a chain of branches, run from one server.
 |---|---|---|
 | **0: Foundation** (this branch) | Fork baseline, `/source` + footer link, R-1/R-2/R-3 fixes, self-contained image build, docs | Image builds locally from a clean checkout, `/source` downloads, panel works |
 | **1: Sync and harden** | Merge upstream (R-4), disable web updater (R-8), compose with 80/443 only (R-10), route-cache fix (R-7), always record listeners (R-6), source link on public pages (R-12) | Local stack on `azuracast-retail:dev` with Tracker plugin passes a smoke test |
-| **2: Retail mode** | `retail_mode` gating in `StationFeatures` plus menus; hide the features marked Hide/Remove; footer and branding defaults | Panel shows only retail items; upstream merges still clean |
+| **2: Retail mode** (done, #11) | Features marked Remove are switched off in `StationFeatures` and `Station`, and their menus, pages, routes, tasks and SFTPGo are removed. See [FIXLOG.md](FIXLOG.md). Still to do: footer and branding defaults | Panel shows only retail items; upstream merges still clean |
 | **3: Branch Board native** | Move Tracker entities, controllers and Vue in-tree; migration from plugin tables; native menu item; retire the plugin | Live data migrated on a copy of production with no PIN re-entry |
 | **4: Slim image** | Remove SFTPGo, installers, GeoLite, relays, podcasts, requests and on-demand code and volumes | Image size and process count measured before and after |
 | **5: Production cut-over** | Tagged release, backup, deploy to tradelineradio.com, rollback plan | Branches online on the fork, `/source` live |

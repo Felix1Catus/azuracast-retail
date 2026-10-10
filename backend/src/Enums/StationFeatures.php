@@ -31,15 +31,17 @@ enum StationFeatures
         return match ($this) {
             self::Media => $backendEnabled,
             self::CustomLiquidsoapConfig => $backendEnabled && $settings->enable_liquidsoap_editing,
-            self::Streamers => $backendEnabled && $station->enable_streamers,
-            self::Sftp => $backendEnabled && $station->media_storage_location->adapter->isLocal(),
             self::MountPoints => $station->frontend_type->supportsMounts(),
-            self::HlsStreams => $backendEnabled && $station->enable_hls,
-            self::Requests => $backendEnabled && $station->enable_requests,
-            self::OnDemand => $station->enable_on_demand,
-            // Global "enable all webhooks" switch (upstream f70e897f9 wired it to OnDemand by mistake).
-            self::Webhooks => $settings->enable_all_webhooks,
-            self::Podcasts, self::RemoteRelays => true,
+            // Retail edition: these are not part of the product (docs/retail/REDESIGN.md). Their pages, API
+            // routes and background tasks are gone or gated on this; the code is removed later (#13).
+            self::Sftp,
+            self::RemoteRelays,
+            self::HlsStreams,
+            self::Streamers,
+            self::Webhooks,
+            self::Podcasts,
+            self::OnDemand,
+            self::Requests => false,
         };
     }
 

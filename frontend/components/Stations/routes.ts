@@ -37,22 +37,10 @@ export default function useStationsRoutes(): RouteRecordRaw[] {
                     name: "stations:files:index",
                 },
                 {
-                    path: "hls_streams",
-                    component: () =>
-                        import("~/components/Stations/HlsStreams.vue"),
-                    name: "stations:hls_streams:index",
-                },
-                {
                     path: "ls_config",
                     component: () =>
                         import("~/components/Stations/LiquidsoapConfig.vue"),
                     name: "stations:util:ls_config",
-                },
-                {
-                    path: "stereo_tool_config",
-                    component: () =>
-                        import("~/components/Stations/StereoToolConfig.vue"),
-                    name: "stations:stereo_tool_config",
                 },
                 {
                     path: "logs",
@@ -64,20 +52,6 @@ export default function useStationsRoutes(): RouteRecordRaw[] {
                     component: () =>
                         import("~/components/Stations/Playlists.vue"),
                     name: "stations:playlists:index",
-                },
-                {
-                    path: "podcasts",
-                    component: () =>
-                        import("~/components/Stations/Podcasts.vue"),
-                    name: "stations:podcasts:index",
-                },
-                {
-                    path: "podcast/:podcast_id",
-                    component: () =>
-                        import(
-                            "~/components/Stations/PodcastEpisodesWrapper.vue"
-                        ),
-                    name: "stations:podcast:episodes",
                 },
                 {
                     path: "profile",
@@ -104,12 +78,6 @@ export default function useStationsRoutes(): RouteRecordRaw[] {
                     name: "stations:queue:index",
                 },
                 {
-                    path: "remotes",
-                    component: () =>
-                        import("~/components/Stations/Remotes.vue"),
-                    name: "stations:remotes:index",
-                },
-                {
                     path: "reports/overview",
                     component: () =>
                         import("~/components/Stations/Reports/Overview.vue"),
@@ -128,20 +96,6 @@ export default function useStationsRoutes(): RouteRecordRaw[] {
                     name: "stations:reports:listeners",
                 },
                 {
-                    path: "reports/soundexchange",
-                    component: () =>
-                        import(
-                            "~/components/Stations/Reports/SoundExchange.vue"
-                        ),
-                    name: "stations:reports:soundexchange",
-                },
-                {
-                    path: "reports/requests",
-                    component: () =>
-                        import("~/components/Stations/Reports/Requests.vue"),
-                    name: "stations:reports:requests",
-                },
-                {
                     path: "restart",
                     component: () =>
                         import("~/components/Stations/Restart.vue"),
@@ -152,24 +106,6 @@ export default function useStationsRoutes(): RouteRecordRaw[] {
                     component: () =>
                         import("~/components/Stations/Settings.vue"),
                     name: "stations:settings:index",
-                },
-                {
-                    path: "sftp_users",
-                    component: () =>
-                        import("~/components/Stations/SftpUsers.vue"),
-                    name: "stations:sftp_users:index",
-                },
-                {
-                    path: "streamers",
-                    component: () =>
-                        import("~/components/Stations/Streamers.vue"),
-                    name: "stations:streamers:index",
-                },
-                {
-                    path: "webhooks",
-                    component: () =>
-                        import("~/components/Stations/Webhooks.vue"),
-                    name: "stations:webhooks:index",
                 },
             ],
         },

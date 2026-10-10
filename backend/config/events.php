@@ -68,22 +68,14 @@ return static function (CallableEventDispatcherInterface $dispatcher) {
             $e->addTasks([
                 App\Sync\Task\CheckFolderPlaylistsTask::class,
                 App\Sync\Task\CheckMediaTask::class,
-                App\Sync\Task\CheckPodcastPlaylistsTask::class,
-                App\Sync\Task\CheckRequestsTask::class,
-                App\Sync\Task\CheckUpdatesTask::class,
                 App\Sync\Task\CleanupHistoryTask::class,
                 App\Sync\Task\CleanupLoginTokensTask::class,
-                App\Sync\Task\CleanupRelaysTask::class,
                 App\Sync\Task\CleanupStorageTask::class,
-                App\Sync\Task\EnforceBroadcastTimesTask::class,
-                App\Sync\Task\MoveBroadcastsTask::class,
                 App\Sync\Task\QueueInterruptingTracks::class,
-                App\Sync\Task\ReactivateStreamerTask::class,
                 App\Sync\Task\RenewAcmeCertTask::class,
                 App\Sync\Task\RotateLogsTask::class,
                 App\Sync\Task\RunAnalyticsTask::class,
                 App\Sync\Task\RunBackupTask::class,
-                App\Sync\Task\UpdateGeoLiteTask::class,
                 App\Sync\Task\UpdateStorageLocationSizesTask::class,
             ]);
         }

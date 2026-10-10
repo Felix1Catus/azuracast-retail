@@ -116,35 +116,6 @@
             </div>
         </form-fieldset>
 
-        <form-fieldset>
-            <template #label>
-                {{ $gettext('On-Demand Streaming') }}
-            </template>
-
-            <div class="row g-3">
-                <form-group-checkbox
-                    id="edit_form_enable_on_demand"
-                    class="col-md-12"
-                    :field="r$.enable_on_demand"
-                    :label="$gettext('Enable On-Demand Streaming')"
-                    :description="$gettext('If enabled, music from playlists with on-demand streaming enabled will be available to stream via a specialized public page.')"
-                />
-
-                <form-group-checkbox
-                    v-if="form.enable_on_demand"
-                    id="edit_form_enable_on_demand_download"
-                    class="col-md-12"
-                    :field="r$.enable_on_demand_download"
-                    :label="$gettext('Enable Downloads on On-Demand Page')"
-                >
-                    <template #description>
-                        {{
-                            $gettext('If enabled, a download button will also be present on the public "On-Demand" page.')
-                        }}
-                    </template>
-                </form-group-checkbox>
-            </div>
-        </form-fieldset>
     </tab>
 </template>
 

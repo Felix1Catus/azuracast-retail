@@ -23,21 +23,6 @@
             </div>
         </div>
 
-        <info-card v-if="showSftp">
-            <p class="mb-0">
-                {{ $gettext('You can also upload files in bulk via SFTP.') }}
-            </p>
-
-            <template #action>
-                <router-link
-                    class="btn btn-sm btn-info"
-                    :to="{name: 'stations:sftp_users:index'}"
-                >
-                    {{ $gettext('Manage SFTP Accounts') }}
-                </router-link>
-            </template>
-        </info-card>
-
         <div class="card-body">
             <breadcrumb
                 :current-directory="currentDirectory"
@@ -293,7 +278,6 @@ export type MediaSelectedItems = {
 };
 
 const stationData = useStationData();
-const showSftp = computed(() => stationData.value.features.sftp ?? false);
 
 const { getStationApiUrl } = useApiRouter();
 const listUrl = getStationApiUrl("/files/list");

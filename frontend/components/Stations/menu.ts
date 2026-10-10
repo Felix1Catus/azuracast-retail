@@ -10,12 +10,9 @@ import { useUserAllowedForStation } from "~/functions/useUserallowedForStation.t
 import { useTranslate } from "~/vendor/gettext.ts";
 import IconBiBroadcast from "~icons/bi/broadcast";
 import IconIcAssignment from "~icons/ic/baseline-assignment";
-import IconIcCode from "~icons/ic/baseline-code";
 import IconIcImage from "~icons/ic/baseline-image";
 import IconIcInsertChart from "~icons/ic/baseline-insert-chart";
 import IconIcLibraryMusic from "~icons/ic/baseline-library-music";
-import IconIcMic from "~icons/ic/baseline-mic";
-import IconIcPodcasts from "~icons/ic/baseline-podcasts";
 import IconIcPublic from "~icons/ic/baseline-public";
 import IconIcQueueMusic from "~icons/ic/baseline-queue-music";
 import IconIcSettingsApplication from "~icons/ic/baseline-settings-applications";
@@ -62,22 +59,6 @@ export function useStationsMenu() {
                     key: "public_player",
                     label: $gettext("Public Player"),
                     url: station.value.publicPageUrl,
-                    external: true,
-                    visible: () => station.value.enablePublicPages,
-                },
-                {
-                    key: "public_on_demand",
-                    label: $gettext("On-Demand Media"),
-                    url: station.value.onDemandUrl,
-                    external: true,
-                    visible: () =>
-                        station.value.enablePublicPages &&
-                        station.value.enableOnDemand,
-                },
-                {
-                    key: "public_podcasts",
-                    label: $gettext("Podcasts"),
-                    url: station.value.publicPodcastsUrl,
                     external: true,
                     visible: () => station.value.enablePublicPages,
                 },
@@ -142,23 +123,6 @@ export function useStationsMenu() {
                         userAllowedForStation(StationPermissions.Media),
                 },
                 {
-                    key: "ondemand",
-                    label: $gettext("On-Demand Media"),
-                    url: station.value.onDemandUrl,
-                    external: true,
-                    visible: () => station.value.enableOnDemand,
-                },
-                {
-                    key: "sftp_users",
-                    label: $gettext("SFTP Users"),
-                    url: {
-                        name: "stations:sftp_users:index",
-                    },
-                    visible: () =>
-                        userAllowedForStation(StationPermissions.Media) &&
-                        station.value.features.sftp,
-                },
-                {
                     key: "bulk_media",
                     label: $gettext("Bulk Media Import/Export"),
                     url: {
@@ -181,54 +145,6 @@ export function useStationsMenu() {
                 station.value.features.media,
         },
         {
-            key: "podcasts",
-            label: $gettext("Podcasts"),
-            icon: () => IconIcPodcasts,
-            url: {
-                name: "stations:podcasts:index",
-            },
-            visible: () =>
-                userAllowedForStation(StationPermissions.Podcasts) &&
-                station.value.features.podcasts,
-        },
-        {
-            key: "streaming",
-            label: $gettext("Live Streaming"),
-            icon: () => IconIcMic,
-            visible: () =>
-                userAllowedForStation(StationPermissions.Streamers) &&
-                station.value.features.streamers,
-            items: [
-                {
-                    key: "streamers",
-                    label: $gettext("Streamer/DJ Accounts"),
-                    url: {
-                        name: "stations:streamers:index",
-                    },
-                    visible: () =>
-                        userAllowedForStation(StationPermissions.Streamers),
-                },
-                {
-                    key: "webdj",
-                    label: $gettext("Web DJ"),
-                    url: station.value?.webDjUrl,
-                    external: true,
-                    visible: () => station.value.enablePublicPages,
-                },
-            ],
-        },
-        {
-            key: "webhooks",
-            label: $gettext("Web Hooks"),
-            icon: () => IconIcCode,
-            url: {
-                name: "stations:webhooks:index",
-            },
-            visible: () =>
-                userAllowedForStation(StationPermissions.WebHooks) &&
-                station.value.features.webhooks,
-        },
-        {
             key: "reports",
             label: $gettext("Reports"),
             icon: () => IconIcInsertChart,
@@ -249,28 +165,10 @@ export function useStationsMenu() {
                     },
                 },
                 {
-                    key: "reports_requests",
-                    label: $gettext("Song Requests"),
-                    url: {
-                        name: "stations:reports:requests",
-                    },
-                    visible: () =>
-                        userAllowedForStation(
-                            StationPermissions.Broadcasting,
-                        ) && station.value.enableRequests,
-                },
-                {
                     key: "reports_timeline",
                     label: $gettext("Song Playback Timeline"),
                     url: {
                         name: "stations:reports:timeline",
-                    },
-                },
-                {
-                    key: "reports_soundexchange",
-                    label: $gettext("SoundExchange Royalties"),
-                    url: {
-                        name: "stations:reports:soundexchange",
                     },
                 },
             ],
@@ -289,27 +187,6 @@ export function useStationsMenu() {
                     visible: () =>
                         userAllowedForStation(StationPermissions.MountPoints) &&
                         station.value.features.mountPoints,
-                },
-                {
-                    key: "hls_streams",
-                    label: $gettext("HLS Streams"),
-                    url: {
-                        name: "stations:hls_streams:index",
-                    },
-                    visible: () =>
-                        userAllowedForStation(StationPermissions.MountPoints) &&
-                        station.value.features.hlsStreams,
-                },
-                {
-                    key: "remotes",
-                    label: $gettext("Remote Relays"),
-                    url: {
-                        name: "stations:remotes:index",
-                    },
-                    visible: () =>
-                        userAllowedForStation(
-                            StationPermissions.RemoteRelays,
-                        ) && station.value.features.remoteRelays,
                 },
                 {
                     key: "fallback",
@@ -332,17 +209,6 @@ export function useStationsMenu() {
                         userAllowedForStation(
                             StationPermissions.Broadcasting,
                         ) && station.value.features.customLiquidsoapConfig,
-                },
-                {
-                    key: "stereo_tool",
-                    label: $gettext("Upload Stereo Tool Configuration"),
-                    url: {
-                        name: "stations:stereo_tool_config",
-                    },
-                    visible: () =>
-                        userAllowedForStation(
-                            StationPermissions.Broadcasting,
-                        ) && station.value.features.media,
                 },
                 {
                     key: "queue",

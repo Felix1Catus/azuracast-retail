@@ -26,12 +26,6 @@
                     :is-stereo-tool-installed="isStereoToolInstalled"
                 />
 
-                <admin-stations-hls-form/>
-
-                <admin-stations-requests-form/>
-
-                <admin-stations-streamers-form/>
-
                 <admin-stations-admin-form
                     v-if="showAdminTab"
                     :is-edit-mode="isEditMode"
@@ -62,10 +56,7 @@ import AdminStationsAdminForm from "~/components/Admin/Stations/Form/AdminForm.v
 import AdminStationsBackendForm from "~/components/Admin/Stations/Form/BackendForm.vue";
 import AdminStationsFrontendForm from "~/components/Admin/Stations/Form/FrontendForm.vue";
 import { useAdminStationsForm } from "~/components/Admin/Stations/Form/form.ts";
-import AdminStationsHlsForm from "~/components/Admin/Stations/Form/HlsForm.vue";
 import AdminStationsProfileForm from "~/components/Admin/Stations/Form/ProfileForm.vue";
-import AdminStationsRequestsForm from "~/components/Admin/Stations/Form/RequestsForm.vue";
-import AdminStationsStreamersForm from "~/components/Admin/Stations/Form/StreamersForm.vue";
 import Loading from "~/components/Common/Loading.vue";
 import Tabs from "~/components/Common/Tabs.vue";
 import { useNotify } from "~/components/Common/Toasts/useNotify.ts";

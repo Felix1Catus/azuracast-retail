@@ -5,7 +5,6 @@ import { useTranslate } from "~/vendor/gettext.ts";
 import IconIcGroup from "~icons/ic/baseline-group";
 import IconIcRadio from "~icons/ic/baseline-radio";
 import IconIcRouter from "~icons/ic/baseline-router";
-import IconIcWidgets from "~icons/ic/baseline-widgets";
 
 export function useAdminMenu() {
     const { $gettext } = useTranslate();
@@ -63,14 +62,6 @@ export function useAdminMenu() {
                     label: $gettext("System Debugger"),
                     url: {
                         name: "admin:debug:index",
-                    },
-                    visible: () => userAllowed(GlobalPermissions.All),
-                },
-                {
-                    key: "updates",
-                    label: $gettext("Update AzuraCast"),
-                    url: {
-                        name: "admin:updates:index",
                     },
                     visible: () => userAllowed(GlobalPermissions.All),
                 },
@@ -135,53 +126,6 @@ export function useAdminMenu() {
                         name: "admin:custom_fields:index",
                     },
                     visible: () => userAllowed(GlobalPermissions.CustomFields),
-                },
-                {
-                    key: "relays",
-                    label: $gettext("Connected AzuraRelays"),
-                    url: {
-                        name: "admin:relays:index",
-                    },
-                    visible: () => userAllowed(GlobalPermissions.Stations),
-                },
-            ],
-        },
-        {
-            key: "software",
-            label: $gettext("Third-Party Software"),
-            icon: () => IconIcWidgets,
-            items: [
-                {
-                    key: "shoutcast",
-                    label: $gettext("Shoutcast 2 DNAS"),
-                    url: {
-                        name: "admin:install_shoutcast:index",
-                    },
-                    visible: () => userAllowed(GlobalPermissions.Settings),
-                },
-                {
-                    key: "rsas",
-                    label: $gettext("Rocket Streaming Audio Server (RSAS)"),
-                    url: {
-                        name: "admin:install_rsas:index",
-                    },
-                    visible: () => userAllowed(GlobalPermissions.Settings),
-                },
-                {
-                    key: "stereo_tool",
-                    label: $gettext("Stereo Tool"),
-                    url: {
-                        name: "admin:stereo_tool:index",
-                    },
-                    visible: () => userAllowed(GlobalPermissions.Settings),
-                },
-                {
-                    key: "geolite",
-                    label: $gettext("MaxMind GeoLite IP Database"),
-                    url: {
-                        name: "admin:install_geolite:index",
-                    },
-                    visible: () => userAllowed(GlobalPermissions.Settings),
                 },
             ],
         },

@@ -32,14 +32,7 @@ export function usePlaylistOptions() {
                 "A playlist that instructs the station to play from a remote URL.",
             ),
         },
-        {
-            value: PlaylistSources.Requests,
-            icon: () => playlistSourceIcons[PlaylistSources.Requests],
-            text: $gettext("Request Queue"),
-            description: $gettext(
-                "A playlist that plays songs requested by listeners.",
-            ),
-        },
+        // Retail edition: no "Request Queue" source (listener requests are not part of the product).
     ];
 
     const typeOptions = [

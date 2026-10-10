@@ -61,22 +61,6 @@
                     />
 
                     <form-group-checkbox
-                        id="form_edit_include_in_on_demand"
-                        class="col-md-6"
-                        :field="r$.include_in_on_demand"
-                        :label="$gettext('Include in On-Demand Player')"
-                        :description="$gettext('If this station has on-demand streaming and downloading enabled, only songs that are in playlists with this setting enabled will be visible.')"
-                    />
-
-                    <form-group-checkbox
-                        id="form_edit_include_in_requests"
-                        class="col-md-6"
-                        :field="r$.include_in_requests"
-                        :label="$gettext('Allow Requests from This Playlist')"
-                        :description="$gettext('If requests are enabled for your station, users will be able to request media that is on this playlist.')"
-                    />
-
-                    <form-group-checkbox
                         id="form_edit_is_jingle"
                         class="col-md-6"
                         :field="r$.is_jingle"

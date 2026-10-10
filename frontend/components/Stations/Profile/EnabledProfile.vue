@@ -21,10 +21,6 @@
         </div>
 
         <div class="col-lg-5">
-            <profile-requests v-if="hasActiveBackend"/>
-
-            <profile-streamers v-if="hasActiveBackend"/>
-
             <template v-if="hasActiveFrontend">
                 <profile-frontend/>
             </template>
@@ -48,9 +44,7 @@ import ProfileHeader from "~/components/Stations/Profile/HeaderPanel.vue";
 import NowPlayingNotStartedPanel from "~/components/Stations/Profile/NowPlayingNotStartedPanel.vue";
 import ProfileNowPlaying from "~/components/Stations/Profile/NowPlayingPanel.vue";
 import ProfilePublicPages from "~/components/Stations/Profile/PublicPagesPanel.vue";
-import ProfileRequests from "~/components/Stations/Profile/RequestsPanel.vue";
 import ProfileSchedule from "~/components/Stations/Profile/SchedulePanel.vue";
-import ProfileStreamers from "~/components/Stations/Profile/StreamersPanel.vue";
 import ProfileStreams from "~/components/Stations/Profile/StreamsPanel.vue";
 import { BackendAdapters, FrontendAdapters } from "~/entities/ApiInterfaces.ts";
 import { useStationData } from "~/functions/useStationQuery.ts";
