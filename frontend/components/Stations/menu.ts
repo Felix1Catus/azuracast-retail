@@ -16,6 +16,7 @@ import IconIcLibraryMusic from "~icons/ic/baseline-library-music";
 import IconIcPublic from "~icons/ic/baseline-public";
 import IconIcQueueMusic from "~icons/ic/baseline-queue-music";
 import IconIcSettingsApplication from "~icons/ic/baseline-settings-applications";
+import IconIcStorefront from "~icons/ic/baseline-storefront";
 
 export function useStationsMenu() {
     const { $gettext } = useTranslate();
@@ -143,6 +144,16 @@ export function useStationsMenu() {
             visible: () =>
                 userAllowedForStation(StationPermissions.Media) &&
                 station.value.features.media,
+        },
+        {
+            // Built-in Tracker module (plugins/branch-tracker): its own page, permission "view branches".
+            key: "branch_board",
+            label: $gettext("Branch Board"),
+            icon: () => IconIcStorefront,
+            url: `/branch-tracker/${station.value.id}`,
+            visible: () =>
+                station.value.features.branchBoard &&
+                userAllowedForStation("view branches" as StationPermissions),
         },
         {
             key: "reports",
