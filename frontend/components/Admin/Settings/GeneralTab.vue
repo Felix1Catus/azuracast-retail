@@ -35,14 +35,6 @@
                     </template>
                 </form-group-checkbox>
 
-                <form-group-checkbox
-                    id="edit_form_use_radio_proxy"
-                    class="col-md-6"
-                    :field="r$.use_radio_proxy"
-                    :label="$gettext('Use Web Proxy for Radio')"
-                    :description="$gettext('By default, radio stations broadcast on their own ports (i.e. 8000). If you\'re using a service like CloudFlare or accessing your radio station by SSL, you should enable this feature, which routes all radio through the web ports (80 and 443).')"
-                />
-
                 <form-group-field
                     id="edit_form_history_keep_days"
                     class="col-md-6"

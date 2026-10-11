@@ -113,7 +113,11 @@ final class Settings implements Stringable
         ORM\Column,
         Serializer\Groups(self::GROUP_GENERAL)
     ]
-    public bool $use_radio_proxy = true;
+    public bool $use_radio_proxy = true {
+        // Retail edition: only HTTP/HTTPS are published, so players always go through the /listen/ proxy.
+        get => true; // @phpstan-ignore propertyGetHook.noRead (always on; the column is kept)
+        set => true;
+    }
 
     #[
         OA\Property(description: "Days of Playback History to Keep"),
