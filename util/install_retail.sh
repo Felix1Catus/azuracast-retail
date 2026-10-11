@@ -272,5 +272,5 @@ else
   [[ "$HTTP_PORT" != 80 ]] && URL="$URL:$HTTP_PORT"
 fi
 printf '\n\033[1;32mAzuraCast Retail %s is installed.\033[0m\n' "$REF"
-info "Open $URL to create the admin account and the first station."
+info "Open $URL (on a new install: create the admin account and the first station there)."
 info "Updates: cd $INSTALL_DIR && ./docker.sh backup && ./docker.sh update"

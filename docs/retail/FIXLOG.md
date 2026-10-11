@@ -8,6 +8,16 @@ These are the changes AzuraCast Retail makes to upstream AzuraCast, newest first
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.6 (2026-10-11)
+
+These changes came from moving the development server to its domain. The application code is unchanged.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **`--domain` takes several names** (comma-separated; the first is the site URL, all go on the certificate) | `util/install_retail.sh` | Dev server: certificate for `acaciaradio.tech` and `www.acaciaradio.tech` (Let's Encrypt), both valid over HTTPS |
+| — | **Re-running the installer on an existing install no longer stops on low disk**; it warns, because the image is usually built already | `util/install_retail.sh` | Dev server re-run with 6 GB free |
+| — | **`./docker.sh update` removes old builds** and keeps only the running image and the rollback target, then trims the build cache to 4 GB. Old builds of about 3 GB each had filled the development server | `docker.sh` | Dev server update |
+
 ## 0.23.8-retail.5 (2026-10-11)
 
 These fixes were found by setting up a fresh install on the development server (setup wizard, then the first station).
