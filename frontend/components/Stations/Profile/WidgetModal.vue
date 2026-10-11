@@ -388,31 +388,10 @@ const types = computed(() => {
             text: $gettext("History"),
         },
         {
-            value: "podcasts",
-            text: $gettext("Podcasts"),
-        },
-        {
             value: "schedule",
             text: $gettext("Schedule"),
         },
     ];
-
-    if (
-        stationData.value.features.requests &&
-        stationData.value.enableRequests
-    ) {
-        types.push({
-            value: "requests",
-            text: $gettext("Requests"),
-        });
-    }
-
-    if (stationData.value.enableOnDemand) {
-        types.push({
-            value: "ondemand",
-            text: $gettext("On-Demand Media"),
-        });
-    }
 
     return types;
 });
@@ -460,17 +439,8 @@ const baseEmbedUrl = computed(() => {
         case "history":
             return profileData.value.publicHistoryEmbedUrl;
 
-        case "ondemand":
-            return profileData.value.publicOnDemandEmbedUrl;
-
-        case "requests":
-            return profileData.value.publicRequestEmbedUrl;
-
         case "schedule":
             return profileData.value.publicScheduleEmbedUrl;
-
-        case "podcasts":
-            return profileData.value.publicPodcastsEmbedUrl;
 
         default:
             return profileData.value.publicPageEmbedUrl;

@@ -9,7 +9,7 @@ AzuraCast Retail runs exactly like a Docker install of AzuraCast: one container,
 
 | | |
 |---|---|
-| Based on | AzuraCast 0.23.8 rolling (upstream `ebf75a267`, Oct 2026) |
+| Based on | AzuraCast 0.23.8 rolling (upstream `ebf75a267`, Oct 2026); current release `v0.23.8-retail.2` |
 | Server | Linux with Docker Engine 24+ and the Compose plugin, 2 CPU / 4 GB RAM or more, ports 80 and 443 |
 | Build machine | The server itself or any Linux/WSL machine with Docker and git (about 10 GB free for the build) |
 
@@ -18,8 +18,8 @@ AzuraCast Retail runs exactly like a Docker install of AzuraCast: one container,
 ```bash
 git clone https://github.com/Felix1Catus/azuracast-retail.git
 cd azuracast-retail
-util/build_image.sh azuracast-retail:0.23.8-retail.1      # pick any tag
-docker tag azuracast-retail:0.23.8-retail.1 azuracast-retail:latest
+util/build_image.sh azuracast-retail:0.23.8-retail.2      # pick any tag
+docker tag azuracast-retail:0.23.8-retail.2 azuracast-retail:latest
 ```
 
 The build compiles the frontend, translations and API docs inside Docker. It takes 15 to 30 minutes the first time, and much less afterwards. If it fails on network errors, see [Troubleshooting](#5-troubleshooting).
@@ -92,14 +92,24 @@ On the fork:
 
 ## 4. Updating
 
+Updates come from this repository's releases (tags `v<AzuraCast version>-retail.<n>`), never from upstream AzuraCast. The install keeps a checkout of the source. By default it lives at `/opt/azuracast-retail`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is private, so the server needs read access: a deploy key or a token.
+
 ```bash
-cd ~/azuracast-retail && git pull
-util/build_image.sh azuracast-retail:0.23.8-retail.2
-docker tag azuracast-retail:0.23.8-retail.2 azuracast-retail:latest
-cd /var/azuracast && ./docker.sh backup && docker compose up -d
+git clone https://github.com/Felix1Catus/azuracast-retail.git /opt/azuracast-retail   # once
+cd /var/azuracast
+./docker.sh backup
+./docker.sh update            # newest release; or: ./docker.sh update v0.23.8-retail.2 / main
+./docker.sh rollback          # back to the image that ran before the last update
+./docker.sh update-self       # refresh docker.sh from the checkout
 ```
 
-Database migrations run automatically when the container starts. `./docker.sh update` refuses to run on a retail install, because it would download upstream AzuraCast. To pin a version instead of using `latest`, set `AZURACAST_RETAIL_IMAGE=azuracast-retail:<tag>` in `.env`.
+`update` does the following:
+1. Fetches the releases.
+2. Checks out the chosen release in the source checkout.
+3. Builds `azuracast-retail:<version>` with `util/build_image.sh`.
+4. Records the running image as `AZURACAST_RETAIL_PREVIOUS_IMAGE`, sets `AZURACAST_RETAIL_IMAGE` in `.env`, and runs `docker compose up -d`.
+
+Database migrations run as the container starts. If the build fails, the running install is not touched.
 
 ## 5. Troubleshooting
 
@@ -123,7 +133,7 @@ Database migrations run automatically when the container starts. `./docker.sh up
 | Nothing updates after a restore (Now Playing frozen, AutoDJ silent) | `sync_disabled` left on by the restore (fixed in the fork) | `docker compose exec web azuracast_cli azuracast:settings:set sync_disabled false` |
 | Branch board shows every branch offline | Older images dropped listener rows when analytics was *none* or *no IP* (fixed). Or players use a direct port | Use the current image; keep **Use Web Proxy for Radio** on |
 | Players can't connect after the switch | Players used `:8000` direct ports, which the fork does not publish | Turn on **Use Web Proxy for Radio** and reload the players |
-| `./docker.sh update` prints "This is an AzuraCast Retail install" | Expected: upstream updates would remove the fork | Follow [Updating](#4-updating) |
+| `./docker.sh update` says "AzuraCast Retail source not found" | No source checkout on the server | Clone the repository to `/opt/azuracast-retail` or set `RETAIL_SOURCE_DIR` in `.env` ([Updating](#4-updating)) |
 | Webhooks don't fire | **Administration → System Settings → Enable all webhooks** is off (the fork makes that switch actually work) | Turn it on |
 
 ### Builder with its own DNS

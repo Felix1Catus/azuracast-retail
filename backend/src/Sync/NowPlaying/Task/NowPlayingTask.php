@@ -106,7 +106,7 @@ final class NowPlayingTask implements NowPlayingTaskInterface, EventSubscriberIn
         );
 
         // Update detailed listener statistics, if they exist for the station
-        if ($includeClients && null !== $npResult->clients) {
+        if (null !== $npResult->clients) {
             $this->listenerRepo->update($station, $npResult->clients);
         }
 

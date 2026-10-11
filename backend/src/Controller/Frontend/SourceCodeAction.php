@@ -6,10 +6,10 @@ namespace App\Controller\Frontend;
 
 use App\Container\EnvironmentAwareTrait;
 use App\Controller\SingleActionInterface;
-use App\Http\Response;
-use App\Http\ServerRequest;
 use App\Flysystem\Adapter\LocalFilesystemAdapter;
 use App\Flysystem\LocalFilesystem;
+use App\Http\Response;
+use App\Http\ServerRequest;
 use App\Lock\LockFactory;
 use App\Version;
 use Psr\Http\Message\ResponseInterface;
@@ -46,7 +46,8 @@ final class SourceCodeAction implements SingleActionInterface
 
     public function __invoke(ServerRequest $request, Response $response, array $params): ResponseInterface
     {
-        $name = 'azuracast-retail-' . $this->version->getVersion() . '-' . ($this->version->getCommitShort() ?: 'unknown');
+        $name = 'azuracast-retail-' . $this->version->getVersion()
+            . '-' . ($this->version->getCommitShort() ?: 'unknown');
         $name = preg_replace('/[^A-Za-z0-9._-]+/', '-', $name);
         $file = $this->environment->getTempDirectory() . '/source/' . $name . '.tar.gz';
 

@@ -10,14 +10,11 @@ use App\Entity\Api\NowPlaying\CurrentSong;
 use App\Entity\Api\NowPlaying\Listeners;
 use App\Entity\Api\NowPlaying\Live;
 use App\Entity\Api\NowPlaying\NowPlaying;
-use App\Entity\Api\ResolvableUrl;
 use App\Entity\Repository\SongHistoryRepository;
 use App\Entity\Repository\StationQueueRepository;
-use App\Entity\Repository\StationStreamerBroadcastRepository;
 use App\Entity\Song;
 use App\Entity\Station;
 use App\Entity\StationQueue;
-use App\Http\Router;
 use App\Radio\Adapters;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
@@ -36,9 +33,7 @@ final class NowPlayingApiGenerator
         private readonly StationQueueApiGenerator $stationQueueApiGenerator,
         private readonly SongHistoryRepository $historyRepo,
         private readonly StationQueueRepository $queueRepo,
-        private readonly StationStreamerBroadcastRepository $broadcastRepo,
         private readonly Adapters $adapters,
-        private readonly Router $router,
         private readonly NowPlayingCache $nowPlayingCache
     ) {
     }
@@ -128,36 +123,8 @@ final class NowPlayingApiGenerator
             );
         }
 
-        // Detect and report live DJ status
-        $currentStreamer = $station->current_streamer;
-
-        if (null !== $currentStreamer) {
-            $live = new Live();
-            $live->is_live = true;
-            $live->streamer_name = $currentStreamer->display_name;
-            $live->broadcast_start = $this->broadcastRepo->getLatestBroadcast($station)
-                ?->timestampStart?->getTimestamp();
-
-            if (0 !== $currentStreamer->art_updated_at) {
-                $live->art = new ResolvableUrl(
-                    $this->router->namedAsUri(
-                        routeName: 'api:stations:streamer:art',
-                        routeParams: [
-                            'station_id' => $station->short_name,
-                            'id' => $currentStreamer->id,
-                            'timestamp' => $currentStreamer->art_updated_at,
-                        ],
-                    )
-                );
-            }
-
-            $np->live = $live;
-
-            // If a live streamer is connected, the stream is always online.
-            $np->is_online = true;
-        } else {
-            $np->live = new Live();
-        }
+        // Retail edition: no live DJs.
+        $np->live = new Live();
 
         $np->update();
         return $np;

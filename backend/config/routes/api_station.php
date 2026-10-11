@@ -47,95 +47,12 @@ return static function (RouteCollectorProxy $group) {
                     $group->get('/schedule', Controller\Api\Stations\ScheduleAction::class)
                         ->setName('api:stations:schedule');
 
-                    // Song Requests
-                    $group->get('/requests', Controller\Api\Stations\Requests\ListAction::class)
-                        ->add(new Middleware\StationSupportsFeature(StationFeatures::Requests))
-                        ->setName('api:requests:list');
-
-                    $group->map(
-                        ['GET', 'POST'],
-                        '/request/{media_id}',
-                        Controller\Api\Stations\Requests\SubmitAction::class
-                    )
-                        ->setName('api:requests:submit')
-                        ->add(new Middleware\StationSupportsFeature(StationFeatures::Requests))
-                        ->add(new Middleware\RateLimit('api', 5, 2));
-
-                    // On-Demand Streaming
-                    $group->get('/ondemand', Controller\Api\Stations\OnDemand\ListAction::class)
-                        ->setName('api:stations:ondemand:list')
-                        ->add(new Middleware\StationSupportsFeature(StationFeatures::OnDemand));
-
-                    $group->get('/ondemand/download/{media_id}', Controller\Api\Stations\OnDemand\DownloadAction::class)
-                        ->setName('api:stations:ondemand:download')
-                        ->add(new Middleware\StationSupportsFeature(StationFeatures::OnDemand))
-                        ->add(Middleware\RateLimit::forDownloads());
-
                     // Media Art
                     $group->get(
                         '/art/{media_id:[a-zA-Z0-9\-]+}[-{timestamp}.jpg]',
                         Controller\Api\Stations\Art\GetArtAction::class
                     )->setName('api:stations:media:art')
                         ->add(new Middleware\Cache\SetStaticFileCache());
-
-                    // Streamer Art
-                    $group->get(
-                        '/streamer/{id}/art[-{timestamp}.jpg]',
-                        Controller\Api\Stations\Streamers\Art\GetArtAction::class
-                    )->setName('api:stations:streamer:art')
-                        ->add(new Middleware\Cache\SetStaticFileCache());
-
-                    $group->group(
-                        '/public',
-                        function (RouteCollectorProxy $group) {
-                            // Podcast Public Pages
-                            $group->get('/podcasts', Controller\Api\Stations\Podcasts\ListPodcastsAction::class)
-                                ->setName('api:stations:public:podcasts');
-
-                            $group->group(
-                                '/podcast/{podcast_id}',
-                                function (RouteCollectorProxy $group) {
-                                    $group->get('', Controller\Api\Stations\Podcasts\GetPodcastAction::class)
-                                        ->setName('api:stations:public:podcast');
-
-                                    $group->get(
-                                        '/art[-{timestamp}.jpg]',
-                                        Controller\Api\Stations\Podcasts\Art\GetArtAction::class
-                                    )->setName('api:stations:public:podcast:art')
-                                        ->add(new Middleware\Cache\SetStaticFileCache());
-
-                                    $group->get(
-                                        '/episodes',
-                                        Controller\Api\Stations\Podcasts\Episodes\ListEpisodesAction::class
-                                    )->setName('api:stations:public:podcast:episodes');
-
-                                    $group->group(
-                                        '/episode/{episode_id}',
-                                        function (RouteCollectorProxy $group) {
-                                            $group->get(
-                                                '',
-                                                Controller\Api\Stations\Podcasts\Episodes\GetEpisodeAction::class
-                                            )->setName('api:stations:public:podcast:episode')
-                                                ->add(new Middleware\Cache\SetStaticFileCache());
-
-                                            $group->get(
-                                                '/art[-{timestamp}.jpg]',
-                                                Controller\Api\Stations\Podcasts\Episodes\Art\GetArtAction::class
-                                            )->setName('api:stations:public:podcast:episode:art')
-                                                ->add(new Middleware\Cache\SetStaticFileCache());
-
-                                            $group->get(
-                                                '/download[.{extension}]',
-                                                Controller\Api\Stations\Podcasts\Episodes\Media\GetMediaAction::class
-                                            )->setName('api:stations:public:podcast:episode:download')
-                                                ->add(Middleware\RateLimit::forDownloads());
-                                        }
-                                    );
-                                }
-                            )->add(Middleware\RequirePublishedPodcastEpisodeMiddleware::class)
-                                ->add(Middleware\GetAndRequirePodcast::class);
-                        }
-                    )->add(new Middleware\StationSupportsFeature(StationFeatures::Podcasts));
                 }
             )->add(Middleware\StationPublicApi::class);
 
@@ -201,134 +118,6 @@ return static function (RouteCollectorProxy $group) {
                                 ->setName('api:stations:queue:record');
                         }
                     )->add(new Middleware\Permissions(StationPermissions::Broadcasting, true));
-
-                    // Podcast Private Pages
-                    $group->group(
-                        '',
-                        function (RouteCollectorProxy $group) {
-                            $group->get('/podcasts', Controller\Api\Stations\PodcastsController::class . ':listAction')
-                                ->setName('api:stations:podcasts');
-
-                            $group->post(
-                                '/podcasts',
-                                Controller\Api\Stations\PodcastsController::class . ':createAction'
-                            );
-
-                            $group->post('/podcasts/art', Controller\Api\Stations\Podcasts\Art\PostArtAction::class)
-                                ->setName('api:stations:podcasts:new-art');
-
-                            $group->get('/podcasts/playlists', Controller\Api\Stations\Podcasts\PlaylistsAction::class)
-                                ->setName('api:stations:podcasts:playlists');
-
-                            $group->group(
-                                '/podcast/{podcast_id}',
-                                function (RouteCollectorProxy $group) {
-                                    $group->get('', Controller\Api\Stations\PodcastsController::class . ':getAction')
-                                        ->setName('api:stations:podcast');
-
-                                    $group->put('', Controller\Api\Stations\PodcastsController::class . ':editAction');
-
-                                    $group->delete(
-                                        '',
-                                        Controller\Api\Stations\PodcastsController::class . ':deleteAction'
-                                    );
-
-                                    $group->get(
-                                        '/art[-{timestamp}.jpg]',
-                                        Controller\Api\Stations\Podcasts\Art\GetArtAction::class
-                                    )->setName('api:stations:podcast:art');
-
-                                    $group->post(
-                                        '/art',
-                                        Controller\Api\Stations\Podcasts\Art\PostArtAction::class
-                                    );
-
-                                    $group->delete(
-                                        '/art',
-                                        Controller\Api\Stations\Podcasts\Art\DeleteArtAction::class
-                                    );
-
-                                    $group->get(
-                                        '/episodes',
-                                        Controller\Api\Stations\PodcastEpisodesController::class . ':listAction'
-                                    )->setName('api:stations:podcast:episodes');
-
-                                    $group->post(
-                                        '/episodes',
-                                        Controller\Api\Stations\PodcastEpisodesController::class . ':createAction'
-                                    );
-
-                                    $group->map(
-                                        ['PUT', 'POST'],
-                                        '/batch',
-                                        Controller\Api\Stations\Podcasts\BatchAction::class
-                                    )->setName('api:stations:podcast:batch');
-
-                                    $group->post(
-                                        '/episodes/art',
-                                        Controller\Api\Stations\Podcasts\Episodes\Art\PostArtAction::class
-                                    )->setName('api:stations:podcast:episodes:new-art');
-
-                                    $group->post(
-                                        '/episodes/media',
-                                        Controller\Api\Stations\Podcasts\Episodes\Media\PostMediaAction::class
-                                    )->setName('api:stations:podcast:episodes:new-media');
-
-                                    $group->group(
-                                        '/episode/{episode_id}',
-                                        function (RouteCollectorProxy $group) {
-                                            $group->get(
-                                                '',
-                                                Controller\Api\Stations\PodcastEpisodesController::class . ':getAction'
-                                            )->setName('api:stations:podcast:episode');
-
-                                            $group->put(
-                                                '',
-                                                Controller\Api\Stations\PodcastEpisodesController::class . ':editAction'
-                                            );
-
-                                            $group->delete(
-                                                '',
-                                                Controller\Api\Stations\PodcastEpisodesController::class
-                                                    . ':deleteAction'
-                                            );
-
-                                            $group->get(
-                                                '/art[-{timestamp}.jpg]',
-                                                Controller\Api\Stations\Podcasts\Episodes\Art\GetArtAction::class
-                                            )->setName('api:stations:podcast:episode:art');
-
-                                            $group->post(
-                                                '/art',
-                                                Controller\Api\Stations\Podcasts\Episodes\Art\PostArtAction::class
-                                            );
-
-                                            $group->delete(
-                                                '/art',
-                                                Controller\Api\Stations\Podcasts\Episodes\Art\DeleteArtAction::class
-                                            );
-
-                                            $group->get(
-                                                '/media',
-                                                Controller\Api\Stations\Podcasts\Episodes\Media\GetMediaAction::class
-                                            )->setName('api:stations:podcast:episode:media');
-
-                                            $group->post(
-                                                '/media',
-                                                Controller\Api\Stations\Podcasts\Episodes\Media\PostMediaAction::class
-                                            );
-
-                                            $group->delete(
-                                                '/media',
-                                                Controller\Api\Stations\Podcasts\Episodes\Media\DeleteMediaAction::class
-                                            );
-                                        }
-                                    );
-                                }
-                            )->add(Middleware\GetAndRequirePodcast::class);
-                        }
-                    )->add(new Middleware\Permissions(StationPermissions::Podcasts, true))
-                        ->add(new Middleware\StationSupportsFeature(StationFeatures::Podcasts));
 
                     // Files/Media
                     $group->get('/quota[/{type}]', Controller\Api\Stations\GetQuotaAction::class)
@@ -432,37 +221,6 @@ return static function (RouteCollectorProxy $group) {
                         }
                     )->add(new Middleware\StationSupportsFeature(StationFeatures::Media));
 
-                    // SFTP Users
-                    $group->group(
-                        '',
-                        function (RouteCollectorProxy $group) {
-                            $group->get(
-                                '/sftp-users',
-                                Controller\Api\Stations\SftpUsersController::class . ':listAction'
-                            )->setName('api:stations:sftp-users');
-
-                            $group->post(
-                                '/sftp-users',
-                                Controller\Api\Stations\SftpUsersController::class . ':createAction'
-                            );
-
-                            $group->get(
-                                '/sftp-user/{id}',
-                                Controller\Api\Stations\SftpUsersController::class . ':getAction'
-                            )->setName('api:stations:sftp-user');
-
-                            $group->put(
-                                '/sftp-user/{id}',
-                                Controller\Api\Stations\SftpUsersController::class . ':editAction'
-                            );
-                            $group->delete(
-                                '/sftp-user/{id}',
-                                Controller\Api\Stations\SftpUsersController::class . ':deleteAction'
-                            );
-                        }
-                    )->add(new Middleware\StationSupportsFeature(StationFeatures::Sftp))
-                        ->add(new Middleware\Permissions(StationPermissions::Media, true));
-
                     // Mount Points
                     $group->group(
                         '',
@@ -523,70 +281,6 @@ return static function (RouteCollectorProxy $group) {
                             );
                         }
                     )->add(new Middleware\StationSupportsFeature(StationFeatures::MountPoints))
-                        ->add(new Middleware\Permissions(StationPermissions::MountPoints, true));
-
-                    // Remote Relays
-                    $group->group(
-                        '',
-                        function (RouteCollectorProxy $group) {
-                            $group->get(
-                                '/remotes',
-                                Controller\Api\Stations\RemotesController::class . ':listAction'
-                            )->setName('api:stations:remotes');
-
-                            $group->post(
-                                '/remotes',
-                                Controller\Api\Stations\RemotesController::class . ':createAction'
-                            );
-
-                            $group->get(
-                                '/remote/{id}',
-                                Controller\Api\Stations\RemotesController::class . ':getAction'
-                            )->setName('api:stations:remote');
-
-                            $group->put(
-                                '/remote/{id}',
-                                Controller\Api\Stations\RemotesController::class . ':editAction'
-                            );
-
-                            $group->delete(
-                                '/remote/{id}',
-                                Controller\Api\Stations\RemotesController::class . ':deleteAction'
-                            );
-                        }
-                    )->add(new Middleware\StationSupportsFeature(StationFeatures::RemoteRelays))
-                        ->add(new Middleware\Permissions(StationPermissions::RemoteRelays, true));
-
-                    // HLS Streams
-                    $group->group(
-                        '',
-                        function (RouteCollectorProxy $group) {
-                            $group->get(
-                                '/hls_streams',
-                                Controller\Api\Stations\HlsStreamsController::class . ':listAction'
-                            )->setName('api:stations:hls_streams');
-
-                            $group->post(
-                                '/hls_streams',
-                                Controller\Api\Stations\HlsStreamsController::class . ':createAction'
-                            );
-
-                            $group->get(
-                                '/hls_stream/{id}',
-                                Controller\Api\Stations\HlsStreamsController::class . ':getAction'
-                            )->setName('api:stations:hls_stream');
-
-                            $group->put(
-                                '/hls_stream/{id}',
-                                Controller\Api\Stations\HlsStreamsController::class . ':editAction'
-                            );
-
-                            $group->delete(
-                                '/hls_stream/{id}',
-                                Controller\Api\Stations\HlsStreamsController::class . ':deleteAction'
-                            );
-                        }
-                    )->add(new Middleware\StationSupportsFeature(StationFeatures::HlsStreams))
                         ->add(new Middleware\Permissions(StationPermissions::MountPoints, true));
 
                     // Playlist
@@ -723,26 +417,6 @@ return static function (RouteCollectorProxy $group) {
                     $group->group(
                         '/reports',
                         function (RouteCollectorProxy $group) {
-                            $group->group(
-                                '/requests',
-                                function (RouteCollectorProxy $group) {
-                                    $group->get(
-                                        '',
-                                        Controller\Api\Stations\Reports\RequestsController::class . ':listAction'
-                                    )->setName('api:stations:reports:requests');
-
-                                    $group->post(
-                                        '/clear',
-                                        Controller\Api\Stations\Reports\RequestsController::class . ':clearAction'
-                                    )->setName('api:stations:reports:requests:clear');
-
-                                    $group->delete(
-                                        '/{request_id}',
-                                        Controller\Api\Stations\Reports\RequestsController::class . ':deleteAction'
-                                    )->setName('api:stations:reports:requests:delete');
-                                }
-                            )->add(new Middleware\Permissions(StationPermissions::Broadcasting, true));
-
                             $group->get(
                                 '/overview/charts',
                                 Controller\Api\Stations\Reports\Overview\ChartsAction::class
@@ -777,102 +451,8 @@ return static function (RouteCollectorProxy $group) {
                                 '/overview/by-listening-time',
                                 Controller\Api\Stations\Reports\Overview\ByListeningTime::class
                             )->setName('api:stations:reports:by-listening-time');
-
-                            $group->get(
-                                '/soundexchange',
-                                Controller\Api\Stations\Reports\SoundExchangeAction::class
-                            )->setName('api:stations:reports:soundexchange');
                         }
                     )->add(new Middleware\Permissions(StationPermissions::Reports, true));
-
-                    // Streamers
-                    $group->group(
-                        '',
-                        function (RouteCollectorProxy $group) {
-                            $group->group(
-                                '/streamers',
-                                function (RouteCollectorProxy $group) {
-                                    $group->get(
-                                        '',
-                                        Controller\Api\Stations\StreamersController::class . ':listAction'
-                                    )->setName('api:stations:streamers');
-
-                                    $group->post(
-                                        '',
-                                        Controller\Api\Stations\StreamersController::class . ':createAction'
-                                    );
-
-                                    $group->get(
-                                        '/schedule',
-                                        Controller\Api\Stations\StreamersController::class . ':scheduleAction'
-                                    )->setName('api:stations:streamers:schedule');
-
-                                    $group->get(
-                                        '/broadcasts',
-                                        Controller\Api\Stations\Streamers\BroadcastsController::class . ':listAction'
-                                    )->setName('api:stations:streamers:broadcasts');
-
-                                    $group->post(
-                                        '/art',
-                                        Controller\Api\Stations\Streamers\Art\PostArtAction::class
-                                    )->setName('api:stations:streamers:new-art');
-                                }
-                            );
-
-                            $group->group(
-                                '/streamer/{id}',
-                                function (RouteCollectorProxy $group) {
-                                    $group->get(
-                                        '',
-                                        Controller\Api\Stations\StreamersController::class . ':getAction'
-                                    )->setName('api:stations:streamer');
-
-                                    $group->put(
-                                        '',
-                                        Controller\Api\Stations\StreamersController::class . ':editAction'
-                                    );
-
-                                    $group->delete(
-                                        '',
-                                        Controller\Api\Stations\StreamersController::class . ':deleteAction'
-                                    );
-
-                                    $group->get(
-                                        '/broadcasts',
-                                        Controller\Api\Stations\Streamers\BroadcastsController::class . ':listAction'
-                                    )->setName('api:stations:streamer:broadcasts');
-
-                                    $group->map(
-                                        ['PUT', 'POST'],
-                                        '/broadcasts/batch',
-                                        Controller\Api\Stations\Streamers\Broadcasts\BatchAction::class
-                                    )->setName('api:stations:streamer:broadcasts:batch');
-
-                                    $group->get(
-                                        '/broadcast/{broadcast_id}/download',
-                                        Controller\Api\Stations\Streamers\BroadcastsController::class
-                                            . ':downloadAction'
-                                    )->setName('api:stations:streamer:broadcast:download');
-
-                                    $group->delete(
-                                        '/broadcast/{broadcast_id}',
-                                        Controller\Api\Stations\Streamers\BroadcastsController::class . ':deleteAction'
-                                    )->setName('api:stations:streamer:broadcast:delete');
-
-                                    $group->post(
-                                        '/art',
-                                        Controller\Api\Stations\Streamers\Art\PostArtAction::class
-                                    )->setName('api:stations:streamer:art-internal');
-
-                                    $group->delete(
-                                        '/art',
-                                        Controller\Api\Stations\Streamers\Art\DeleteArtAction::class
-                                    );
-                                }
-                            );
-                        }
-                    )->add(new Middleware\StationSupportsFeature(StationFeatures::Streamers))
-                        ->add(new Middleware\Permissions(StationPermissions::Streamers, true));
 
                     $group->get('/status', Controller\Api\Stations\ServicesController::class . ':statusAction')
                         ->setName('api:stations:status')
@@ -917,63 +497,6 @@ return static function (RouteCollectorProxy $group) {
                         }
                     )->add(new Middleware\Permissions(StationPermissions::Broadcasting, true));
 
-                    // Webhook Extras
-                    $group->group(
-                        '',
-                        function (RouteCollectorProxy $group) {
-                            $group->get(
-                                '/webhooks',
-                                Controller\Api\Stations\WebhooksController::class . ':listAction'
-                            )->setName('api:stations:webhooks');
-
-                            $group->post(
-                                '/webhooks',
-                                Controller\Api\Stations\WebhooksController::class . ':createAction'
-                            );
-
-                            $group->group(
-                                '/webhook/{id}',
-                                function (RouteCollectorProxy $group) {
-                                    $group->get(
-                                        '',
-                                        Controller\Api\Stations\WebhooksController::class . ':getAction'
-                                    )->setName('api:stations:webhook');
-
-                                    $group->put(
-                                        '',
-                                        Controller\Api\Stations\WebhooksController::class . ':editAction'
-                                    );
-
-                                    $group->delete(
-                                        '',
-                                        Controller\Api\Stations\WebhooksController::class . ':deleteAction'
-                                    );
-
-                                    $group->post(
-                                        '/clone',
-                                        Controller\Api\Stations\WebhooksController::class . ':cloneAction'
-                                    )->setName('api:stations:webhook:clone');
-
-                                    $group->put(
-                                        '/toggle',
-                                        Controller\Api\Stations\Webhooks\ToggleAction::class
-                                    )->setName('api:stations:webhook:toggle');
-
-                                    $group->put(
-                                        '/test',
-                                        Controller\Api\Stations\Webhooks\TestAction::class
-                                    )->setName('api:stations:webhook:test');
-
-                                    $group->get(
-                                        '/test-log/{path}',
-                                        Controller\Api\Stations\Webhooks\TestLogAction::class
-                                    )->setName('api:stations:webhook:test-log');
-                                }
-                            );
-                        }
-                    )->add(new Middleware\StationSupportsFeature(StationFeatures::Webhooks))
-                        ->add(new Middleware\Permissions(StationPermissions::WebHooks, true));
-
                     // Custom Liquidsoap Configuration
                     $group->group(
                         '/liquidsoap-config',
@@ -997,27 +520,6 @@ return static function (RouteCollectorProxy $group) {
                                 '/import',
                                 Controller\Api\Stations\LiquidsoapConfig\ImportAction::class
                             )->setName('api:stations:liquidsoap-config:import');
-                        }
-                    )->add(new Middleware\Permissions(StationPermissions::Broadcasting, true));
-
-                    // StereoTool Configuration
-                    $group->group(
-                        '/stereo_tool_config',
-                        function (RouteCollectorProxy $group) {
-                            $group->get(
-                                '[/{do}]',
-                                Controller\Api\Stations\StereoTool\GetStereoToolConfigurationAction::class
-                            )->setName('api:stations:stereo_tool_config');
-
-                            $group->post(
-                                '',
-                                Controller\Api\Stations\StereoTool\PostStereoToolConfigurationAction::class
-                            );
-
-                            $group->delete(
-                                '',
-                                Controller\Api\Stations\StereoTool\DeleteStereoToolConfigurationAction::class
-                            );
                         }
                     )->add(new Middleware\Permissions(StationPermissions::Broadcasting, true));
 

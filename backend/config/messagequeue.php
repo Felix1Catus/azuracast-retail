@@ -20,7 +20,6 @@ return [
     Message\GenerateAcmeCertificate::class => App\Service\Acme::class,
 
     Message\DispatchWebhookMessage::class => App\Webhook\Dispatcher::class,
-    Message\TestWebhookMessage::class => App\Webhook\Dispatcher::class,
 
     Mailer\Messenger\SendEmailMessage::class => Mailer\Messenger\MessageHandler::class,
 ];

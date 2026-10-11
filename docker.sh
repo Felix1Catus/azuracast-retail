@@ -573,19 +573,111 @@ install-dev() {
 # Usage: ./docker.sh update
 #
 #
-# AzuraCast Retail: `update` and `update-self` download upstream AzuraCast files and images, which
-# would replace the fork. Refuse them on a retail install (see docs/retail/INSTALL.md).
+# AzuraCast Retail updates come from the fork's own repository, never from upstream AzuraCast.
+# A retail install keeps a checkout of the source (RETAIL_SOURCE_DIR in .env, default /opt/azuracast-retail);
+# `update` checks out a release there, builds the image locally and restarts on it. See docs/retail/INSTALL.md.
 #
-retail-guard() {
-  if grep -qs "azuracast-retail" docker-compose.yml; then
-    echo "This is an AzuraCast Retail install; '$1' would switch it to upstream AzuraCast."
-    echo "Update it with a new fork image instead (docs/retail/INSTALL.md, \"Updating\")."
+is-retail() {
+  grep -qs "azuracast-retail" docker-compose.yml
+}
+
+retail-source-dir() {
+  .env --file .env
+  .env get RETAIL_SOURCE_DIR
+  echo "${REPLY:-/opt/azuracast-retail}"
+}
+
+retail-update() {
+  local SRC TARGET IMAGE CURRENT
+
+  SRC=$(retail-source-dir)
+  if [[ ! -d "$SRC/.git" ]]; then
+    echo "AzuraCast Retail source not found at $SRC."
+    echo "Clone the repository there, or set RETAIL_SOURCE_DIR in .env:"
+    echo "  git clone https://github.com/Felix1Catus/azuracast-retail.git $SRC"
     exit 1
   fi
+
+  echo "Fetching releases..."
+  git -C "$SRC" fetch --quiet --tags --force origin || exit 1
+
+  # Default: the newest release tag (v<upstream version>-retail.<n>). A tag or branch can be given instead.
+  TARGET="${1:-$(git -C "$SRC" tag -l 'v*-retail.*' --sort=-v:refname | head -n 1)}"
+  if [[ -z "$TARGET" ]]; then
+    echo "No release found. Name a tag or branch: ./docker.sh update main"
+    exit 1
+  fi
+
+  if git -C "$SRC" rev-parse --quiet --verify "refs/tags/$TARGET" > /dev/null; then
+    IMAGE="azuracast-retail:${TARGET#v}"
+  else
+    git -C "$SRC" rev-parse --quiet --verify "origin/$TARGET" > /dev/null || {
+      echo "Unknown release, tag or branch: $TARGET"
+      exit 1
+    }
+    TARGET="origin/$TARGET"
+    IMAGE="azuracast-retail:$(git -C "$SRC" rev-parse --short "$TARGET")"
+  fi
+
+  .env --file .env
+  .env get AZURACAST_RETAIL_IMAGE
+  CURRENT="${REPLY:-azuracast-retail:latest}"
+
+  echo "Installed: $CURRENT"
+  echo "Update to: $TARGET (image $IMAGE)"
+  echo "[NOTICE] Before you continue, please make sure you have a recent backup (./docker.sh backup)."
+  if ! ask "Build and switch to this version now?" Y; then
+    exit
+  fi
+
+  git -C "$SRC" checkout --quiet --detach "$TARGET" || exit 1
+  "$SRC/util/build_image.sh" "$IMAGE" || {
+    echo "The build failed; the running installation was not changed."
+    exit 1
+  }
+
+  .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
+  .env --file .env set AZURACAST_RETAIL_IMAGE="$IMAGE"
+  dc up -d
+
+  echo "Updated to $TARGET. Database migrations run as the container starts."
+  echo "To go back: ./docker.sh rollback"
+  exit
+}
+
+retail-rollback() {
+  local CURRENT PREVIOUS
+
+  .env --file .env
+  .env get AZURACAST_RETAIL_PREVIOUS_IMAGE
+  PREVIOUS="$REPLY"
+  .env get AZURACAST_RETAIL_IMAGE
+  CURRENT="${REPLY:-azuracast-retail:latest}"
+
+  if [[ -z "$PREVIOUS" ]]; then
+    echo "No previous image recorded; nothing to roll back to."
+    exit 1
+  fi
+
+  if ask "Switch from $CURRENT back to $PREVIOUS?" Y; then
+    .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
+    .env --file .env set AZURACAST_RETAIL_IMAGE="$PREVIOUS"
+    dc up -d
+    echo "Now running $PREVIOUS."
+  fi
+  exit
+}
+
+retail-update-self() {
+  local SRC
+  SRC=$(retail-source-dir)
+  cp "$SRC/docker.sh" ./docker.sh.new && chmod a+x ./docker.sh.new && mv ./docker.sh.new ./docker.sh
+  echo "docker.sh updated from $SRC."
+  exit
 }
 
 update() {
-  retail-guard update
+  if is-retail; then retail-update "$@"; fi
   echo "[NOTICE] Before you continue, please make sure you have a recent snapshot of your system and or backed it up."
   if ask "Are you ready to continue with the update?" Y; then
 
@@ -678,7 +770,7 @@ update() {
 # Usage: ./docker.sh update-self
 #
 update-self() {
-  retail-guard update-self
+  if is-retail; then retail-update-self; fi
   local AZURACAST_RELEASE_BRANCH
   AZURACAST_RELEASE_BRANCH=$(get-release-branch-name)
 
@@ -878,6 +970,8 @@ uninstall() {
 # Roll back to a specific stable release version.
 #
 rollback() {
+  if is-retail; then retail-rollback; fi
+
   local AZURACAST_ROLLBACK_VERSION
   AZURACAST_ROLLBACK_VERSION="$1"
 

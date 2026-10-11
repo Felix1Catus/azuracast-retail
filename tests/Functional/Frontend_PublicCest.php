@@ -46,22 +46,10 @@ class Frontend_PublicCest extends CestAbstract
         $I->amOnPage('/public/' . $testStation->id . '/playlist.m3u');
         $I->seeResponseCodeIs(200);
 
-        // Disable WebDJ
-        $testStation = $this->getTestStation();
-        $testStation->enable_streamers = false;
-        $this->em->persist($testStation);
-        $this->em->flush();
-
-        $I->amOnPage('/public/' . $testStation->id . '/dj');
-        $I->seeResponseCodeIs(500);
-
-        // Enable WebDJ
-        $testStation = $this->getTestStation();
-        $testStation->enable_streamers = true;
-        $this->em->persist($testStation);
-        $this->em->flush();
-
-        $I->amOnPage('/public/' . $testStation->id . '/dj');
-        $I->seeResponseCodeIs(200);
+        // Retail edition: no Web DJ, on-demand, requests or podcast pages.
+        foreach (['/dj', '/ondemand', '/embed-requests', '/podcasts'] as $path) {
+            $I->amOnPage('/public/' . $testStation->id . $path);
+            $I->seeResponseCodeIs(404);
+        }
     }
 }

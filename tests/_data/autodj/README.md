@@ -31,7 +31,7 @@ If the two harnesses disagree on a case, that is a fake-vs-reality drift bug to 
 
 ## Directory layout
 
-The `scheduling/`, `queuing/`, and `requests/` sub directories are organisational only, both harnesses run every fixture.
+The `scheduling/` and `queuing/` sub directories are organisational only (the retail edition has no requests), both harnesses run every fixture.
 
 Fixtures must be placed exactly one directory deep under `tests/_data/autodj/`.
 
