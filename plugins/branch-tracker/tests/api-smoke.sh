@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+# Admin API smoke test against a LOCAL development stack (env: TRACKER_CONTAINER, STATION, BASE). Creates and deletes its own
+# throwaway branch (code SMOKE-TEST); does not touch imported branches.
+#   plugins/branch-tracker/tests/api-smoke.sh
+set -uo pipefail
+CONTAINER=${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}
+STATION=${STATION:-store}
+cd "$(dirname "$0")/../../.."
+BASE=${BASE:-http://localhost:8080}
+API="$BASE/api/station/$STATION/branches"
+KEY=$(cat backups/local-api-key 2>/dev/null) || { echo "Run tests/make-local-api-key.sh first"; exit 1; }
+PASS=0; FAIL=0
+
+# req METHOD URL [json-body] -> sets $CODE and $BODY
+req() {
+  local out
+  out=$(curl -s -w '\n%{http_code}' -X "$1" "$2" -H "X-API-Key: $KEY" -H 'Content-Type: application/json' ${3:+-d "$3"})
+  BODY=$(head -n -1 <<<"$out"); CODE=$(tail -n 1 <<<"$out")
+}
+check() { # name expected-code [jq-expression-that-must-be-true]
+  local ok=1
+  [ "$CODE" = "$2" ] || ok=0
+  if [ $ok = 1 ] && [ -n "${3:-}" ]; then jq -e "$3" >/dev/null 2>&1 <<<"$BODY" || ok=0; fi
+  if [ $ok = 1 ]; then PASS=$((PASS+1)); printf '  ok    %s\n' "$1"
+  else FAIL=$((FAIL+1)); printf '  FAIL  %s (HTTP %s) %s\n' "$1" "$CODE" "$(head -c 200 <<<"$BODY")"; fi
+}
+
+echo "Branch Tracker admin API smoke test ($API)"
+
+CODE=$(curl -s -o /dev/null -w '%{http_code}' "$API"); BODY=''
+check "no credentials -> rejected" 403
+
+req GET "$API"
+check "list branches" 200 'length > 0 and all(.[]; has("code") and (has("pin") | not) and (has("pin_hmac") | not))'
+
+# Clean up leftovers from an interrupted run.
+for code in SMOKE-TEST SMOKE-TEST-2; do
+  id=$(curl -s -H "X-API-Key: $KEY" "$API" | jq -r ".[] | select(.code==\"$code\") | .id" | head -1)
+  [ -n "$id" ] && curl -s -o /dev/null -X DELETE -H "X-API-Key: $KEY" "$API/$id"
+done
+
+FIRST_CODE=$(jq -r '.[0].code' <<<"$BODY")
+req POST "$API" "{\"code\":\"$FIRST_CODE\",\"name\":\"dup code\"}"
+check "duplicate code -> 409" 409
+
+req POST "$API" '{"code":"SMOKE-TEST","name":"x","pin":"1234"}'
+check "weak PIN -> 400" 400
+
+req POST "$API" '{"code":"SMOKE-TEST","name":"x","pin":"12"}'
+check "too-short PIN -> 400" 400
+
+req POST "$API" '{"code":"SMOKE-TEST","name":"x","pin":"582013"}'
+check "wrong length (6 digits; default is 4) -> 400" 400
+
+req POST "$API" '{"code":"bad code!","name":"x"}'
+check "invalid code -> 400" 400
+
+req POST "$API" '{"code":"SMOKE-TEST","name":"  Smoke   Test  "}'
+check "create with generated PIN -> 201" 201 '(.pin | test("^[0-9]{4}$")) and .name == "Smoke Test"'
+ID=$(jq -r .id <<<"$BODY"); PIN1=$(jq -r .pin <<<"$BODY")
+
+req POST "$API" "{\"code\":\"SMOKE-TEST-2\",\"name\":\"y\",\"pin\":\"$PIN1\"}"
+check "PIN already used by another branch -> 409" 409
+
+req GET "$API/$ID"
+check "get one (no PIN returned)" 200 '.code == "SMOKE-TEST" and (has("pin") | not)'
+
+req PUT "$API/$ID" '{"name":"Smoke Renamed","is_enabled":false}'
+check "update name + disable" 200 '.name == "Smoke Renamed" and .is_enabled == false'
+
+# A fresh request reads from the DB: catches updates that were returned but never saved
+# (AzuraCast's explicit change tracking drops un-persist()ed changes silently).
+req GET "$API/$ID"
+check "update was persisted (fresh GET)" 200 '.name == "Smoke Renamed" and .is_enabled == false'
+
+req PUT "$API/$ID" "{\"code\":\"$FIRST_CODE\"}"
+check "rename to taken code -> 409" 409
+
+req POST "$API/$ID/pin" '{}'
+check "reset PIN (generated 4 digits, different)" 200 "(.pin | test(\"^[0-9]{4}\$\")) and .pin != \"$PIN1\""
+PIN2=$(jq -r .pin <<<"$BODY")
+
+req POST "$API" '{"code":"SMOKE-TEST-2","name":"y"}'
+ID2=$(jq -r .id <<<"$BODY")
+req POST "$API/$ID2/pin" "{\"pin\":\"$PIN2\"}"
+check "set PIN to another branch's PIN -> 409" 409
+req DELETE "$API/$ID2"
+
+req GET "$API/999999"
+check "unknown branch -> 404" 404
+
+req DELETE "$API/$ID"
+check "delete" 200 '.success == true'
+
+req GET "$API/$ID"
+check "deleted branch is gone -> 404" 404
+
+# --- public page takeover (branch PIN login on /public/$STATION) ---
+PUBLIC="${API%/api/station/$STATION/branches}/public/$STATION"
+req GET "$API/settings"
+check "settings readable" 200 'has("public_page_login") and has("stream_auth")'
+ORIG=$(jq -r .public_page_login <<<"$BODY")
+req PUT "$API/settings" '{"public_page_login":true}'
+check "public page login ON" 200 '.public_page_login == true and .public_page_login_effective == true'
+CODE=$(curl -s "$PUBLIC" | grep -c 'azuracast-tracker-plugin'); BODY='{}'
+check "/public/$STATION serves the branch PIN login" 1
+req PUT "$API/settings" '{"public_page_login":false}'
+check "public page login OFF" 200 '.public_page_login == false'
+if [ "$(jq -r .stream_auth <<<"$BODY")" != "enforce" ]; then
+  CODE=$(curl -s "$PUBLIC" | grep -c 'azuracast-tracker-plugin'); BODY='{}'
+  check "/public/$STATION back to the stock page" 0
+fi
+req PUT "$API/settings" "{\"public_page_login\":$ORIG}"
+
+# --- "Log out all / Log in again" ---
+PUB="${API%/branches}/branch"
+for code in LOA-1 LOA-2; do
+  id=$(curl -s -H "X-API-Key: $KEY" "$API" | jq -r ".[] | select(.code==\"$code\") | .id"); [ -n "$id" ] && curl -s -o /dev/null -X DELETE -H "X-API-Key: $KEY" "$API/$id"
+done
+P1=$(curl -s -X POST "$API" -H "X-API-Key: $KEY" -H 'Content-Type: application/json' -d '{"code":"LOA-1","name":"Logout All 1"}' | jq -r .pin)
+P2=$(curl -s -X POST "$API" -H "X-API-Key: $KEY" -H 'Content-Type: application/json' -d '{"code":"LOA-2","name":"Logout All 2"}' | jq -r .pin)
+L1=$(curl -s -X POST "$PUB/login" -H 'Content-Type: application/json' -d "{\"pin\":\"$P1\"}" | jq -r .token)
+L2=$(curl -s -X POST "$PUB/login" -H 'Content-Type: application/json' -d "{\"pin\":\"$P2\"}" | jq -r .token)
+CODE=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$API/logout-all"); BODY='{}'
+check "logout-all without credentials -> rejected" 403
+req POST "$API/logout-all" '{}'
+check "logout-all signs out every open session" 200 '.success == true and .signed_out >= 2'
+for T in "$L1" "$L2"; do
+  out=$(curl -s -w '\n%{http_code}' -X POST "$PUB/heartbeat" -H 'Content-Type: application/json' -d "{\"token\":\"$T\"}")
+  BODY=$(head -n -1 <<<"$out"); CODE=$(tail -n 1 <<<"$out")
+  check "player is told to sign in again (logout_all)" 401 '.reason == "logout_all"'
+done
+L1B=$(curl -s -X POST "$PUB/login" -H 'Content-Type: application/json' -d "{\"pin\":\"$P1\"}" | jq -r .token)
+[ ${#L1B} = 64 ] && { PASS=$((PASS+1)); echo "  ok    branch can sign in again right away"; } || { FAIL=$((FAIL+1)); echo "  FAIL  sign in again"; }
+for code in LOA-1 LOA-2; do
+  id=$(curl -s -H "X-API-Key: $KEY" "$API" | jq -r ".[] | select(.code==\"$code\") | .id"); [ -n "$id" ] && curl -s -o /dev/null -X DELETE -H "X-API-Key: $KEY" "$API/$id"
+done
+
+# --- public read-only board ---
+ROOT="${API%/api/station/$STATION/branches}"
+req GET "$API/settings"; PB_ORIG=$(jq -r .public_board <<<"$BODY")
+req PUT "$API/settings" '{"public_board":true}'
+check "public board ON returns a share link" 200 '.public_board == true and (.public_board_path | test("/public/[a-f0-9]{32}$"))'
+PB_PATH=$(jq -r .public_board_path <<<"$BODY"); PB_KEY=${PB_PATH##*/}
+CODE=$(curl -s -o /tmp/pb.html -w '%{http_code}' "$ROOT$PB_PATH"); BODY="{\"key\":$(grep -c "\"publicKey\":\"$PB_KEY\"" /tmp/pb.html)}"
+check "public board page loads without login" 200 '.key == 1'
+PBAPI="$ROOT/api/station/$STATION/branch-board/$PB_KEY"
+out=$(curl -s -w '\n%{http_code}' "$PBAPI/live"); BODY=$(head -n -1 <<<"$out"); CODE=$(tail -n 1 <<<"$out")
+check "public live data: branches, no IP or device" 200 '(.branches | length) > 0 and ([.branches[] | .session // {} | has("ip") or has("user_agent")] | any | not)'
+out=$(curl -s -w '\n%{http_code}' "$PBAPI/sessions"); BODY=$(head -n -1 <<<"$out"); CODE=$(tail -n 1 <<<"$out")
+check "public sessions: no IP or device" 200 '[.sessions[] | has("ip") or has("user_agent")] | any | not'
+CT=$(curl -s -o /dev/null -w '%{content_type}' "$PBAPI/sessions?format=csv"); CODE=200; BODY="{\"csv\":$( [[ $CT == text/csv* ]] && echo true || echo false )}"
+check "public board refuses CSV export" 200 '.csv == false'
+CODE=$(curl -s -o /dev/null -w '%{http_code}' "$ROOT/api/station/$STATION/branch-board/0123456789abcdef0123456789abcdef/live"); BODY='{}'
+check "wrong key -> 404" 404
+CODE=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$ROOT/api/station/$STATION/branch-board/$PB_KEY/logout-all"); BODY='{}'
+[ "$CODE" != 200 ] && { PASS=$((PASS+1)); echo "  ok    no write actions on the public board (HTTP $CODE)"; } || { FAIL=$((FAIL+1)); echo "  FAIL  public logout-all answered 200"; }
+req PUT "$API/settings" '{"public_board":true,"regenerate_public_key":true}'
+NEW_PATH=$(jq -r .public_board_path <<<"$BODY")
+CODE=$(curl -s -o /dev/null -w '%{http_code}' "$PBAPI/live"); BODY='{}'
+check "new link: old link stops working (404)" 404
+CODE=$(curl -s -o /dev/null -w '%{http_code}' "$ROOT$NEW_PATH"); BODY='{}'
+check "new link works" 200
+req PUT "$API/settings" '{"public_board":false}'
+CODE=$(curl -s -o /dev/null -w '%{http_code}' "$ROOT$NEW_PATH"); BODY='{}'
+check "board OFF: link -> 404" 404
+[ "$PB_ORIG" = true ] && curl -s -o /dev/null -X PUT "$API/settings" -H "X-API-Key: $KEY" -H 'Content-Type: application/json' -d '{"public_board":true}'
+
+echo "$PASS passed, $FAIL failed"
+[ "$FAIL" = 0 ]

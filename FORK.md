@@ -1,8 +1,9 @@
 # AzuraCast Retail fork
 
 A retail / in-store-radio focused fork of [AzuraCast](https://github.com/AzuraCast/AzuraCast), used by TLRadio
-(tradelineradio.com). Branch tracking stays a separate plugin:
-[azuracast-tracker-plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin).
+(tradelineradio.com). Branch tracking (the Tracker module) ships built in under `plugins/branch-tracker`; it is
+developed in [azuracast-tracker-plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin), which still works on
+stock AzuraCast, and synced here with `util/sync_tracker.sh`.
 
 ## Baseline
 

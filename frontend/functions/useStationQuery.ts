@@ -49,6 +49,7 @@ const blankStationGlobals: VueStationGlobals = {
         remoteRelays: false,
         customLiquidsoapConfig: false,
         autoDjQueue: false,
+        branchBoard: false,
     },
     ipGeoAttribution: "N/A",
     backendType: BackendAdapters.None,

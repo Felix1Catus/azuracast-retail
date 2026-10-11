@@ -58,3 +58,6 @@ tmp/cache/*---*
 /plugins/*
 /plugins/**/*
 !/plugins/.gitkeep
+# Built-in modules shipped with AzuraCast Retail
+!/plugins/branch-tracker/
+!/plugins/branch-tracker/**

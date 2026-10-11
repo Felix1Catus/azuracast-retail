@@ -1825,6 +1825,7 @@ export interface VueStationFeatures {
     remoteRelays: boolean;
     customLiquidsoapConfig: boolean;
     autoDjQueue: boolean;
+    branchBoard: boolean;
 }
 
 export interface VueStationGlobals {

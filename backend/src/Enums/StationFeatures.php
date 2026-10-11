@@ -21,6 +21,7 @@ enum StationFeatures
     case Podcasts;
     case OnDemand;
     case Requests;
+    case BranchBoard;
 
     public function supportedForStation(
         Station $station,
@@ -32,6 +33,9 @@ enum StationFeatures
             self::Media => $backendEnabled,
             self::CustomLiquidsoapConfig => $backendEnabled && $settings->enable_liquidsoap_editing,
             self::MountPoints => $station->frontend_type->supportsMounts(),
+            // Branch Board (built-in Tracker module, plugins/branch-tracker). Its presence also tells the module
+            // to skip its injected button: the station menu has a native item instead.
+            self::BranchBoard => class_exists('Plugin\BranchTracker\Permissions'),
             // Retail edition: these are not part of the product (docs/retail/REDESIGN.md). Their pages, API
             // routes and background tasks are gone or gated on this; the code is removed later (#13).
             self::Sftp,

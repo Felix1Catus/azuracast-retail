@@ -35,7 +35,9 @@ final readonly class StationGlobalFeatures
         #[OA\Property]
         public bool $customLiquidsoapConfig = false,
         #[OA\Property]
-        public bool $autoDjQueue = false
+        public bool $autoDjQueue = false,
+        #[OA\Property]
+        public bool $branchBoard = false
     ) {
     }
 }
