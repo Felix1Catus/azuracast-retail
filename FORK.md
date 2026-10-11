@@ -66,8 +66,19 @@ The image uses a classmap-authoritative autoloader: a PHP class copied into a ru
 For development, `docker-compose.dev.yml` mounts the source tree into the container, so PHP changes apply without a
 rebuild (frontend changes need `npm run build` or the dev server).
 
-The local TLRadio stack (`~/tradelineradio/server/docker-compose.yml`) can point its `image:` at
-`azuracast-retail:dev` to test the fork with the real (copied) production data and the Tracker plugin.
+### Testing a branch on a development server
+
+A server installed with `util/install_retail.sh` can run any branch of this repository:
+
+```bash
+git push origin my-branch                                   # from the development machine
+ssh dev-server 'cd /var/azuracast && ./docker.sh update my-branch'   # build it there and switch to it
+ssh dev-server 'cd /var/azuracast && ./docker.sh rollback'          # back to the previous image
+```
+
+`update <branch>` fetches the branch, builds `azuracast-retail:<commit>` and restarts on it. A branch with nothing new
+rebuilds from cache in seconds; a full rebuild takes about 5–10 minutes on a small server. `./docker.sh update` with no
+argument returns to the newest release.
 
 ## Docs
 
