@@ -61,3 +61,6 @@ tmp/cache/*---*
 # Built-in modules shipped with AzuraCast Retail
 !/plugins/branch-tracker/
 !/plugins/branch-tracker/**
+!/plugins/music-downloader/
+!/plugins/music-downloader/**
+/plugins/music-downloader/**/__pycache__/

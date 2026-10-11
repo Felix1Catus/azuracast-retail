@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Music Downloader · {{STATION_NAME}}</title>
+{{FAVICON}}
+<style>
+  :root {
+    --bg: #f4f5f7; --panel: #ffffff; --text: #1d2330; --muted: #677084; --line: #e3e6ec;
+    --accent: #2f7d5b; --accent-ink: #ffffff; --accent-soft: #e3f2ea;
+    --ok: #2f9e6b; --warn: #b7791f; --warn-soft: #fdf3e1; --danger: #c43c3c; --danger-soft: #fbe9e9;
+    --info: #3366cc; --bar: #dfe3ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151b; --panel: #1b1f27; --text: #e6e9ef; --muted: #98a1b3; --line: #2b313c;
+      --accent: #50a17b; --accent-ink: #0c1410; --accent-soft: #1d3329;
+      --ok: #50c48c; --warn: #e5b04a; --warn-soft: #33291a; --danger: #e06464; --danger-soft: #3a1f22;
+      --info: #7aa2f7; --bar: #2b313c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  [hidden] { display: none !important; }
+  header { background: var(--panel); border-bottom: 1px solid var(--line); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  .top { display: flex; align-items: center; gap: 12px; padding: 14px 0; flex-wrap: wrap; }
+  .top h1 { font-size: 18px; margin: 0; }
+  .top .back { color: var(--muted); text-decoration: none; font-size: 13px; }
+  .top .back:hover { color: var(--text); }
+  .top .spacer { flex: 1; }
+  main { padding: 18px 0 40px; display: grid; gap: 16px; }
+  .grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+  .panel h2 { font-size: 15px; margin: 0 0 10px; }
+  .panel h2 .sub { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
+  label { display: block; font-weight: 600; font-size: 12px; color: var(--muted); margin: 12px 0 4px; }
+  label.inline { display: flex; align-items: center; gap: 8px; font-weight: 400; color: var(--text); font-size: 14px; }
+  input[type="text"], input[type="url"], input[type="password"], select, textarea {
+    font: inherit; color: var(--text); background: var(--panel); border: 1px solid var(--line);
+    border-radius: 7px; padding: 8px 10px; width: 100%; }
+  textarea { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; min-height: 90px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 140px; }
+  button.btn, a.btn { font: inherit; font-weight: 600; cursor: pointer; color: var(--text); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 7px; padding: 7px 12px; text-decoration: none; display: inline-block; }
+  button.btn:hover, a.btn:hover { border-color: var(--muted); }
+  button.btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.spotify { background: #1db954; border-color: #1db954; color: #08130c; }
+  .btn.danger { color: var(--danger); }
+  .btn.small { padding: 4px 8px; font-size: 12px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; align-items: center; }
+  .muted { color: var(--muted); }
+  .small { font-size: 12px; }
+  .code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; word-break: break-all; }
+  .banner { border-radius: 10px; padding: 12px 14px; border: 1px solid var(--line); background: var(--panel); }
+  .banner.warn { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+  .banner.error { background: var(--danger-soft); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+  .banner.ok { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .banner b { display: block; margin-bottom: 2px; }
+  .account { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #1db954; color: #08130c; display: grid;
+            place-items: center; font-weight: 800; flex: none; }
+  .avatar.off { background: var(--bar); color: var(--muted); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: color-mix(in srgb, var(--accent-soft) 50%, transparent); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .title-cell { max-width: 320px; }
+  .title-cell .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 8px;
+          border: 1px solid currentColor; white-space: nowrap; }
+  .st-queued { color: var(--muted); } .st-resolving, .st-downloading, .st-cancelling { color: var(--info); }
+  .st-done { color: var(--ok); } .st-failed { color: var(--danger); } .st-cancelled { color: var(--muted); }
+  .st-skipped { color: var(--muted); } .st-pending { color: var(--muted); }
+  .bar { height: 6px; background: var(--bar); border-radius: 3px; overflow: hidden; margin-top: 6px; min-width: 90px; display: flex; }
+  .bar i { display: block; height: 100%; }
+  .bar .b-done { background: var(--ok); } .bar .b-skip { background: var(--muted); } .bar .b-fail { background: var(--danger); }
+  .empty { padding: 26px; text-align: center; color: var(--muted); }
+  .error-text { color: var(--danger); }
+  .note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  details.settings > summary { cursor: pointer; font-weight: 700; font-size: 15px; list-style: none; }
+  details.settings > summary::-webkit-details-marker { display: none; }
+  details.settings > summary::before { content: "▸ "; color: var(--muted); }
+  details.settings[open] > summary::before { content: "▾ "; }
+  .copy { display: flex; gap: 6px; align-items: stretch; }
+  .copy input { flex: 1; }
+  .checks { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  dialog { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--text);
+           padding: 0; width: min(920px, calc(100vw - 24px)); max-height: calc(100vh - 40px); }
+  dialog::backdrop { background: rgba(0, 0, 0, .45); }
+  .dlg-head { display: flex; gap: 10px; align-items: flex-start; padding: 16px 18px; border-bottom: 1px solid var(--line);
+              position: sticky; top: 0; background: var(--panel); z-index: 1; }
+  .dlg-head h3 { margin: 0; font-size: 16px; }
+  .dlg-head .spacer { flex: 1; }
+  .dlg-body { padding: 14px 18px 18px; }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 13px; margin-bottom: 12px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; min-width: 0; word-break: break-word; }
+  pre.log { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; max-height: 320px;
+            overflow: auto; font-size: 11px; white-space: pre-wrap; word-break: break-all; }
+  .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--text); color: var(--bg);
+           padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 10; max-width: calc(100vw - 32px); }
+  .toast.err { background: var(--danger); color: #fff; }
+  .src-foot { margin: 8px 0; text-align: center; font-size: 12px; }
+  .src-foot .src { color: var(--muted); text-decoration: none; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <a class="back" id="back" href="#">&larr; Back to station</a>
+    <h1>Music Downloader · <span id="station-name"></span></h1>
+    <span class="spacer"></span>
+    <span class="muted small" id="versions"></span>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+  <div id="banners"></div>
+
+  <div class="grid2">
+    <!-- Spotify account -->
+    <section class="panel" id="account-panel">
+      <h2>Spotify account</h2>
+      <div class="account">
+        <div class="avatar off" id="acct-avatar">?</div>
+        <div>
+          <div id="acct-name" style="font-weight:700">Not connected</div>
+          <div class="muted small" id="acct-sub">Connect to download your own and private playlists.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn spotify" id="btn-connect" type="button">Connect Spotify</button>
+        <button class="btn danger" id="btn-disconnect" type="button" hidden>Disconnect</button>
+      </div>
+      <div id="manual-finish" hidden>
+        <p class="small">After you approve on Spotify, your browser opens <span class="code" id="loopback-uri"></span>,
+          which won't load. That's expected: copy the <b>whole address</b> from the address bar and paste it here.</p>
+        <input type="url" id="manual-url" placeholder="http://127.0.0.1:8888/callback?code=...">
+        <div class="actions"><button class="btn primary" id="btn-finish" type="button">Finish login</button></div>
+      </div>
+      <p class="note">Public playlists, albums and tracks work without a login. Because of Spotify's 2026 rules, a login
+        reads only playlists that the account <b>owns or collaborates on</b> (plus private ones). For any other
+        playlist, public access is used automatically.</p>
+    </section>
+
+    <!-- New download -->
+    <section class="panel">
+      <h2>New download</h2>
+      <form id="job-form" autocomplete="off">
+        <label for="url">Spotify link (playlist, album or track)</label>
+        <input type="url" id="url" required placeholder="https://open.spotify.com/playlist/...">
+
+        <div class="row">
+          <div>
+            <label for="folder">Save into folder</label>
+            <select id="folder"><option value="">/ (media root)</option></select>
+          </div>
+          <div>
+            <label for="new-folder">New subfolder <span class="muted">(optional)</span></label>
+            <input type="text" id="new-folder" maxlength="120" placeholder="e.g. Summer 2026">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="format">Format</label>
+            <select id="format"></select>
+          </div>
+          <div>
+            <label for="bitrate">Quality</label>
+            <select id="bitrate"></select>
+          </div>
+        </div>
+
+        <label class="inline" id="use-login-wrap" hidden style="margin-top:12px">
+          <input type="checkbox" id="use-login" checked> Use my Spotify login (for private playlists)
+        </label>
+
+        <div class="actions">
+          <button class="btn primary" type="submit" id="btn-start">Start download</button>
+          <span class="muted small" id="dest-preview"></span>
+        </div>
+        <p class="note">Files are named “Artist - Title”. Tracks already in the folder are skipped. New files show up
+          in the station's Music Files within about 5 minutes (AzuraCast's media scan). Downloads run one at a time.</p>
+      </form>
+    </section>
+  </div>
+
+  <!-- Downloads -->
+  <section class="panel">
+    <h2>Downloads <span class="sub" id="jobs-sub"></span></h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>List</th><th>Folder</th><th>Status</th><th class="num">Tracks</th><th>By</th><th>Started</th><th></th></tr></thead>
+        <tbody id="jobs-body"></tbody>
+      </table>
+      <div class="empty" id="jobs-empty" hidden>No downloads yet.</div>
+    </div>
+  </section>
+
+  <!-- Admin settings -->
+  <section class="panel" id="settings-panel" hidden>
+    <details class="settings" id="settings-details">
+      <summary>Settings <span class="muted small" style="font-weight:400">(administrators, all stations)</span></summary>
+
+      <h2 style="margin-top:16px">Spotify app</h2>
+      <p class="small muted" style="margin-top:0">Create an app at
+        <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a>
+        (Web API). Spotify requires the app owner to have <b>Premium</b>; a development-mode app allows up to 5 users,
+        each listed under <i>User Management</i>. Add this exact <b>Redirect URI</b> to the app:</p>
+      <div class="copy"><input type="text" id="redirect-uri" readonly><button class="btn" type="button" id="btn-copy">Copy</button></div>
+      <p class="note" id="redirect-note"></p>
+      <div class="row">
+        <div><label for="client-id">Client ID</label><input type="text" id="client-id" maxlength="32" spellcheck="false"></div>
+        <div><label for="client-secret">Client Secret</label><input type="password" id="client-secret" maxlength="32" autocomplete="new-password"></div>
+      </div>
+
+      <h2 style="margin-top:20px">Audio source</h2>
+      <p class="small muted" style="margin-top:0">spotDL takes the track list from Spotify and the audio from these sources, in order.</p>
+      <div class="checks" id="providers"></div>
+      <div class="row">
+        <div><label for="def-format">Default format</label><select id="def-format"></select></div>
+        <div><label for="def-bitrate">Default quality</label><select id="def-bitrate"></select></div>
+      </div>
+      <label for="proxy">Proxy for downloads <span class="muted">(optional, e.g. http://user:pass@host:port or socks5://host:1080)</span></label>
+      <input type="text" id="proxy" spellcheck="false">
+      <div class="actions"><button class="btn primary" type="button" id="btn-save-settings">Save settings</button></div>
+
+      <h2 style="margin-top:20px">YouTube cookies <span class="sub" id="cookie-state"></span></h2>
+      <p class="small muted" style="margin-top:0">If YouTube blocks this server (“Sign in to confirm you're not a bot”),
+        give it the cookies of a normal YouTube account: in a private browser window, sign in to youtube.com, export
+        <span class="code">cookies.txt</span> (Netscape format) with a cookies extension, close the window, and paste or upload it here.
+        Use a separate account: YouTube may restrict accounts used this way.</p>
+      <textarea id="cookies" placeholder="# Netscape HTTP Cookie File&#10;.youtube.com	TRUE	/	TRUE	..."></textarea>
+      <div class="actions">
+        <input type="file" id="cookie-file" accept=".txt,text/plain" hidden>
+        <button class="btn" type="button" id="btn-cookie-file">Upload cookies.txt…</button>
+        <button class="btn primary" type="button" id="btn-save-cookies">Save cookies</button>
+        <button class="btn danger" type="button" id="btn-del-cookies">Remove cookies</button>
+      </div>
+    </details>
+  </section>
+
+  <div class="src-foot">{{SOURCE_LINK}}</div>
+</main>
+</div>
+
+<dialog id="job-dialog">
+  <div class="dlg-head">
+    <div><h3 id="dlg-title"></h3><div class="muted small code" id="dlg-url"></div></div>
+    <span class="spacer"></span>
+    <button class="btn small" type="button" id="dlg-close">Close</button>
+  </div>
+  <div class="dlg-body">
+    <dl class="kv" id="dlg-kv"></dl>
+    <div id="dlg-msgs"></div>
+    <div class="actions" style="margin:0 0 12px" id="dlg-actions"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Track</th><th>Status</th><th>File / error</th></tr></thead>
+        <tbody id="dlg-tracks"></tbody>
+      </table>
+    </div>
+    <details style="margin-top:12px" id="dlg-log-wrap">
+      <summary class="small muted" style="cursor:pointer">Technical log</summary>
+      <pre class="log" id="dlg-log"></pre>
+    </details>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  'use strict';
+  const CFG = {{CONFIG_JSON}};
+  const API = `/api/station/${CFG.stationId}/music-downloader`;
+  const SETTINGS_API = '/api/music-downloader/settings';
+  const $ = (s) => document.querySelector(s);
+  const el = (tag, props = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v;
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), v); else if (v !== undefined && v !== null) n.setAttribute(k, v);
+    }
+    for (const k of kids) if (k !== null && k !== undefined) n.append(k);
+    return n;
+  };
+
+  $('#station-name').textContent = CFG.stationName;
+  $('#back').href = `/station/${CFG.stationId}`;
+
+  // ---------- API ----------
+  async function api(url, opts = {}) {
+    const headers = { Accept: 'application/json' };
+    if (opts.body !== undefined) headers['Content-Type'] = 'application/json';
+    if ((opts.method || 'GET') !== 'GET') headers['X-API-CSRF'] = CFG.csrf;
+    const res = await fetch(url, {
+      method: opts.method || 'GET', headers, credentials: 'same-origin',
+      body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
+    });
+    let data = null;
+    try { data = await res.json(); } catch {}
+    if (!res.ok) throw new Error(data?.message || data?.formatted_message || `Request failed (${res.status})`);
+    return data;
+  }
+
+  let toastTimer;
+  function toast(msg, isErr = false) {
+    let t = $('.toast');
+    if (!t) { t = el('div', { class: 'toast', role: 'status' }); document.body.append(t); }
+    t.textContent = msg; t.classList.toggle('err', isErr); t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, isErr ? 7000 : 3500);
+  }
+
+  // ---------- formatting ----------
+  const fmtDT = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const when = (ts) => ts ? fmtDT.format(new Date(ts * 1000)) : '';
+  const STATUS_LABEL = { queued: 'Queued', resolving: 'Reading list', downloading: 'Downloading', cancelling: 'Cancelling',
+    done: 'Done', failed: 'Failed', cancelled: 'Cancelled', pending: 'Waiting', skipped: 'Skipped' };
+  const pill = (s) => el('span', { class: `pill st-${s}`, text: STATUS_LABEL[s] || s });
+  const PROVIDER_LABEL = { 'youtube-music': 'YouTube Music', youtube: 'YouTube', soundcloud: 'SoundCloud', bandcamp: 'Bandcamp', piped: 'Piped (YouTube mirror)' };
+  const BITRATE_LABEL = { auto: 'Same as source (recommended)' };
+
+  function bar(j) {
+    const total = Math.max(j.total, 1);
+    const b = el('div', { class: 'bar', title: `${j.done} downloaded, ${j.skipped} skipped, ${j.failed} failed of ${j.total}` });
+    b.append(el('i', { class: 'b-done', style: `width:${100 * j.done / total}%` }),
+      el('i', { class: 'b-skip', style: `width:${100 * j.skipped / total}%` }),
+      el('i', { class: 'b-fail', style: `width:${100 * j.failed / total}%` }));
+    return b;
+  }
+
+  // ---------- status / account ----------
+  let status = null;
+  async function loadStatus() {
+    try { status = await api(`${API}/status`); } catch (e) { banners([{ kind: 'error', title: 'Could not load status', text: e.message }]); return; }
+    const list = [];
+    if (CFG.flash) list.push({ kind: 'ok', title: CFG.flash });
+    if (CFG.flashError) list.push({ kind: 'error', title: 'Spotify login failed', text: CFG.flashError });
+    if (!status.worker.ok) list.push({ kind: 'error', title: 'The downloader is offline', text: status.worker.message || 'The worker container is not responding.' });
+    if (!status.storage.supported) list.push({ kind: 'warn', title: 'Downloads can\'t be saved for this station', text: status.storage.message });
+    if (status.worker.ok && status.settings && !status.settings.spotify_app_ready) {
+      list.push({ kind: 'warn', title: 'Spotify login isn\'t set up yet',
+        text: status.isAdmin ? 'Enter the Spotify app\'s Client ID and Secret under Settings below. Public playlists work meanwhile.'
+                             : 'An administrator has to add the Spotify app details first. Public playlists work meanwhile.' });
+    }
+    banners(list);
+    if (status.worker.versions) {
+      const v = status.worker.versions;
+      $('#versions').textContent = `spotDL ${v.spotdl} · yt-dlp ${v.yt_dlp}`;
+    }
+    renderAccount();
+    fillChoices();
+    $('#btn-start').disabled = !status.worker.ok || !status.storage.supported;
+    if (status.isAdmin) { $('#settings-panel').hidden = false; }
+  }
+
+  function banners(list) {
+    const box = $('#banners'); box.replaceChildren();
+    for (const b of list) box.append(el('div', { class: `banner ${b.kind}` }, el('b', { text: b.title }), b.text ? el('span', { text: b.text }) : null));
+    box.style.display = list.length ? 'grid' : 'none'; box.style.gap = '10px';
+  }
+
+  function renderAccount() {
+    const a = status.account || { connected: false };
+    const appReady = !!status.settings?.spotify_app_ready;
+    $('#btn-connect').hidden = a.connected;
+    $('#btn-connect').disabled = !appReady || !status.worker.ok;
+    $('#btn-connect').title = appReady ? '' : 'An administrator has to enter the Spotify app details first.';
+    $('#btn-disconnect').hidden = !a.connected;
+    $('#use-login-wrap').hidden = !a.connected;
+    const av = $('#acct-avatar');
+    av.classList.toggle('off', !a.connected);
+    if (a.connected) {
+      av.textContent = (a.display_name || '?').trim().charAt(0).toUpperCase();
+      $('#acct-name').textContent = a.display_name;
+      $('#acct-sub').textContent = `Spotify ${a.product || ''} account · connected ${when(a.connected_at)}`.replace('  ', ' ');
+      $('#manual-finish').hidden = true;
+    } else {
+      av.textContent = '?';
+      $('#acct-name').textContent = 'Not connected';
+      $('#acct-sub').textContent = 'Connect to download your own and private playlists.';
+    }
+    $('#loopback-uri').textContent = status.redirect?.uri || '';
+  }
+
+  $('#btn-connect').addEventListener('click', async () => {
+    try {
+      const r = await api(`${API}/auth/start`, { method: 'POST', body: {} });
+      if (status.redirect?.automatic) { location.href = r.authorize_url; return; }
+      window.open(r.authorize_url, '_blank', 'noopener');
+      $('#manual-finish').hidden = false; $('#manual-url').focus();
+    } catch (e) { toast(e.message, true); }
+  });
+  $('#btn-finish').addEventListener('click', async () => {
+    try {
+      await api(`${API}/auth/finish`, { method: 'POST', body: { url: $('#manual-url').value } });
+      $('#manual-url').value = ''; toast('Spotify account connected.'); loadStatus();
+    } catch (e) { toast(e.message, true); }
+  });
+  $('#btn-disconnect').addEventListener('click', async () => {
+    if (!confirm('Disconnect your Spotify account from Music Downloader?')) return;
+    try { await api(`${API}/auth/logout`, { method: 'POST', body: {} }); toast('Disconnected.'); loadStatus(); } catch (e) { toast(e.message, true); }
+  });
+
+  // ---------- form ----------
+  let choicesFilled = false;
+  function fillChoices() {
+    const s = status.settings; if (!s || choicesFilled) return;
+    choicesFilled = true;
+    const opts = (sel, values, def, labels = {}) => {
+      sel.replaceChildren(...values.map((v) => el('option', { value: v, text: labels[v] || v })));
+      sel.value = def;
+    };
+    opts($('#format'), s.choices.formats, s.default_format);
+    opts($('#bitrate'), s.choices.bitrates, s.default_bitrate, BITRATE_LABEL);
+  }
+
+  async function loadFolders() {
+    try {
+      const r = await api(`${API}/folders`);
+      const sel = $('#folder'); const keep = sel.value;
+      sel.replaceChildren(el('option', { value: '', text: '/ (media root)' }), ...r.folders.map((f) => el('option', { value: f, text: '/' + f })));
+      sel.value = r.folders.includes(keep) ? keep : '';
+      updatePreview();
+    } catch { /* storage banner already explains */ }
+  }
+  function updatePreview() {
+    const parts = [$('#folder').value, $('#new-folder').value.trim()].filter(Boolean);
+    $('#dest-preview').textContent = `→ /${parts.join('/')}`;
+  }
+  $('#folder').addEventListener('change', updatePreview);
+  $('#new-folder').addEventListener('input', updatePreview);
+
+  $('#job-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const btn = $('#btn-start'); btn.disabled = true;
+    try {
+      const j = await api(`${API}/jobs`, { method: 'POST', body: {
+        url: $('#url').value.trim(), folder: $('#folder').value, new_folder: $('#new-folder').value.trim(),
+        format: $('#format').value, bitrate: $('#bitrate').value,
+        use_login: !$('#use-login-wrap').hidden && $('#use-login').checked,
+      } });
+      toast(`Download #${j.id} queued.`);
+      $('#url').value = ''; $('#new-folder').value = ''; updatePreview();
+      loadJobs();
+    } catch (e) { toast(e.message, true); } finally { btn.disabled = !status?.worker.ok || !status?.storage.supported; }
+  });
+
+  // ---------- jobs ----------
+  let jobsTimer = null; let jobs = [];
+  async function loadJobs() {
+    clearTimeout(jobsTimer);
+    try {
+      jobs = (await api(`${API}/jobs`)).jobs;
+      renderJobs();
+    } catch (e) { $('#jobs-sub').textContent = e.message; }
+    const active = jobs.some((j) => !j.finished);
+    jobsTimer = setTimeout(loadJobs, active ? 4000 : 20000);
+  }
+
+  function renderJobs() {
+    const body = $('#jobs-body'); body.replaceChildren();
+    $('#jobs-empty').hidden = jobs.length > 0;
+    const active = jobs.filter((j) => !j.finished).length;
+    $('#jobs-sub').textContent = active ? `${active} active` : '';
+    for (const j of jobs) {
+      const statusCell = el('td', {}, pill(j.status));
+      if (j.status === 'queued' && j.queue_position) statusCell.append(el('div', { class: 'muted small', text: `#${j.queue_position} in line` }));
+      if (j.total) statusCell.append(bar(j));
+      const tr = el('tr', { class: 'clickable', onclick: () => openJob(j.id) },
+        el('td', { class: 'muted', text: String(j.id) }),
+        el('td', { class: 'title-cell' }, el('div', { class: 't', text: j.title || (j.status === 'resolving' ? 'Reading list…' : j.url), title: j.url }),
+          el('div', { class: 'muted small', text: `${j.kind} · ${j.format}${j.bitrate !== 'auto' ? ' ' + j.bitrate : ''}` })),
+        el('td', { class: 'code', text: j.dest_label }),
+        statusCell,
+        el('td', { class: 'num', text: j.total ? `${j.done + j.skipped}/${j.total}${j.failed ? ` · ${j.failed} failed` : ''}` : '–' }),
+        el('td', { class: 'small', text: j.user_name || '' }),
+        el('td', { class: 'small muted', text: when(j.started_at || j.created_at) }),
+        el('td', {}, el('button', { class: 'btn small', type: 'button', text: 'Details' })),
+      );
+      body.append(tr);
+    }
+  }
+
+  // ---------- job dialog ----------
+  const dlg = $('#job-dialog'); let openId = null; let dlgTimer = null;
+  $('#dlg-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('close', () => { openId = null; clearTimeout(dlgTimer); });
+  $('#dlg-log-wrap').addEventListener('toggle', (e) => { if (e.target.open) loadLog(); });
+
+  async function openJob(id) {
+    openId = id; $('#dlg-log-wrap').open = false;
+    await refreshJob();
+    if (!dlg.open) dlg.showModal();
+  }
+  async function loadLog() {
+    if (!openId) return;
+    try { $('#dlg-log').textContent = (await api(`${API}/jobs/${openId}/log`)).lines.join('\n') || '(empty)'; }
+    catch (e) { $('#dlg-log').textContent = e.message; }
+  }
+  async function refreshJob() {
+    clearTimeout(dlgTimer);
+    if (!openId) return;
+    let j;
+    try { j = await api(`${API}/jobs/${openId}`); } catch (e) { toast(e.message, true); return; }
+    $('#dlg-title').textContent = `#${j.id} · ${j.title || 'Reading list…'}`;
+    $('#dlg-url').textContent = j.url;
+    const kv = $('#dlg-kv'); kv.replaceChildren();
+    const add = (k, v) => { if (v) kv.append(el('dt', { text: k }), el('dd', {}, v)); };
+    add('Status', pill(j.status));
+    add('Folder', el('span', { class: 'code', text: j.dest_label }));
+    add('Format', `${j.format}, ${BITRATE_LABEL[j.bitrate] ? 'same quality as source' : j.bitrate}`);
+    add('Read with', j.source === 'spotify-login' ? 'Your Spotify login' : j.source === 'public' ? 'Public access' : '');
+    add('Tracks', j.total ? `${j.done} downloaded, ${j.skipped} skipped, ${j.failed} failed, ${j.total} total` : '');
+    add('Requested', `${j.user_name || ''} · ${when(j.created_at)}`);
+    if (j.finished_at) add('Finished', when(j.finished_at));
+    const msgs = $('#dlg-msgs'); msgs.replaceChildren();
+    if (j.error) msgs.append(el('div', { class: 'banner error', style: 'margin-bottom:10px' }, el('b', { text: 'Error' }), el('span', { text: j.error })));
+    if (j.note) msgs.append(el('div', { class: 'banner', style: 'margin-bottom:10px' }, el('span', { class: 'small', text: j.note })));
+
+    const acts = $('#dlg-actions'); acts.replaceChildren();
+    const act = (label, fn, cls = '') => acts.append(el('button', { class: `btn small ${cls}`, type: 'button', text: label, onclick: fn }));
+    if (!j.finished && j.status !== 'cancelling') act('Cancel', () => jobAction(j.id, 'cancel', 'Cancel this download? Tracks already saved stay in the folder.'), 'danger');
+    if (j.finished && (j.failed || j.status !== 'done')) act(j.failed ? `Retry ${j.failed} failed` : 'Run again', () => jobAction(j.id, 'retry'));
+    if (j.finished) act('Remove from list', () => jobAction(j.id, 'delete', 'Remove this download from the list? Downloaded files stay in the media library.'), 'danger');
+
+    const tb = $('#dlg-tracks'); tb.replaceChildren();
+    for (const t of j.tracks) {
+      tb.append(el('tr', {},
+        el('td', { class: 'muted', text: String(t.position) }),
+        el('td', {}, el('div', { text: t.title, style: 'font-weight:600' }), el('div', { class: 'muted small', text: t.artists || '' })),
+        el('td', {}, pill(t.status)),
+        el('td', { class: t.status === 'failed' ? 'small error-text' : 'small code', text: t.status === 'failed' ? (t.error || '') : (t.file || t.error || '') }),
+      ));
+    }
+    if (!j.tracks.length) tb.append(el('tr', {}, el('td', { colspan: '4', class: 'empty', text: j.status === 'queued' ? 'Waiting for its turn…' : j.finished ? 'No tracks.' : 'Reading the track list from Spotify…' })));
+    if ($('#dlg-log-wrap').open) loadLog();
+    if (!j.finished) dlgTimer = setTimeout(refreshJob, 3000);
+  }
+
+  async function jobAction(id, what, question) {
+    if (question && !confirm(question)) return;
+    try {
+      if (what === 'delete') { await api(`${API}/jobs/${id}`, { method: 'DELETE' }); dlg.close(); }
+      else { await api(`${API}/jobs/${id}/${what}`, { method: 'POST', body: {} }); refreshJob(); }
+      loadJobs();
+    } catch (e) { toast(e.message, true); }
+  }
+
+  // ---------- admin settings ----------
+  let settingsLoaded = false;
+  $('#settings-details').addEventListener('toggle', (e) => { if (e.target.open && !settingsLoaded) loadSettings(); });
+  async function loadSettings() {
+    let s;
+    try { s = await api(SETTINGS_API); } catch (e) { toast(e.message, true); return; }
+    settingsLoaded = true;
+    $('#redirect-uri').value = s.redirect.uri;
+    $('#redirect-note').textContent = s.redirect.automatic
+      ? 'Your site uses HTTPS, so the login finishes automatically.'
+      : 'Your site isn\'t on HTTPS, and Spotify only accepts HTTPS or 127.0.0.1 redirect addresses. So the login ends on a page that doesn\'t load, and users paste its address back here. Set up HTTPS (Let\'s Encrypt in AzuraCast) to make it automatic.';
+    $('#client-id').value = s.client_id;
+    $('#client-secret').value = '';
+    $('#client-secret').placeholder = s.has_client_secret ? 'saved (leave empty to keep)' : '';
+    $('#proxy').value = s.proxy || '';
+    const box = $('#providers'); box.replaceChildren();
+    for (const p of s.choices.audio_providers) {
+      box.append(el('label', { class: 'inline' }, el('input', { type: 'checkbox', value: p, ...(s.audio_providers.includes(p) ? { checked: '' } : {}) }), PROVIDER_LABEL[p] || p));
+    }
+    const fill = (sel, values, def, labels = {}) => { sel.replaceChildren(...values.map((v) => el('option', { value: v, text: labels[v] || v }))); sel.value = def; };
+    fill($('#def-format'), s.choices.formats, s.default_format);
+    fill($('#def-bitrate'), s.choices.bitrates, s.default_bitrate, BITRATE_LABEL);
+    $('#cookie-state').textContent = s.has_cookies ? '· saved' : '· none';
+    $('#btn-del-cookies').hidden = !s.has_cookies;
+  }
+  $('#btn-copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('#redirect-uri').value); toast('Copied.'); } catch { $('#redirect-uri').select(); }
+  });
+  $('#btn-save-settings').addEventListener('click', async () => {
+    const body = {
+      client_id: $('#client-id').value.trim(), proxy: $('#proxy').value.trim(),
+      audio_providers: [...document.querySelectorAll('#providers input:checked')].map((i) => i.value),
+      default_format: $('#def-format').value, default_bitrate: $('#def-bitrate').value,
+    };
+    if ($('#client-secret').value.trim()) body.client_secret = $('#client-secret').value.trim();
+    try { await api(SETTINGS_API, { method: 'PUT', body }); toast('Settings saved.'); settingsLoaded = false; loadSettings(); choicesFilled = false; loadStatus(); }
+    catch (e) { toast(e.message, true); }
+  });
+  $('#btn-cookie-file').addEventListener('click', () => $('#cookie-file').click());
+  $('#cookie-file').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    if (f.size > 1000000) { toast('That file is too large for a cookies.txt.', true); return; }
+    $('#cookies').value = await f.text(); e.target.value = '';
+  });
+  $('#btn-save-cookies').addEventListener('click', async () => {
+    try { await api(`${SETTINGS_API}/cookies`, { method: 'PUT', body: { cookies: $('#cookies').value } }); $('#cookies').value = ''; toast('Cookies saved.'); loadSettings(); }
+    catch (e) { toast(e.message, true); }
+  });
+  $('#btn-del-cookies').addEventListener('click', async () => {
+    if (!confirm('Remove the saved YouTube cookies?')) return;
+    try { await api(`${SETTINGS_API}/cookies`, { method: 'DELETE' }); toast('Cookies removed.'); loadSettings(); } catch (e) { toast(e.message, true); }
+  });
+
+  // Drop ?spotify=... from the address bar so a reload doesn't repeat the message.
+  if (CFG.flash || CFG.flashError) history.replaceState(null, '', location.pathname);
+
+  loadStatus().then(() => { if (status?.storage.supported) loadFolders(); });
+  loadJobs();
+})();
+</script>
+</body>
+</html>
