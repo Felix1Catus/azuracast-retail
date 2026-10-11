@@ -6,7 +6,6 @@ namespace App\Controller\Frontend\PublicPages;
 
 use App\Controller\Frontend\PublicPages\Traits\IsEmbeddable;
 use App\Controller\SingleActionInterface;
-use App\Entity\Repository\CustomFieldRepository;
 use App\Http\Response;
 use App\Http\ServerRequest;
 use App\VueComponent\NowPlayingComponent;
@@ -17,7 +16,6 @@ final class PlayerAction implements SingleActionInterface
     use IsEmbeddable;
 
     public function __construct(
-        private readonly CustomFieldRepository $customFieldRepo,
         private readonly NowPlayingComponent $nowPlayingComponent
     ) {
     }
@@ -70,19 +68,10 @@ final class PlayerAction implements SingleActionInterface
 
         $props = [
             'stationName' => $station->name,
-            'enableRequests' => $station->enable_requests,
             'downloadPlaylistUri' => $router->named(
                 routeName: 'public:playlist',
                 routeParams: ['station_id' => $station->short_name, 'format' => 'pls']
             ),
-            'requests' => [
-                'requestListUri' => $router->named(
-                    routeName: 'api:requests:list',
-                    routeParams: ['station_id' => $station->id]
-                ),
-                'showAlbumArt' => $playerProps['showAlbumArt'],
-                'customFields' => $this->customFieldRepo->fetchArray(),
-            ],
             'player' => $playerProps,
         ];
 

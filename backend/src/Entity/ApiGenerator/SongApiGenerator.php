@@ -94,19 +94,6 @@ final class SongApiGenerator
             }
         }
 
-        if ($isNowPlaying && null !== $station) {
-            $currentStreamer = $station->current_streamer;
-            if (null !== $currentStreamer && 0 !== $currentStreamer->art_updated_at) {
-                return $this->router->namedAsUri(
-                    routeName: 'api:stations:streamer:art',
-                    routeParams: [
-                        'station_id' => $station->short_name,
-                        'id' => $currentStreamer->id,
-                        'timestamp' => $currentStreamer->art_updated_at,
-                    ],
-                );
-            }
-        }
 
         return $this->customization->getDefaultAlbumArtUrl($station);
     }

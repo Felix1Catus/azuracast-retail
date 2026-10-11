@@ -54,16 +54,9 @@ final class ProfileAction implements SingleActionInterface
                     routeParams: ['station_id' => $station->short_name, 'embed' => 'embed'],
                     absolute: true
                 ),
-                publicOnDemandEmbedUrl: $router->named(
-                    routeName: 'public:ondemand',
-                    routeParams: ['station_id' => $station->short_name, 'embed' => 'embed'],
-                    absolute: true
-                ),
-                publicRequestEmbedUrl: $router->named(
-                    routeName: 'public:embedrequests',
-                    routeParams: ['station_id' => $station->short_name],
-                    absolute: true
-                ),
+                // Retail edition: no on-demand, requests or podcast embeds.
+                publicOnDemandEmbedUrl: '',
+                publicRequestEmbedUrl: '',
                 publicHistoryEmbedUrl: $router->named(
                     routeName: 'public:history',
                     routeParams: ['station_id' => $station->short_name],
@@ -74,12 +67,7 @@ final class ProfileAction implements SingleActionInterface
                     routeParams: ['station_id' => $station->short_name, 'embed' => 'embed'],
                     absolute: true
                 ),
-                publicPodcastsEmbedUrl: $router->named(
-                    routeName: 'public:podcasts',
-                    routeParams: ['station_id' => $station->short_name],
-                    queryParams: ['embed' => 'true'],
-                    absolute: true
-                ),
+                publicPodcastsEmbedUrl: '',
                 frontendAdminUri: $canManageBroadcasting
                     ? (string)$frontend?->getAdminUrl($station, $router->getBaseUrl())
                     : '',

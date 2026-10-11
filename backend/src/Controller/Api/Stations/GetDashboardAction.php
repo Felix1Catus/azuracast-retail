@@ -51,22 +51,11 @@ final class GetDashboardAction implements SingleActionInterface
                 absolute: true
             ),
             enableOnDemand: $station->enable_on_demand,
-            onDemandUrl: $router->named(
-                routeName: 'public:ondemand',
-                routeParams: ['station_id' => $station->short_name],
-                absolute: true
-            ),
+            // Retail edition: on-demand, Web DJ and podcast pages don't exist.
+            onDemandUrl: '',
             enableStreamers: $station->enable_streamers,
-            webDjUrl: (string)($router->namedAsUri(
-                routeName: 'public:dj',
-                routeParams: ['station_id' => $station->short_name],
-                absolute: true
-            )->withScheme('https')),
-            publicPodcastsUrl: $router->named(
-                routeName: 'public:podcasts',
-                routeParams: ['station_id' => $station->short_name],
-                absolute: true
-            ),
+            webDjUrl: '',
+            publicPodcastsUrl: '',
             publicScheduleUrl: $router->named(
                 routeName: 'public:schedule',
                 routeParams: ['station_id' => $station->short_name],
