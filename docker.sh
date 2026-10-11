@@ -643,6 +643,18 @@ retail-update() {
   .env --file .env set AZURACAST_RETAIL_IMAGE="$IMAGE"
   dc up -d
 
+  # Keep only the running image and the rollback target; older builds pile up quickly (about 3 GB each).
+  local KEEP_PREVIOUS
+  .env --file .env
+  .env get AZURACAST_RETAIL_PREVIOUS_IMAGE
+  KEEP_PREVIOUS="$REPLY"
+  for OLD in $(d images --format '{{.Repository}}:{{.Tag}}' azuracast-retail); do
+    if [[ "$OLD" != "$IMAGE" && "$OLD" != "$KEEP_PREVIOUS" ]]; then
+      d rmi "$OLD" > /dev/null 2>&1 && echo "Removed old image $OLD"
+    fi
+  done
+  d builder prune -f --keep-storage 4gb > /dev/null 2>&1 || true
+
   echo "Updated to $TARGET. Database migrations run as the container starts."
   echo "To go back: ./docker.sh rollback"
   exit

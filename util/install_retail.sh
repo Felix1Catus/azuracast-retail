@@ -18,7 +18,8 @@
 #   --src-dir PATH      source checkout (default /opt/azuracast-retail)
 #   --source URL|PATH   git source (default https://github.com/Felix1Catus/azuracast-retail.git)
 #   --ref REF           release tag, tag or branch (default: newest v*-retail.* tag)
-#   --domain NAME       public domain; enables HTTPS via Let's Encrypt (DNS must already point here)
+#   --domain NAMES      public domain(s), comma-separated (first = site URL); enables HTTPS via Let's Encrypt
+#                       (DNS must already point here), e.g. --domain example.com,www.example.com
 #   --email ADDRESS     Let's Encrypt contact address (default admin@<domain>)
 #   --http-port N       HTTP port (default 80)
 #   --https-port N      HTTPS port (default 443)
@@ -78,9 +79,15 @@ ok "Architecture $ARCH"
 mkdir -p "$(dirname "$SRC_DIR")" "$INSTALL_DIR"
 FREE_GB=$(df -Pk "$(dirname "$SRC_DIR")" | awk 'NR==2 {print int($4/1024/1024)}')
 if (( FREE_GB < 12 )); then
-  fail "Only ${FREE_GB} GB free; the image build needs about 12 GB."
+  if [[ -f "$INSTALL_DIR/docker-compose.yml" ]]; then
+    # Re-run on an existing install: the image is usually built already.
+    warn "Only ${FREE_GB} GB free; building a new image needs about 12 GB (an existing image is reused)."
+  else
+    fail "Only ${FREE_GB} GB free; the image build needs about 12 GB."
+  fi
+else
+  ok "${FREE_GB} GB free disk"
 fi
-ok "${FREE_GB} GB free disk"
 MEM_MB=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
 (( MEM_MB >= 1900 )) || warn "Only ${MEM_MB} MB RAM; 2 GB or more is recommended."
 ok "${MEM_MB} MB RAM"
@@ -94,8 +101,9 @@ if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx azuracast; then
   ok "Ports $HTTP_PORT and $HTTPS_PORT are free"
 fi
 
+PRIMARY_DOMAIN="${DOMAIN%%,*}"
 if [[ -z "$EMAIL" && -n "$DOMAIN" ]]; then
-  EMAIL="admin@$DOMAIN"
+  EMAIL="admin@$PRIMARY_DOMAIN"
 fi
 echo
 info "Install directory : $INSTALL_DIR"
@@ -241,7 +249,7 @@ CLI=(docker compose exec -T --user=azuracast web azuracast_cli)
 # ------------------------------------------------------------------------------------------------ 7. domain
 step "Domain and HTTPS"
 if [[ -n "$DOMAIN" ]]; then
-  "${CLI[@]}" azuracast:settings:set base_url "https://$DOMAIN" >/dev/null
+  "${CLI[@]}" azuracast:settings:set base_url "https://$PRIMARY_DOMAIN" >/dev/null
   "${CLI[@]}" azuracast:settings:set acme_domains "$DOMAIN" >/dev/null
   "${CLI[@]}" azuracast:settings:set acme_email "$EMAIL" >/dev/null
   if "${CLI[@]}" azuracast:acme:get-certificate; then
@@ -255,7 +263,7 @@ else
 fi
 
 if [[ -n "$DOMAIN" ]]; then
-  URL="https://$DOMAIN"
+  URL="https://$PRIMARY_DOMAIN"
 else
   # Public address if the server can find it, else its first local address.
   IP=$(curl -s -m 5 https://api.ipify.org 2>/dev/null || true)
