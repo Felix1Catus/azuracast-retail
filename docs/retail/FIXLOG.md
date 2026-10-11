@@ -8,6 +8,17 @@ These are the changes AzuraCast Retail makes to upstream AzuraCast, newest first
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.5 (2026-10-11)
+
+These fixes were found by setting up a fresh install on the development server (setup wizard, then the first station).
+
+| # | Fix | Files | Verified |
+|---|---|---|---|
+| — | **Leftover `UpdateCheck` registration removed.** The class was deleted in retail.2 (#13) but `events.php` still registered it, so every notification load logged "No entry or class found". A scan of `backend/config` finds no other references to deleted classes | `backend/config/events.php` | Dev server: no new errors after dashboard loads |
+| — | **The radio web proxy is always on.** Only 80/443 are published, but the setup wizard saved `use_radio_proxy=false` over the installer's setting, so listen URLs pointed at the closed port 8000. `Settings::$use_radio_proxy` now always reads and stores `true`, and the toggle is gone from System Settings | `Settings.php`, `GeneralTab.vue` | Dev server: listen and mount URLs are `/listen/store/radio.mp3` |
+
+Not a bug: a new station starts only after **Start Station** on its overview page. Until then `azuracast:radio:restart` skips it, as upstream does.
+
 ## 0.23.8-retail.4 (2026-10-11)
 
 Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). Application code is unchanged from retail.3: this release adds the installer and fixes `docker.sh`.
