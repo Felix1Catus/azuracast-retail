@@ -8,6 +8,17 @@ These are the changes AzuraCast Retail makes to upstream AzuraCast, newest first
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.4 (2026-10-11)
+
+Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). Application code is unchanged from retail.3: this release adds the installer and fixes `docker.sh`.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **One-command installer** for a fresh Ubuntu/Debian server. It checks the machine, installs Docker, clones the source, builds the newest release, writes `/var/azuracast` (ports 80/443), starts AzuraCast with the `/listen/` proxy and, with `--domain`, gets HTTPS. Safe to run again | `util/install_retail.sh`, INSTALL §2a | Fresh Ubuntu 24.04 VPS (1 vCPU, 4 GB): install from GitHub in 7 min 53 s; setup wizard on :80; :443 answers; `/source` and the Branch Board module respond; ports 8000/2022/8005 closed. Re-run: 33 s, settings kept. Also tested in a Docker-in-Docker container without systemd |
+| — | **Installer fixes found in testing:** without systemd, the Docker daemon starts detached (a Ctrl-C used to stop its port proxies). The final URL shows the public address | `util/install_retail.sh` | Re-run after a daemon restart |
+| — | **`docker.sh update` re-run keeps the rollback target.** Updating to the installed version used to set `AZURACAST_RETAIL_PREVIOUS_IMAGE` to itself | `docker.sh` | Local install and VPS |
+| — | **Docs:** the repository is public (no token needed); the HTTPS step no longer points at `docker.sh setup-letsencrypt`, which only prints a hint | INSTALL.md, FORK.md | — |
+
 ## 0.23.8-retail.3 (2026-10-11)
 
 Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). No core migrations: the Branch Board tables are Tracker's own, and they're created or kept as they are.
