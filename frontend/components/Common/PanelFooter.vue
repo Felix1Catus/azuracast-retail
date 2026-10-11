@@ -13,14 +13,7 @@
         <a
             href="/source"
             :title="$gettext('Download the source code of this version (GNU AGPL v3)')"
-        >{{ $gettext('Source code') }}</a><br>
-        {{ $gettext('Like our software?') }}
-        <a
-            href="https://donate.azuracast.com/"
-            target="_blank"
-        >
-            {{ $gettext('Donate to support AzuraCast!') }}
-        </a>
+        >{{ $gettext('Source code') }}</a>
     </footer>
 </template>
 
