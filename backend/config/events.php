@@ -88,10 +88,6 @@ return static function (CallableEventDispatcherInterface $dispatcher) {
     );
     $dispatcher->addCallableListener(
         Event\GetNotifications::class,
-        App\Notification\Check\UpdateCheck::class
-    );
-    $dispatcher->addCallableListener(
-        Event\GetNotifications::class,
         App\Notification\Check\RecentBackupCheck::class
     );
     $dispatcher->addCallableListener(
