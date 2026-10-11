@@ -112,7 +112,7 @@ fi
 step "Installing Docker"
 export DEBIAN_FRONTEND=noninteractive
 if command -v docker >/dev/null && docker compose version >/dev/null 2>&1 && docker buildx version >/dev/null 2>&1; then
-  ok "Docker $(docker version --format '{{.Server.Version}}' 2>/dev/null || docker --version) is already installed"
+  ok "$(docker --version | cut -d, -f1) is already installed"
 else
   apt-get update -qq
   apt-get install -y -qq ca-certificates curl gnupg git iproute2 >/dev/null
@@ -134,8 +134,9 @@ if ! docker info >/dev/null 2>&1; then
   if command -v systemctl >/dev/null && systemctl list-unit-files docker.service >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
     systemctl enable --now docker >/dev/null
   else
-    # No systemd (containers, some minimal images): run the daemon directly.
-    (dockerd > /var/log/dockerd.log 2>&1 &)
+    # No systemd (containers, some minimal images): run the daemon directly, detached from this session so a
+    # closed terminal or Ctrl-C can't signal it.
+    setsid nohup dockerd > /var/log/dockerd.log 2>&1 < /dev/null &
   fi
   for _ in $(seq 1 30); do docker info >/dev/null 2>&1 && break; sleep 1; done
 fi
@@ -253,8 +254,15 @@ else
   info "Skipped (no --domain). Set it later: Administration > System Settings > Services > LetsEncrypt."
 fi
 
-URL="http://$(hostname -I 2>/dev/null | awk '{print $1}'):$HTTP_PORT"
-[[ -n "$DOMAIN" ]] && URL="https://$DOMAIN"
+if [[ -n "$DOMAIN" ]]; then
+  URL="https://$DOMAIN"
+else
+  # Public address if the server can find it, else its first local address.
+  IP=$(curl -s -m 5 https://api.ipify.org 2>/dev/null || true)
+  [[ "$IP" =~ ^[0-9.]+$ ]] || IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+  URL="http://$IP"
+  [[ "$HTTP_PORT" != 80 ]] && URL="$URL:$HTTP_PORT"
+fi
 printf '\n\033[1;32mAzuraCast Retail %s is installed.\033[0m\n' "$REF"
 info "Open $URL to create the admin account and the first station."
 info "Updates: cd $INSTALL_DIR && ./docker.sh backup && ./docker.sh update"
