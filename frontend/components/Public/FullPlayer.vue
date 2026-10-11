@@ -26,17 +26,6 @@
                     </span>
                 </a>
                 <a
-                    v-if="enableRequests && widgetCustomization.showRequestButton"
-                    class="btn btn-link text-secondary"
-                    @click.prevent="openRequestModal"
-                >
-                    <icon-ic-help/>
-
-                    <span>
-                        {{ $gettext('Request Song') }}
-                    </span>
-                </a>
-                <a
                     v-if="widgetCustomization.showPlaylistButton"
                     class="btn btn-link text-secondary"
                     :href="downloadPlaylistUri"
@@ -57,22 +46,14 @@
         :history="history"
     />
 
-    <request-modal
-        v-if="enableRequests"
-        ref="$requestModal"
-        v-bind="requests"
-    />
-
     <lightbox ref="$lightbox" />
 </template>
 
 <script setup lang="ts">
 import { computed, shallowRef, useTemplateRef } from "vue";
 import Lightbox from "~/components/Common/Lightbox.vue";
-import RequestModal from "~/components/Public/FullPlayer/RequestModal.vue";
 import SongHistoryModal from "~/components/Public/FullPlayer/SongHistoryModal.vue";
 import RadioPlayer, { PlayerProps } from "~/components/Public/Player.vue";
-import { RequestsProps } from "~/components/Public/Requests.vue";
 import {
     ApiNowPlaying,
     ApiNowPlayingSongHistory,
@@ -80,15 +61,12 @@ import {
 import { defaultWidgetSettings } from "~/entities/PublicPlayer.ts";
 import { useProvideLightbox } from "~/vendor/lightbox";
 import IconIcCloudDownload from "~icons/ic/baseline-cloud-download";
-import IconIcHelp from "~icons/ic/baseline-help";
 import IconIcHistory from "~icons/ic/baseline-history";
 
 const props = defineProps<{
     stationName: string;
-    enableRequests?: boolean;
     downloadPlaylistUri: string;
     player: PlayerProps;
-    requests: RequestsProps;
 }>();
 
 const widgetCustomization = computed(
@@ -105,12 +83,6 @@ const $songHistoryModal = useTemplateRef("$songHistoryModal");
 
 const openSongHistoryModal = () => {
     $songHistoryModal.value?.open();
-};
-
-const $requestModal = useTemplateRef("$requestModal");
-
-const openRequestModal = () => {
-    $requestModal.value?.open();
 };
 
 const $lightbox = useTemplateRef("$lightbox");
