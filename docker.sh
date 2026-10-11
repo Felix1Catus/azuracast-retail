@@ -636,7 +636,10 @@ retail-update() {
     exit 1
   }
 
-  .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
+  # Re-running the installed version keeps the existing rollback target.
+  if [[ "$CURRENT" != "$IMAGE" ]]; then
+    .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
+  fi
   .env --file .env set AZURACAST_RETAIL_IMAGE="$IMAGE"
   dc up -d
 
