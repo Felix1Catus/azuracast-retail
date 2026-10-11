@@ -31,22 +31,44 @@ docker save azuracast-retail:0.23.8-retail.1 | gzip | ssh root@SERVER 'gunzip | 
 ssh root@SERVER docker tag azuracast-retail:0.23.8-retail.1 azuracast-retail:latest
 ```
 
-## 2a. New server
+## 2a. New server (one command)
+
+This works on a fresh Ubuntu or Debian server (amd64 or arm64) with at least 2 GB RAM, about 12 GB free disk, ports 80 and 443 free, and the domain's DNS already pointing at the server. As root:
 
 ```bash
-mkdir -p /var/azuracast && cd /var/azuracast
-cp ~/azuracast-retail/docker-compose.retail.yml docker-compose.yml
-cp ~/azuracast-retail/docker.sh . && chmod +x docker.sh
-cp ~/azuracast-retail/sample.env .env
-cp ~/azuracast-retail/azuracast.sample.env azuracast.env
-sed -i "s/^MYSQL_PASSWORD=.*/MYSQL_PASSWORD=$(openssl rand -hex 16)/" azuracast.env
-docker compose up -d
+curl -fsSLo install_retail.sh https://raw.githubusercontent.com/Felix1Catus/azuracast-retail/main/util/install_retail.sh
+less install_retail.sh                        # optional: read it first
+export RETAIL_GIT_TOKEN=github_pat_...         # read-only token for this private repository
+sudo -E bash install_retail.sh --domain radio.example.com --email you@example.com
 ```
 
-Next:
-1. Open `http://SERVER/` and complete the setup wizard (admin account, first station, site URL).
-2. In **Administration → System Settings**, keep **Use Web Proxy for Radio** on. With only ports 80 and 443 open, players can only reach the streams through `/listen/...`.
-3. Set up HTTPS (Let's Encrypt): run `./docker.sh setup-letsencrypt`, or go to **Administration → System Settings → Services**.
+Because the repository is private, the `curl` line also needs the token: add `-H "Authorization: Bearer $RETAIL_GIT_TOKEN"` and set the token first. You can also copy the script to the server some other way.
+
+The installer:
+1. checks the machine
+2. installs Docker (from Docker's apt repository) and git
+3. clones the source to `/opt/azuracast-retail` and checks out the newest release
+4. builds the image (15–40 min the first time)
+5. writes `/var/azuracast`: the retail compose file, `docker.sh`, `.env` with ports 80/443, and `azuracast.env` with a random database password
+6. starts AzuraCast and turns on the `/listen/` radio proxy
+7. with `--domain`: sets the site URL and gets a Let's Encrypt certificate
+
+It is safe to run again: finished steps are skipped and existing settings are kept.
+
+| Option | Default |
+|---|---|
+| `--dir PATH` | `/var/azuracast` |
+| `--src-dir PATH` | `/opt/azuracast-retail` |
+| `--ref REF` | newest `v*-retail.*` release |
+| `--domain NAME`, `--email ADDRESS` | none: HTTPS is set up later |
+| `--http-port N`, `--https-port N` | `80`, `443` |
+| `--yes` | ask before starting |
+
+**Ports:** Docker binds 80 and 443 directly on the server, and nothing else is published. Port 80 has to stay reachable from the internet so Let's Encrypt can issue and renew the certificate. If another web server already uses 80/443, the installer stops and names it. Stop that server, or choose other ports and put a reverse proxy in front.
+
+**Afterwards:**
+1. Open the site and complete the setup wizard (admin account, first station).
+2. Without `--domain`, set up HTTPS later in **Administration → System Settings → Services** (Let's Encrypt).
 
 ## 2b. Switching an existing AzuraCast install to the fork
 
