@@ -8,7 +8,45 @@ These are the changes AzuraCast Retail makes to upstream AzuraCast, newest first
 
 Upstream syncs are listed too.
 
-## Unreleased: retail edition, feature strip (#11)
+## 0.23.8-retail.2 (2026-10-11)
+
+Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). No database migrations: rolling back to `0.23.8-retail.1` or to upstream 0.23.8 is safe.
+
+### Code removed (#13)
+
+The code behind the features switched off below (#11) is deleted: 250 files, about 26,600 lines. That covers:
+- 80 PHP classes:
+  - controllers for admin installers, relays and updates
+  - controllers for station podcasts, streamers/DJs, webhooks, SFTP users, HLS streams, remote relays and Stereo Tool
+  - controllers for on-demand and requests, and their reports and public pages
+  - their middleware and sync tasks
+  - the web updater, the update and donation notifications
+  - 13 webhook connectors and the test-webhook message
+- the matching Vue pages, components, public entry points and the player's request modal
+- the tests for those APIs and the AutoDJ request scenarios
+
+The webhook dispatcher keeps only the local handler (static now-playing files and Centrifugo). Now Playing no longer reports live DJs.
+
+**Kept on purpose:** entities, enums and radio adapters, because existing database tables map to them. The station dashboard, profile and player keep their response shape and return empty URLs for removed pages.
+
+**Image size:** code is about 1% of the image (about 3.1 GB). The bulk is Liquidsoap, ffmpeg and its libraries (about 720 MB), MariaDB (about 280 MB), PHP and nginx (about 310 MB, including the 57 MB listener map) and composer packages (160 MB, including the AWS SDK used for S3 storage). All of that is still needed. SFTPGo, the only removable runtime, went in #11.
+
+**Verified:**
+- PHPStan (level 8) and PHPCS are clean on the whole backend; the only remaining notices are in codeception helpers, as before.
+- 206/206 unit tests pass.
+- `vue-tsc` is clean, `biome` is clean and the Vite build succeeds.
+- An import-graph check finds no frontend file left unreachable (besides the type shim and an upstream-unused `ErrorCard`).
+- Runtime checks on the built image are listed under PR #17.
+
+### Updating from this repository
+
+`./docker.sh update` on a retail install now builds and switches to the newest `v*-retail.*` release from the fork's source checkout (`RETAIL_SOURCE_DIR`). `./docker.sh rollback` returns to the previous image, and `./docker.sh update-self` refreshes `docker.sh`. See [INSTALL.md](INSTALL.md#4-updating).
+
+### Branding
+
+The donation line in the panel footer and the admin donation notification are gone. "Powered by AzuraCast" and the source code link stay.
+
+### Retail edition, feature strip (#11)
 
 The panel now offers what a store chain needs and nothing else:
 - stations
