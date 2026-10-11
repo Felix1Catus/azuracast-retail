@@ -8,7 +8,14 @@ These are the changes AzuraCast Retail makes to upstream AzuraCast, newest first
 
 Upstream syncs are listed too.
 
-## 0.23.8-retail.2 (2026-10-11)
+## 0.23.8-retail.3 (2026-10-11)
+
+Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). No core migrations: the Branch Board tables are Tracker's own, and they're created or kept as they are.
+
+| # | Change | Issue | Files | Verified |
+|---|---|---|---|---|
+| R-13 | **Built-in Branch Board.** Tracker 1.3.2 ships in the image as `plugins/branch-tracker`, so there is nothing to install. `StationFeatures::BranchBoard` is on when the module is present, and the station menu has a native **Branch Board** item (permission *View Branches*). Tracker no longer injects its floating button when that item exists. The same tables are used, so data carries over and branches stay logged in | #12 | `plugins/branch-tracker`, `StationFeatures.php`, `StationGlobalFeatures.php`, `GetDashboardAction.php`, `Stations/menu.ts`, `util/sync_tracker.sh` | Local copy of production without the plugin mount: menu item, board, player and PIN login work, and the Tracker suites pass |
+
 
 Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). No database migrations: rolling back to `0.23.8-retail.1` or to upstream 0.23.8 is safe.
 

@@ -77,18 +77,19 @@ Keep `docker-compose.override.yml` as it is: it holds plugin mounts such as the 
 cp docker-compose.yml.upstream docker-compose.yml && docker compose up -d --remove-orphans
 ```
 
-## 3. Hook up the Tracker plugin
+## 3. Branch Board (Tracker, built in)
 
-The plugin installer works on the fork unchanged. It finds `docker-compose.yml`, mounts the plugin through `docker-compose.override.yml`, runs migrations and sets analytics:
+AzuraCast Retail ships the Tracker module in the image (`plugins/branch-tracker`), so there is nothing to install. It includes:
+- branch PIN login and the branch player
+- live presence
+- the Branch Board, as **Branch Board** in the station menu, for users with *View Branches*
+- reports, "log out all" and the public read-only board
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/Felix1Catus/azuracast-tracker-plugin/main/install.sh -o install-tracker.sh
-sudo bash install-tracker.sh --dir /var/azuracast
-```
+Its database tables are created by migrations when the container starts.
 
-On the fork:
-- The plugin's player and board show a **Source code** link (Tracker 1.3.1 and later).
-- Branch presence keeps working even if analytics is later set to *none*.
+**Moving an install that used the plugin:** remove the plugin mount from `docker-compose.override.yml` (the installer marked it `managed-by: azuracast-tracker-plugin installer`). Then run `docker compose up -d`. The built-in module uses the same tables, so branches, PINs, sessions and history carry over and branches stay logged in. If the mount stays, the mounted copy takes over from the built-in one. That works, but it pins you to that plugin version.
+
+The module is synced from the [Tracker repository](https://github.com/Felix1Catus/azuracast-tracker-plugin) with `util/sync_tracker.sh <path to a Tracker checkout>`.
 
 ## 4. Updating
 
