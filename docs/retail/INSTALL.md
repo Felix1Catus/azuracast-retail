@@ -38,11 +38,10 @@ This works on a fresh Ubuntu or Debian server (amd64 or arm64) with at least 2 G
 ```bash
 curl -fsSLo install_retail.sh https://raw.githubusercontent.com/Felix1Catus/azuracast-retail/main/util/install_retail.sh
 less install_retail.sh                        # optional: read it first
-export RETAIL_GIT_TOKEN=github_pat_...         # read-only token for this private repository
-sudo -E bash install_retail.sh --domain radio.example.com --email you@example.com
+sudo bash install_retail.sh --domain radio.example.com --email you@example.com
 ```
 
-Because the repository is private, the `curl` line also needs the token: add `-H "Authorization: Bearer $RETAIL_GIT_TOKEN"` and set the token first. You can also copy the script to the server some other way.
+Without a domain yet, leave out `--domain` and `--email`; the site then runs on plain HTTP at the server's address until you add one. The repository is public, so no token is needed. If it is ever made private again, set `RETAIL_GIT_TOKEN` to a read-only token first; the installer passes it to git and keeps it for updates.
 
 The installer:
 1. checks the machine
@@ -115,7 +114,7 @@ The module is synced from the [Tracker repository](https://github.com/Felix1Catu
 
 ## 4. Updating
 
-Updates come from this repository's releases (tags `v<AzuraCast version>-retail.<n>`), never from upstream AzuraCast. The install keeps a checkout of the source. By default it lives at `/opt/azuracast-retail`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is private, so the server needs read access: a deploy key or a token.
+Updates come from this repository's releases (tags `v<AzuraCast version>-retail.<n>`), never from upstream AzuraCast. The install keeps a checkout of the source. By default it lives at `/opt/azuracast-retail`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is public, so no credentials are needed.
 
 ```bash
 git clone https://github.com/Felix1Catus/azuracast-retail.git /opt/azuracast-retail   # once

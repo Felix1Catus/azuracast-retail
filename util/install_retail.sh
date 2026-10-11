@@ -24,8 +24,8 @@
 #   --https-port N      HTTPS port (default 443)
 #   --yes               don't ask for confirmation
 #
-# Private repository: set RETAIL_GIT_TOKEN to a read-only GitHub token before running, or enter a token when git
-# asks for a password. The token is stored for `./docker.sh update` in <src-dir>/.git/retail-credentials (mode 600).
+# The repository is public; no credentials are needed. For a private copy, set RETAIL_GIT_TOKEN to a read-only
+# GitHub token before running; it is stored for `./docker.sh update` in <src-dir>/.git/retail-credentials (mode 600).
 #
 set -euo pipefail
 

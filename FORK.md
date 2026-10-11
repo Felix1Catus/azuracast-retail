@@ -82,8 +82,7 @@ The local TLRadio stack (`~/tradelineradio/server/docker-compose.yml`) can point
 AzuraCast is licensed under the GNU AGPL v3 or later, and so is this fork (`LICENSE.md` is unchanged). In short, and
 not as legal advice: when a **modified** version is run for users over a network (branch players, the admin panel),
 those users must be offered the corresponding source code of that modified version, for example through a public
-repository or a "Source code" link on the site. Keeping this repository private during development is fine;
-publish the source (or provide the link) before modified code is put in front of users.
+repository or a "Source code" link on the site. This repository is public, and every install also serves its own source.
 
 The fork does this with `GET /source` (`backend/src/Controller/Frontend/SourceCodeAction.php`). It serves a
 `.tar.gz` of the code in the running container, without `vendor/`, `node_modules/` or build output (those are pinned
