@@ -296,7 +296,7 @@ final class Station implements Stringable, IdentifiableEntityInterface
     ]
     public bool $enable_requests = false {
         // Retail edition: no listener requests. The column stays for upstream compatibility.
-        get => false;
+        get => false; // @phpstan-ignore propertyGetHook.noRead (always off; the column is kept)
         set => false;
     }
 
@@ -338,7 +338,7 @@ final class Station implements Stringable, IdentifiableEntityInterface
     ]
     public bool $enable_streamers = false {
         // Retail edition: no live streamers/DJs. The column stays for upstream compatibility.
-        get => false;
+        get => false; // @phpstan-ignore propertyGetHook.noRead (always off; the column is kept)
         set {
             if ($this->enable_streamers) {
                 $this->needs_restart = true;
@@ -398,7 +398,7 @@ final class Station implements Stringable, IdentifiableEntityInterface
     ]
     public bool $enable_on_demand = false {
         // Retail edition: no on-demand page. The column stays for upstream compatibility.
-        get => false;
+        get => false; // @phpstan-ignore propertyGetHook.noRead (always off; the column is kept)
         set => false;
     }
 
@@ -422,7 +422,7 @@ final class Station implements Stringable, IdentifiableEntityInterface
     ]
     public bool $enable_hls = false {
         // Retail edition: no HLS. The column stays for upstream compatibility.
-        get => false;
+        get => false; // @phpstan-ignore propertyGetHook.noRead (always off; the column is kept)
         set => false;
     }
 
