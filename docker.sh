@@ -578,7 +578,8 @@ install-dev() {
 # `update` checks out a release there, builds the image locally and restarts on it. See docs/retail/INSTALL.md.
 #
 is-retail() {
-  grep -qs "acacia-radio" docker-compose.yml
+  # Installs from before the rebrand still have the old image name in docker-compose.yml until `update` migrates them.
+  grep -qsE "acacia-radio|azuracast-retail" docker-compose.yml  # rebrand:keep
 }
 
 retail-source-dir() {
@@ -940,7 +941,7 @@ backup() {
 # ./docker.sh restore [/custom/backup/dir/custombackupname.zip]
 #
 restore() {
-  if [[ ! -f .env ]] || [[ ! -f acacia.env ]]; then
+  if [[ ! -f .env ]] || [[ ! -f acacia.env && ! -f azuracast.env ]]; then  # rebrand:keep (env file from before the rebrand)
     echo "Acacia Radio hasn't been installed yet on this server."
     echo "You should run './docker.sh install' first before restoring."
     exit 1
