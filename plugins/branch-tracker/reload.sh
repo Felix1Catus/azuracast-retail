@@ -3,8 +3,10 @@
 #   ./reload.sh [container]   (default: $TRACKER_CONTAINER, else the running Acacia Radio container)
 # Why each step matters (all learned the hard way in phase 0/1):
 #   lint          - a PHP error in plugin wiring used to break container startup
-#   route cache   - production mode caches routes in www_tmp/app_routes.cache.php; new routes 405 until it's removed
 #   php restarts  - opcache only re-reads files every 60 s
+#   route cache   - production mode caches routes in www_tmp/app_routes*.cache.php, keyed on events.php's mtime. A
+#                   request in the 60 s opcache window can cache the OLD routes under the NEW key (new routes then
+#                   405), so every route cache is removed after PHP restarts.
 set -euo pipefail
 C=${1:-${TRACKER_CONTAINER:-$(docker ps --filter label=com.docker.compose.service=web --format '{{.Names}}' | head -n 1)}}
 [ -n "$C" ] || { echo "Acacia Radio container not found; pass its name: ./reload.sh <container>"; exit 1; }
@@ -13,9 +15,9 @@ P=/var/acacia/www/plugins/branch-tracker
 echo "==> lint"
 docker exec "$C" sh -c "find $P -name '*.php' -print0 | xargs -0 -n1 php -l" | grep -v '^No syntax errors' && exit 1 || true
 
-echo "==> clear route cache + restart PHP workers"
-docker exec "$C" rm -f /var/acacia/www_tmp/app_routes.cache.php
+echo "==> restart PHP workers + clear route caches"
 docker exec "$C" supervisorctl restart php-fpm php-nowplaying php-worker >/dev/null
+docker exec "$C" sh -c 'rm -f /var/acacia/www_tmp/app_routes*.cache.php'
 
 echo "==> migrations"
 docker exec -u acacia "$C" acacia_cli migrations:migrate --no-interaction --allow-no-migration 2>&1 | grep -E 'OK|migrat|Error' || true

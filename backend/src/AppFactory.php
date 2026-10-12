@@ -89,6 +89,11 @@ final class AppFactory
     /**
      * Route cache file keyed on the route definitions (core route files and each plugin's events.php),
      * so installing, updating or removing a plugin never serves stale routes.
+     *
+     * The key uses the files' current mtimes, but opcache (validate_timestamps with a revalidate_freq window)
+     * can keep executing the old compiled copy for a while. A cache built in that window would store the OLD
+     * routes under the NEW key until deleted by hand, so any source newer than its compiled copy is dropped
+     * from opcache here, before the plugin events and route files are included.
      */
     private static function getRouteCacheFile(Environment $environment): string
     {
@@ -98,9 +103,18 @@ final class AppFactory
             glob($baseDir . '/plugins/*/events.php') ?: []
         );
 
+        // Without validate_timestamps opcache_invalidate() would recompile every request; files never change then.
+        $invalidate = function_exists('opcache_invalidate')
+            && filter_var(ini_get('opcache.validate_timestamps'), FILTER_VALIDATE_BOOL);
+
         $key = '';
         foreach ($sources as $source) {
             $key .= $source . ':' . (int)@filemtime($source) . ';';
+
+            if ($invalidate) {
+                // Not forced: only invalidates when the file is newer than the compiled copy (one stat per file).
+                opcache_invalidate($source, false);
+            }
         }
 
         return $environment->getTempDirectory() . '/app_routes.' . substr(md5($key), 0, 12) . '.cache.php';

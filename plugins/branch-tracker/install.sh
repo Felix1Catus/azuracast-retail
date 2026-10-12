@@ -110,7 +110,7 @@ if [ "$ACTION" = uninstall ]; then
   fi
   "${DC[@]}" up -d
   wait_ready
-  docker exec "$C" rm -f /var/acacia/www_tmp/app_routes.cache.php || true
+  docker exec "$C" sh -c 'rm -f /var/acacia/www_tmp/app_routes*.cache.php' || true
   say "Tracker removed. Plugin files left in $DIR/plugins/$PLUGIN (delete them if you like)."
   exit 0
 fi

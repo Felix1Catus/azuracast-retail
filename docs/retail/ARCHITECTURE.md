@@ -23,7 +23,7 @@ Startup scripts in `util/docker/*/startup_scripts/` run first. Among other thing
 
 ## 2. Backend (PHP, `backend/src`, about 1,100 files)
 
-**Bootstrap:** `backend/src/AppFactory.php` builds the PHP-DI container from `backend/config/services.php`, plus each plugin's `services.php`. It creates the Slim app, registers middleware, and loads the route files `backend/config/routes/*.php`. Routes are cached in `www_tmp/app_routes.cache.php`.
+**Bootstrap:** `backend/src/AppFactory.php` builds the PHP-DI container from `backend/config/services.php`, plus each plugin's `services.php`. It creates the Slim app, registers middleware, and loads the route files `backend/config/routes/*.php`. Routes are cached in `www_tmp/app_routes.<hash>.cache.php`, keyed on the mtimes of the route files and each plugin's `events.php`; any of those newer than its opcache copy is invalidated first, so the cache can't be built from stale code.
 
 **Events:** `backend/src/CallableEventDispatcher.php` is the extension bus. Plugins (`backend/src/Plugins.php`) attach to it in `plugins/<name>/events.php`. Useful events (`backend/src/Event/`):
 - `BuildRoutes`

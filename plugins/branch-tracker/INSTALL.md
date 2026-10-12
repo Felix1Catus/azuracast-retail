@@ -185,8 +185,8 @@ cd /var/acacia/www                          # your Acacia Radio code root (where
 git clone https://github.com/Felix1Catus/azuracast-tracker-plugin.git plugins/branch-tracker
 chown -R acacia:acacia plugins/branch-tracker          # the user PHP runs as
 sudo -u acacia php backend/bin/console migrations:migrate --no-interaction
-rm -f /var/acacia/www_tmp/app_routes.cache.php             # your www_tmp path
 systemctl restart php8.4-fpm                                   # and your now-playing / worker processes
+rm -f /var/acacia/www_tmp/app_routes*.cache.php            # your www_tmp path; after the restart
 sudo -u acacia php backend/bin/console acacia:settings:set analytics all
 sudo -u acacia php backend/bin/console branch-tracker:stream-auth <station> observe
 ```
