@@ -8,6 +8,17 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.11 (2026-10-12)
+
+Design fixes from reviewing every page live. Update with `./docker.sh update`.
+
+| # | Fix | Files | Verified |
+|---|---|---|---|
+| — | **No empty gap above every page.** The header was made sticky while the page kept 5.15rem of padding for the old fixed header; it is fixed again at its new 4.25rem height | `_variables.scss`, `_acacia.scss` | Dev server |
+| — | **Dark mode links** are leaf green instead of a dim grey-green (media file names, Administration links) | `_acacia.scss` | Dev server |
+| — | **Lists read better:** item names (media files, stations) are titles with their path muted below; table row actions are soft tinted buttons instead of solid green/red blocks on every row | `_acacia.scss` | Dev server |
+| — | **Music Downloader page** uses the Acacia palette | `plugins/music-downloader/templates/page.html` | Dev server |
+
 ## 0.23.8-retail.10 (2026-10-12)
 
 The Acacia Radio design, and a fix for stale plugin routes. Application behaviour is unchanged. Update from retail.8
