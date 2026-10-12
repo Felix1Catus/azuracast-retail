@@ -8,6 +8,15 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.9 (2026-10-12)
+
+Fix for retail.8. Update from retail.8 with `./docker.sh update-self && ./docker.sh update`; from retail.7, follow
+the retail.8 steps below with `v0.23.8-retail.9`.
+
+| # | Fix | Files | Verified |
+|---|---|---|---|
+| — | **`./docker.sh backup` works on installs from before the rebrand.** It copied the archive out of a fixed volume name `acacia_backups`, but those installs keep their volume names (`COMPOSE_PROJECT_NAME`); the archive was made but not copied out, and an empty volume was created. It now uses the project's volume prefix, like `restore` | `docker.sh` | Dev server: backup 213 MB with database and all media |
+
 ## 0.23.8-retail.8 (2026-10-12)
 
 Rebrand phase 2: internal names. Existing installs keep all data: the database keeps its name and the Docker

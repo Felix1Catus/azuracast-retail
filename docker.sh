@@ -927,7 +927,7 @@ backup() {
   dc exec --user="acacia" web acacia_cli acacia:backup "/var/acacia/backups/${BACKUP_FILENAME}" "$@"
 
   # Move from Docker volume to local filesystem
-  d run --rm -v "acacia_backups:/backup_src" \
+  d run --rm -v "$(volume-prefix)_backups:/backup_src" \
     -v "$BACKUP_DIR:/backup_dest" \
     busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
 
