@@ -4,3 +4,4 @@
 /node_modules
 /vendor
 **/__pycache__
+util/branding/acacia-logo.svg

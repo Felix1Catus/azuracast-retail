@@ -21,14 +21,14 @@ such as "upstream AzuraCast" (now "upstream") and "AzuraCast 0.23.8" (now "upstr
 |---|---|
 | Name in UI, messages, e-mails, logs, CLI, docs; translations (msgid and msgstr together) | `util/rebrand.py` |
 | Panel header wordmark `acacia`**`radio`** | `frontend/components/Layout/DashboardLayout.vue` |
-| Logo and icons (placeholder acacia tree): `web/static/icons/*`, `web/favicon.ico`, `resources/icon*`, `resources/logotype.svg` | source: `util/branding/icon.svg`; render: `util/branding/build_icons.sh` |
+| Logo (acacia branch): icons and favicon `web/static/icons/*`, `web/favicon.ico`, `resources/icon*.png`; panel header and login page | master: `util/branding/acacia-logo.svg` (Inkscape, kept out of the image); render: `util/branding/build_icons.sh` |
 | Fallback jingle (stations with nothing to play, dropped streams): `resources/error.mp3`, and all Icecast `fallback-[kbps].*` files at build time | `util/branding/build_fallback_audio.sh` (run by the Dockerfile) |
 | Upstream docs site (`/docs`) and links to it, "Need Help?" GitHub card, links to the original project's sites | removed |
 | Update check and IP lookup against the original project's server | update check off (`./docker.sh update` instead), IP from ipify |
 | Authenticator app logo, oEmbed provider, default avatar, demo/example data | own server / neutral placeholders |
 
-**To use the final logo:** replace `util/branding/icon.svg` (square, 512x512 viewBox), run
-`util/branding/build_icons.sh`, and commit.
+**To change the logo:** replace `util/branding/acacia-logo.svg`, run `util/branding/build_icons.sh` (it crops the
+drawing and centres it on a cream rounded tile; `ICON_TILE_COLOR` changes the tile), and commit.
 **To change the jingle:** replace `resources/error.mp3` (tag it title/artist "Acacia Radio") and rebuild the image.
 
 ## Phase 2: internal names (done)

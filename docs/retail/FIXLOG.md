@@ -8,6 +8,20 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.7 (2026-10-12)
+
+First Acacia Radio release: the Music Downloader module and the rebrand of everything users see. Base: upstream 0.23.8
+rolling (unchanged). No changes to the core database schema; the downloader keeps its own data in a volume.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Music Downloader (built in).** Paste a Spotify playlist, album or track link, pick a station folder, and spotDL downloads the tracks (Spotify for the list, YouTube for the audio), tagged with cover art. Spotify login per user, per-track progress, retry, cancel. **Music Downloader** in the station menu for users with *Download Music* | `plugins/music-downloader`, `StationFeatures::MusicDownloader`, `menu.ts` | Dev server: albums 14/14 and 10/10, single tracks (~17-45 s each); files imported by the media scan |
+| — | **Worker containers.** `music-downloader` (spotDL, yt-dlp, ffmpeg, Deno; built by `util/build_image.sh`) and `music-downloader-pot` (YouTube tokens), internal only, low CPU priority. The installer and `./docker.sh update` create the shared secret `music-downloader.env` | `docker-compose.retail.yml`, `util/build_image.sh`, `util/install_retail.sh`, `docker.sh` | Dev server: switched from the standalone plugin; cookies, Spotify settings and download history kept |
+| — | **YouTube on blocked servers.** Signed-in YouTube cookies (Settings, with a live test), PO tokens and the `mweb`/`web_safari` clients; flat search makes matching ~4x faster | `plugins/music-downloader/worker` | Dev server (Vultr IP blocked by YouTube) |
+| — | **Rebrand to Acacia Radio (phase 1).** Name in the panel, public pages, e-mails, CLI and all translations (`util/rebrand.py`, re-run after upstream merges); Acacia Radio logo (header, login, icons, favicon); the Acacia Radio jingle as fallback audio in every Icecast format; upstream docs site, help links and update check removed | `util/rebrand.py`, `util/branding/`, `resources/error.mp3`, `docs/retail/REBRAND.md`, `ATTRIBUTION.md` | Built image: 0 user-visible mentions; dev server login page, icons and fallback files checked |
+
+Updating from retail.6: `./docker.sh update-self`, then `./docker.sh update`. The update replaces `docker-compose.yml` with the new template (backup kept) to add the worker containers. If the standalone Music Downloader plugin is installed, run its `install.sh --uninstall` first. The new compose file needs Docker Compose 2.24 or newer.
+
 ## 0.23.8-retail.6 (2026-10-11)
 
 These changes came from moving the development server to its domain. The application code is unchanged.
