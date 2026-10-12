@@ -6,30 +6,31 @@ import colorLib from "@kurkle/color";
 import { Chart } from "chart.js";
 import { forEach } from "es-toolkit/compat";
 
+// Acacia Radio palette: leaf, blossom, bark, sky, clay, then lighter tints of each.
 const scheme: string[] = [
-    "#4E79A7",
-    "#A0CBE8",
-    "#F28E2B",
-    "#FFBE7D",
-    "#59A14F",
-    "#8CD17D",
-    "#B6992D",
-    "#F1CE63",
-    "#499894",
-    "#86BCB6",
-    "#E15759",
-    "#FF9D9A",
-    "#79706E",
-    "#BAB0AC",
-    "#D37295",
-    "#FABFD2",
-    "#B07AA1",
-    "#D4A6C8",
-    "#9D7660",
-    "#D7B5A6",
+    "#2F6F4E",
+    "#E9B23C",
+    "#7B4B2A",
+    "#3D7C98",
+    "#C8553D",
+    "#7FB08F",
+    "#F3D58A",
+    "#B48A68",
+    "#86B4C7",
+    "#E59A86",
+    "#4F9A5F",
+    "#D49A2A",
+    "#9C6B48",
+    "#2C5F75",
+    "#A8443A",
+    "#A9CDB4",
+    "#F7E3B0",
+    "#D1B39A",
+    "#B3D2DE",
+    "#F0BFB3",
 ];
 const length: number = scheme.length;
-const fillAlpha: number = 0.5;
+const fillAlpha: number = 0.18;
 
 const METADATA_KEY: string = "$colorschemes";
 

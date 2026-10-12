@@ -1,0 +1,528 @@
+// Acacia Radio design layer.
+// Savanna palette: acacia leaf green (primary), bark brown, blossom gold, sand for the page, white/forest surfaces.
+// Everything here restyles shared components (cards, header, menus, forms, tables), so pages keep their markup.
+
+:root,
+[data-bs-theme="light"] {
+  --acacia-page: #f4f0e6;
+  --acacia-surface: #ffffff;
+  --acacia-surface-2: #faf7ef;
+  --acacia-border: #e6e0d2;
+  --acacia-leaf: #2f6f4e;
+  --acacia-leaf-strong: #22553b;
+  --acacia-leaf-soft: #e4efe6;
+  --acacia-blossom: #e9b23c;
+  --acacia-blossom-soft: #fbf1d8;
+  --acacia-bark: #7b4b2a;
+  --acacia-muted: #66706a;
+  --acacia-heading: #1f2a24;
+  --acacia-shadow: 0 1px 2px rgba(31, 42, 36, .05), 0 6px 20px rgba(31, 42, 36, .06);
+  --acacia-shadow-lg: 0 24px 60px rgba(31, 42, 36, .18);
+
+  // Login and public pages: a savanna dusk with an acacia on the horizon (pure CSS/SVG, no image download).
+  --public-page-bg:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 400' preserveAspectRatio='xMidYMax slice'%3E%3Cg fill='%2321402f'%3E%3Cpath d='M0 330 Q300 300 600 318 T1200 310 V400 H0Z'/%3E%3Cpath d='M928 318c-3-40-5-62-12-88l8-1c6 24 9 46 11 89z'/%3E%3Cpath d='M920 236c-14-14-34-24-60-30l2-5c27 6 48 17 62 31zM926 236c12-14 34-25 64-31l1 5c-29 6-50 16-61 30z'/%3E%3Cellipse cx='860' cy='200' rx='70' ry='14'/%3E%3Cellipse cx='994' cy='198' rx='78' ry='15'/%3E%3Cellipse cx='926' cy='192' rx='66' ry='16'/%3E%3Cellipse cx='892' cy='182' rx='44' ry='11'/%3E%3Cellipse cx='960' cy='180' rx='48' ry='11'/%3E%3C/g%3E%3C/svg%3E") no-repeat center bottom / 100% auto,
+    radial-gradient(circle at 76% 68%, rgba(255, 230, 160, .95) 0, rgba(255, 210, 120, .55) 9%, rgba(255, 210, 120, 0) 24%),
+    linear-gradient(180deg, #f6e9cf 0%, #f2d39a 46%, #e8a95f 74%, #c9784a 100%);
+  --scrollbar-color: #d6cfbf;
+}
+
+@include color-mode(dark, true) {
+  --acacia-page: #111713;
+  --acacia-surface: #1a221d;
+  --acacia-surface-2: #1f2822;
+  --acacia-border: #2c3830;
+  --acacia-leaf: #6dbb8d;
+  --acacia-leaf-strong: #8fd0a8;
+  --acacia-leaf-soft: rgba(109, 187, 141, .14);
+  --acacia-blossom: #f2c35b;
+  --acacia-blossom-soft: rgba(242, 195, 91, .14);
+  --acacia-bark: #c99a72;
+  --acacia-muted: #9aa59c;
+  --acacia-heading: #eef2ec;
+  --acacia-shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+  --acacia-shadow-lg: 0 24px 60px rgba(0, 0, 0, .5);
+  --public-page-bg:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 400' preserveAspectRatio='xMidYMax slice'%3E%3Cg fill='%23070b09'%3E%3Cpath d='M0 330 Q300 300 600 318 T1200 310 V400 H0Z'/%3E%3Cpath d='M928 318c-3-40-5-62-12-88l8-1c6 24 9 46 11 89z'/%3E%3Cpath d='M920 236c-14-14-34-24-60-30l2-5c27 6 48 17 62 31zM926 236c12-14 34-25 64-31l1 5c-29 6-50 16-61 30z'/%3E%3Cellipse cx='860' cy='200' rx='70' ry='14'/%3E%3Cellipse cx='994' cy='198' rx='78' ry='15'/%3E%3Cellipse cx='926' cy='192' rx='66' ry='16'/%3E%3Cellipse cx='892' cy='182' rx='44' ry='11'/%3E%3Cellipse cx='960' cy='180' rx='48' ry='11'/%3E%3C/g%3E%3C/svg%3E") no-repeat center bottom / 100% auto,
+    radial-gradient(circle at 76% 62%, rgba(242, 228, 190, .85) 0, rgba(242, 228, 190, .25) 4%, rgba(242, 228, 190, 0) 12%),
+    linear-gradient(180deg, #0f1a24 0%, #1d2b33 50%, #34403a 78%, #4a4a36 100%);
+  --scrollbar-color: #33403a;
+  --bs-body-color: #e3e9e2;
+  --bs-secondary-color: #9aa59c;
+
+  .table-striped {
+    --bs-table-striped-bg: rgba(255, 255, 255, .025);
+  }
+}
+
+// ------------------------------------------------------------------ page and type
+
+body {
+  background-color: var(--acacia-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, .h1, .h2, .h3, .h4, .h5 {
+  color: var(--acacia-heading);
+  letter-spacing: -.01em;
+}
+
+a {
+  text-underline-offset: .2em;
+}
+
+.text-muted, .form-text {
+  color: var(--acacia-muted) !important;
+}
+
+::selection {
+  background: var(--acacia-blossom-soft);
+}
+
+// ------------------------------------------------------------------ header
+
+header.navbar {
+  background: var(--acacia-surface);
+  background-image: none;
+  border-bottom: 1px solid var(--acacia-border);
+  min-height: 4.25rem;
+  padding: .6rem 1.25rem;
+  color: var(--bs-body-color) !important;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  backdrop-filter: saturate(1.4) blur(8px);
+
+  .navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    color: var(--acacia-leaf) !important;
+    font-size: 1.75rem;
+    letter-spacing: -.03em;
+    text-shadow: none;
+    font-weight: 400;
+
+    strong {
+      color: var(--acacia-bark);
+      font-weight: 700;
+    }
+
+    small {
+      color: var(--acacia-muted);
+      font-size: .9rem;
+      font-weight: 500;
+      padding-left: .75rem;
+      margin-left: .75rem;
+      border-left: 1px solid var(--acacia-border);
+      letter-spacing: 0;
+    }
+
+    img {
+      box-shadow: 0 0 0 1px var(--acacia-border);
+    }
+  }
+
+  .navbar-toggler,
+  .dropdown,
+  #radio-player-controls {
+    color: var(--bs-body-color) !important;
+  }
+
+  .navbar-toggler {
+    border-radius: var(--bs-border-radius);
+    padding: .45rem;
+
+    &:hover {
+      background: var(--acacia-leaf-soft);
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .navbar-brand {
+      font-size: 1.35rem;
+
+      small {
+        display: none;
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------------ cards
+
+.card {
+  background: var(--acacia-surface);
+  border: 1px solid var(--acacia-border);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--acacia-shadow);
+}
+
+.card-header {
+  background: var(--acacia-surface);
+  border-bottom: 1px solid var(--acacia-border);
+
+  &:first-child {
+    border-radius: calc(var(--bs-border-radius-lg) - 1px) calc(var(--bs-border-radius-lg) - 1px) 0 0;
+  }
+
+  // The theme's solid blue/green title bars become calm headers with a blossom accent.
+  &.text-bg-primary {
+    background: var(--acacia-surface) !important;
+    color: var(--bs-body-color) !important;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .85rem;
+      bottom: .85rem;
+      width: 4px;
+      border-radius: 0 4px 4px 0;
+      background: var(--acacia-blossom);
+    }
+
+    .card-title, h2, h3 {
+      color: var(--acacia-heading);
+      font-weight: 650;
+      font-size: 1.12rem;
+    }
+
+    .card-subtitle, small {
+      color: var(--acacia-muted) !important;
+    }
+
+    .btn-light, .btn-dark {
+      --bs-btn-bg: var(--acacia-surface-2);
+      --bs-btn-color: var(--bs-body-color);
+      --bs-btn-border-color: var(--acacia-border);
+      --bs-btn-hover-bg: var(--acacia-leaf-soft);
+      --bs-btn-hover-color: var(--acacia-leaf-strong);
+      --bs-btn-hover-border-color: var(--acacia-leaf);
+    }
+  }
+}
+
+.card-footer {
+  background: var(--acacia-surface-2);
+  border-top: 1px solid var(--acacia-border);
+}
+
+.outside-card-header h1,
+.outside-card-header h2 {
+  font-weight: 650;
+}
+
+// ------------------------------------------------------------------ navigation drawer (station and admin menus)
+
+.offcanvas.navdrawer,
+.navdrawer-content {
+  background: var(--acacia-surface);
+  border-right: 1px solid var(--acacia-border);
+}
+
+.navdrawer-header {
+  border-bottom: 1px solid var(--acacia-border);
+
+  .navbar-brand {
+    color: var(--acacia-heading) !important;
+    font-weight: 650;
+  }
+}
+
+.navdrawer-subheader {
+  color: var(--acacia-muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.navdrawer-nav {
+  .nav-link {
+    border-radius: var(--bs-border-radius);
+    margin: 1px .6rem;
+    color: var(--bs-body-color);
+    font-weight: 500;
+    transition: background-color .15s, color .15s;
+
+    svg, .navdrawer-nav-icon {
+      color: var(--acacia-muted);
+    }
+
+    &:hover {
+      background: var(--acacia-surface-2);
+      color: var(--acacia-leaf-strong);
+    }
+
+    &.active, &.router-link-active, &[aria-current="page"] {
+      background: var(--acacia-leaf-soft);
+      color: var(--acacia-leaf-strong);
+      font-weight: 650;
+
+      svg, .navdrawer-nav-icon {
+        color: var(--acacia-leaf);
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------------ tabs, dropdowns, modals, toasts
+
+.nav-tabs {
+  border-bottom: 1px solid var(--acacia-border);
+  gap: .25rem;
+
+  .nav-link {
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: var(--acacia-muted);
+    font-weight: 600;
+    padding: .7rem .9rem;
+
+    &:hover {
+      color: var(--acacia-leaf-strong);
+    }
+
+    &.active {
+      background: transparent;
+      color: var(--acacia-leaf-strong);
+      border-bottom-color: var(--acacia-blossom);
+    }
+  }
+}
+
+.nav-pills .nav-link.active {
+  background: var(--acacia-leaf);
+}
+
+.dropdown-menu {
+  border: 1px solid var(--acacia-border);
+  border-radius: var(--bs-border-radius);
+  box-shadow: var(--acacia-shadow);
+  padding: .35rem;
+
+  .dropdown-item {
+    border-radius: var(--bs-border-radius-sm);
+
+    &:hover, &:focus {
+      background: var(--acacia-leaf-soft);
+      color: var(--acacia-leaf-strong);
+    }
+  }
+}
+
+.modal-content {
+  border: 1px solid var(--acacia-border);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--acacia-shadow-lg);
+  background: var(--acacia-surface);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--acacia-border);
+
+  .modal-title {
+    font-weight: 650;
+  }
+}
+
+.modal-footer {
+  border-top: 1px solid var(--acacia-border);
+  background: var(--acacia-surface-2);
+}
+
+.toast {
+  border-radius: var(--bs-border-radius);
+  box-shadow: var(--acacia-shadow);
+}
+
+// ------------------------------------------------------------------ buttons
+
+.btn {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+  border-radius: var(--bs-border-radius);
+  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  transition: background-color .15s, border-color .15s, color .15s, transform .05s;
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &.btn-block, &.w-100 {
+    display: flex;
+  }
+}
+
+.btn-link {
+  font-weight: 600;
+}
+
+.btn-secondary {
+  --bs-btn-bg: var(--acacia-surface-2);
+  --bs-btn-color: var(--bs-body-color);
+  --bs-btn-border-color: var(--acacia-border);
+  --bs-btn-hover-bg: var(--acacia-leaf-soft);
+  --bs-btn-hover-color: var(--acacia-leaf-strong);
+  --bs-btn-hover-border-color: var(--acacia-leaf);
+  --bs-btn-active-bg: var(--acacia-leaf-soft);
+  --bs-btn-active-color: var(--acacia-leaf-strong);
+  --bs-btn-active-border-color: var(--acacia-leaf);
+}
+
+// ------------------------------------------------------------------ forms
+
+.form-control,
+.form-select {
+  background-color: var(--acacia-surface);
+  border-color: var(--acacia-border);
+  border-radius: var(--bs-border-radius);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--acacia-leaf) 35%, var(--acacia-border));
+  }
+
+  &:focus {
+    border-color: var(--acacia-leaf);
+    box-shadow: 0 0 0 .2rem var(--acacia-leaf-soft);
+  }
+}
+
+.form-label, legend {
+  font-weight: 600;
+  color: var(--acacia-heading);
+}
+
+.form-check-input:checked {
+  background-color: var(--acacia-leaf);
+  border-color: var(--acacia-leaf);
+}
+
+.form-switch .form-check-input:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 .2rem var(--acacia-leaf-soft);
+}
+
+.input-group-text {
+  background: var(--acacia-surface-2);
+  border-color: var(--acacia-border);
+}
+
+// ------------------------------------------------------------------ tables and lists
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-hover-bg: var(--acacia-leaf-soft);
+
+  > thead th {
+    color: var(--acacia-muted);
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--acacia-border);
+    white-space: nowrap;
+  }
+
+  > tbody > tr > * {
+    border-bottom: 1px solid color-mix(in srgb, var(--acacia-border) 70%, transparent);
+    vertical-align: middle;
+  }
+}
+
+.list-group {
+  --bs-list-group-bg: var(--acacia-surface);
+  --bs-list-group-border-color: var(--acacia-border);
+  --bs-list-group-action-hover-bg: var(--acacia-leaf-soft);
+  --bs-list-group-active-bg: var(--acacia-leaf);
+  --bs-list-group-active-border-color: var(--acacia-leaf);
+}
+
+// ------------------------------------------------------------------ badges, progress, alerts
+
+.badge {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: .8rem;
+  padding: .35rem .7rem;
+}
+
+.progress {
+  height: .55rem;
+  border-radius: 999px;
+  background: var(--acacia-surface-2);
+  box-shadow: inset 0 0 0 1px var(--acacia-border);
+}
+
+.progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--acacia-leaf), color-mix(in srgb, var(--acacia-leaf) 70%, var(--acacia-blossom)));
+}
+
+.alert {
+  border-radius: var(--bs-border-radius);
+  border-width: 1px;
+}
+
+#nprogress .bar {
+  background: var(--acacia-blossom) !important;
+}
+
+// ------------------------------------------------------------------ login and public pages
+
+body.page-minimal {
+  background: var(--public-page-bg);
+  background-attachment: fixed;
+
+  footer {
+    text-shadow: none;
+    color: rgba(255, 255, 255, .85);
+
+    a {
+      color: #fff;
+    }
+  }
+
+  .public-page .card {
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 1.25rem;
+    box-shadow: var(--acacia-shadow-lg);
+    background: color-mix(in srgb, var(--acacia-surface) 92%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+
+    .card-title {
+      font-weight: 650;
+      letter-spacing: -.02em;
+    }
+
+    .card-subtitle {
+      color: var(--acacia-muted);
+    }
+
+    .btn-primary {
+      padding-top: .75rem;
+      padding-bottom: .75rem;
+    }
+  }
+}
+
+// ------------------------------------------------------------------ charts
+
+.chart-container, canvas {
+  max-width: 100%;
+}
+
+// ------------------------------------------------------------------ scrollbars
+
+* {
+  scrollbar-color: var(--scrollbar-color) transparent;
+  scrollbar-width: thin;
+}
