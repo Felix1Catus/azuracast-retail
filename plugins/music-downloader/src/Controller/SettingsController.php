@@ -88,10 +88,10 @@ final class SettingsController
         return $this->relay($response, $this->worker, 'GET', '/youtube');
     }
 
-    /** Starts a refresh in the background; the page polls youtubeAction. */
-    public function youtubeRefreshAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    /** Starts a check with YouTube in the background; the page polls youtubeAction. */
+    public function youtubeCheckAction(ServerRequest $request, Response $response, array $params): ResponseInterface
     {
-        return $this->relay($response, $this->worker, 'POST', '/youtube/refresh', json: []);
+        return $this->relay($response, $this->worker, 'POST', '/youtube/check', json: []);
     }
 
     public function youtubeDisconnectAction(ServerRequest $request, Response $response, array $params): ResponseInterface

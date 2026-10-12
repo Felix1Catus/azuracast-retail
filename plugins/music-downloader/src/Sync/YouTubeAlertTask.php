@@ -11,7 +11,7 @@ use Plugin\MusicDownloader\Service\WorkerClient;
 use Plugin\MusicDownloader\Service\WorkerUnavailable;
 
 /**
- * Every 5 minutes: when the worker reports a new YouTube account alert (signed out, or the refresh failing),
+ * Every 5 minutes: when the worker reports a new YouTube account alert (signed out, or the check failing),
  * email the administrators once, if outgoing mail is set up (Administration > Settings > Email).
  * The dashboard notice (Notification\YouTubeNotice) shows the same state either way.
  */
@@ -59,7 +59,7 @@ final class YouTubeAlertTask extends AbstractTask
 
         $subject = 'expired' === ($alert['status'] ?? '')
             ? 'Music Downloader: the YouTube account was signed out'
-            : 'Music Downloader: the YouTube account refresh is failing';
+            : 'Music Downloader: the YouTube account check is failing';
         $body = (string)($alert['message'] ?? '') . "\n\n"
             . "Until this is fixed, downloads from YouTube may fail. Open a station's Music Downloader page, "
             . "then Settings > YouTube account, and sign in again.\n";

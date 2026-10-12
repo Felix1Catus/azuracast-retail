@@ -8,6 +8,14 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.15 (2026-10-12)
+
+Music Downloader 0.2.2. Update with `./docker.sh update`, then sign the YouTube account in again once.
+
+| # | Fix | Files | Verified |
+|---|---|---|---|
+| — | **YouTube account kept signed in.** retail.13/14 had the browser refresh the session, and Google signed it out at the first refresh: a session used by two different clients (Chromium and yt-dlp) is treated as stolen. The browser now only does the sign-in, hands the cookies to the worker and deletes its profile; yt-dlp is the session's only user. The session is checked with yt-dlp every 6 hours and when a download is refused (**Check now** replaces Refresh now); a sign-out raises the same alerts | `plugins/music-downloader/worker/app/browser.py`, `browser_api.py`, `youtube_session.py`, `cookies.py`, `main.py`, `runner.py`, `templates/page.html`, `src/` | Dev server (sign-out cause found in the profile's cookies), test containers, worker self-test |
+
 ## 0.23.8-retail.14 (2026-10-12)
 
 Music Downloader 0.2.1. Update with `./docker.sh update`, then sign the YouTube account in again once
@@ -15,7 +23,7 @@ Music Downloader 0.2.1. Update with `./docker.sh update`, then sign the YouTube 
 
 | # | Fix | Files | Verified |
 |---|---|---|---|
-| — | **YouTube account no longer signed out at its first refresh.** The worker loaded its older cookie file into the browser profile, overwriting the rotated session, and cookies were exported while YouTube's page could still rotate them. The profile is now never overwritten, and cookies are exported after leaving YouTube | `plugins/music-downloader/worker/app/browser.py`, `browser_api.py`, `youtube_session.py` | Test containers, worker self-test; sign-in on dev server pending |
+| — | **YouTube account no longer signed out at its first refresh.** The worker loaded its older cookie file into the browser profile, overwriting the rotated session, and cookies were exported while YouTube's page could still rotate them. The profile is now never overwritten, and cookies are exported after leaving YouTube | `plugins/music-downloader/worker/app/browser.py`, `browser_api.py`, `youtube_session.py` | Test containers, worker self-test; on the dev server the session was still signed out at the first refresh (fixed in retail.15) |
 
 ## 0.23.8-retail.13 (2026-10-12)
 

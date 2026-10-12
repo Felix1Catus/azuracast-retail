@@ -100,11 +100,13 @@ def test(proxy: str) -> Dict[str, Any]:
         return {"ok": True, "message": "YouTube accepted the cookies: downloads should work."}
     err = next((l for l in res.stderr.splitlines() if l.startswith("ERROR")), res.stderr.strip()[-300:])
     if "no longer valid" in res.stderr:
-        return {"ok": False, "message": "YouTube says these cookies are no longer valid: Google rotated them because "
+        return {"ok": False, "signed_out": True,
+                "message": "YouTube says these cookies are no longer valid: Google rotated them because "
                                         "the browser session that made them is still in use. Export new ones from a "
                                         "private window and close that window right after exporting."}
     if "Sign in to confirm" in err:
-        return {"ok": False, "message": "YouTube still asks to sign in: the cookies are expired or signed out. "
+        return {"ok": False, "signed_out": True,
+                "message": "YouTube still asks to sign in: the cookies are expired or signed out. "
                                         "Export fresh ones from a signed-in youtube.com tab."}
     if "Requested format is not available" in err:
         return {"ok": False, "message": "YouTube let the cookies in but offered no downloadable audio. Check that "

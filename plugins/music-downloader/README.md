@@ -114,12 +114,14 @@ confirm you're not a bot"). The page then shows *YouTube refused the download*. 
 
 - **YouTube account (recommended):** press **Connect YouTube account** and sign a separate Google account in, in
   a browser that runs on the server (the `music-downloader-browser` container) and is shown on the page as a
-  live picture you can click and type into. No password is stored: the Chromium profile keeps the session.
-  The worker then refreshes the cookies from that browser every 6 hours (`MD_YT_REFRESH_HOURS`) while idle,
-  before a job when they're older than 30 minutes (`MD_YT_REFRESH_BEFORE_JOB_MINUTES`), and once during a job
-  when YouTube refuses them. Chromium only runs for a refresh (about 15 s) or while the view is open, and is
-  closed cleanly each time: YouTube rotates cookies while a browser has them open. If YouTube signs the account
-  out, settings admins see a dashboard notice and get an email (when email is set up) to sign in again.
+  live picture you can click and type into. No password is stored. On **Done**, the session's youtube.com
+  cookies go to the worker and the browser deletes its profile: Google signs a session out as soon as two
+  different clients use it (tested: Chromium reopening a session that yt-dlp had used was signed out within
+  seconds), so yt-dlp must be its only user. This is yt-dlp's "export from a private window, then close it",
+  done for you. yt-dlp writes back what YouTube sends, which keeps the session current. The worker checks the
+  session every 6 hours (`MD_YT_CHECK_HOURS`) while idle and when a download is refused; when YouTube signs it
+  out, settings admins see a dashboard notice and get an email (when email is set up) to sign in again, which
+  starts a new session. Chromium only runs while the sign-in view is open.
 - **YouTube cookies** by hand from a normal (free) YouTube account: sign in to youtube.com in a private window, export
   `cookies.txt` (Netscape format) **from the youtube.com tab** while your account picture shows at the top
   right, close the window, and paste the file. Only youtube.com cookies are kept. A signed-in YouTube session
@@ -147,8 +149,8 @@ and can't be downloaded.
 | `src/Middleware/InjectNavButton.php`, `templates/nav.js` | "Music Downloader" button on station pages |
 | `templates/page.html` | The page (plain HTML + JS, no build step) |
 | `worker/` | The worker image: `app/main.py` (API + scheduler), `app/runner.py` (one job), `app/db.py` |
-| `worker/app/youtube_session.py` | YouTube account: refresh schedule, state and alerts (worker side) |
-| `worker/app/browser.py`, `browser_api.py` | The `music-downloader-browser` service: Chromium, refresh, remote view |
+| `worker/app/youtube_session.py` | YouTube account: checks, state and alerts (worker side) |
+| `worker/app/browser.py`, `browser_api.py` | The `music-downloader-browser` service: Chromium for the sign-in (remote view) |
 | `src/Notification/`, `src/Sync/` | Dashboard notice and alert email when the YouTube account needs a new sign-in |
 | `tests/worker_selftest.py` | Offline test of the runner (fake download step; checks files, skips, cancel) |
 | `install.sh`, `reload.sh` | Install/update/uninstall; apply code changes to a running container |

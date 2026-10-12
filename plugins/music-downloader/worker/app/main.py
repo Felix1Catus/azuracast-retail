@@ -105,11 +105,6 @@ class Scheduler(threading.Thread):
                 self.launch(row["id"])
 
     def launch(self, job_id: int) -> None:
-        # Fresh YouTube cookies from the account's browser, unless they were refreshed recently.
-        try:
-            youtube_session.refresh(max_age=config.YT_REFRESH_BEFORE_JOB_SECONDS)
-        except Exception:  # pylint: disable=broad-except
-            log.exception("YouTube refresh before job %s failed", job_id)
         workdir = config.JOBS_DIR / str(job_id)
         workdir.mkdir(parents=True, exist_ok=True)
         with open(workdir / "runner.log", "ab") as logfile:
@@ -303,9 +298,9 @@ def get_youtube() -> Dict[str, Any]:
     return _youtube_view()
 
 
-@app.post("/youtube/refresh", dependencies=auth)
-def refresh_youtube() -> Dict[str, Any]:
-    _youtube(youtube_session.refresh_in_background)
+@app.post("/youtube/check", dependencies=auth)
+def check_youtube() -> Dict[str, Any]:
+    _youtube(youtube_session.check_in_background)
     return _youtube_view()
 
 

@@ -39,7 +39,7 @@ final class YouTubeNotice
 
             $title = match ($data['status'] ?? '') {
                 'expired' => 'YouTube account signed out',
-                'error' => 'YouTube account refresh failed',
+                'error' => 'YouTube account check failed',
                 default => null,
             };
             if (null === $title) {

@@ -250,20 +250,21 @@
       <h2 style="margin-top:20px">YouTube account <span class="sub" id="yt-state"></span></h2>
       <p class="small muted" style="margin-top:0">If YouTube blocks this server (“Sign in to confirm you're not a bot”),
         sign a <b>separate</b> Google account in once, in a browser that runs on this server (YouTube may restrict
-        accounts used this way, so don't use your main one). No password is stored: the browser keeps the session, and the
-        YouTube cookies are refreshed from it every <span id="yt-hours">6</span> hours, before downloads, and whenever YouTube
-        refuses them. If YouTube ever signs the account out, administrators get a dashboard notice (and an email, when
-        email is set up in Administration &gt; Settings) to sign in again here.</p>
+        accounts used this way, so don't use your main one). No password is stored. On Done, the downloads take over the
+        session and the browser deletes its copy (Google signs a session out when two different programs use it).
+        The session is checked every <span id="yt-hours">6</span> hours and whenever YouTube refuses a download. When
+        YouTube signs it out, administrators get a dashboard notice (and an email, when email is set up in
+        Administration &gt; Settings) to sign in again here.</p>
       <div class="banner" id="yt-info" hidden style="margin-bottom:10px"></div>
       <div class="actions">
         <button class="btn primary" type="button" id="btn-yt-connect">Connect YouTube account</button>
-        <button class="btn" type="button" id="btn-yt-refresh" hidden>Refresh now</button>
+        <button class="btn" type="button" id="btn-yt-check" hidden>Check now</button>
         <button class="btn danger" type="button" id="btn-yt-disconnect" hidden>Disconnect</button>
       </div>
 
       <h2 style="margin-top:20px">YouTube cookies <span class="sub" id="cookie-state"></span></h2>
       <p class="small muted" style="margin-top:0">The cookies downloads use. With a YouTube account connected above they're
-        managed for you, and anything pasted here is replaced at the next refresh. Without one, you can give it the
+        managed for you; pasting cookies here disconnects the account's checks until you sign in again. Without one, you can give it the
         cookies of a normal YouTube account by hand: in a private browser window, sign in to youtube.com, export
         <span class="code">cookies.txt</span> (Netscape format) with a cookies extension, close the window, and paste or upload it here.
         Only the youtube.com cookies are kept.</p>
@@ -402,7 +403,7 @@
     if (!status.storage.supported) list.push({ kind: 'warn', title: 'Downloads can\'t be saved for this station', text: status.storage.message });
     const yt = status.settings?.youtube;
     if (status.worker.ok && yt?.connected_once && (yt.status === 'expired' || yt.status === 'error')) {
-      list.push({ kind: 'warn', title: yt.status === 'expired' ? 'The YouTube account was signed out' : 'The YouTube account refresh is failing',
+      list.push({ kind: 'warn', title: yt.status === 'expired' ? 'The YouTube account was signed out' : 'The YouTube account check is failing',
         text: status.isAdmin ? `${yt.message} See Settings > YouTube account below.`
                              : 'Downloads from YouTube may fail until an administrator signs the YouTube account in again.' });
     }
@@ -698,23 +699,23 @@
   });
 
   // ---------- YouTube account ----------
-  const YT_STATE = { connected: '· connected', expired: '· signed out', error: '· refresh failing', disconnected: '· not connected' };
+  const YT_STATE = { connected: '· connected', expired: '· signed out', error: '· check failing', disconnected: '· not connected' };
   let ytPoll = null;
   function renderYoutube(y) {
     if (!y) return;
     const once = y.connected_once;
     $('#yt-state').textContent = once ? (YT_STATE[y.status] || '') : '· not connected';
-    $('#yt-hours').textContent = y.refresh_hours;
+    $('#yt-hours').textContent = y.check_hours;
     $('#btn-yt-connect').textContent = once ? 'Sign in again' : 'Connect YouTube account';
     $('#btn-yt-connect').classList.toggle('primary', !once || y.status !== 'connected');
-    $('#btn-yt-refresh').hidden = !once;
+    $('#btn-yt-check').hidden = !once;
     $('#btn-yt-disconnect').hidden = !once;
-    $('#btn-yt-refresh').disabled = y.busy;
-    $('#btn-yt-refresh').textContent = y.busy ? 'Refreshing…' : 'Refresh now';
+    $('#btn-yt-check').disabled = y.busy;
+    $('#btn-yt-check').textContent = y.busy ? 'Checking… (up to 2 min)' : 'Check now';
     const info = $('#yt-info');
     const parts = [];
     if (y.message) parts.push(y.message);
-    if (once && y.last_refresh) parts.push(`Last refresh ${when(y.last_refresh)}.`);
+    if (once && y.last_check) parts.push(`Last check ${when(y.last_check)}.`);
     info.hidden = !parts.length;
     info.className = `banner ${y.status === 'connected' ? 'ok' : (once ? 'warn' : '')}`;
     info.textContent = parts.join(' ');
@@ -724,8 +725,8 @@
   async function loadYoutube() {
     try { renderYoutube(await api(`${SETTINGS_API}/youtube`)); } catch (e) { toast(e.message, true); }
   }
-  $('#btn-yt-refresh').addEventListener('click', async () => {
-    try { renderYoutube(await api(`${SETTINGS_API}/youtube/refresh`, { method: 'POST', body: {} })); } catch (e) { toast(e.message, true); }
+  $('#btn-yt-check').addEventListener('click', async () => {
+    try { renderYoutube(await api(`${SETTINGS_API}/youtube/check`, { method: 'POST', body: {} })); } catch (e) { toast(e.message, true); }
   });
   $('#btn-yt-disconnect').addEventListener('click', async () => {
     if (!confirm('Disconnect the YouTube account? The browser session is deleted, and so are the cookies it provided.')) return;

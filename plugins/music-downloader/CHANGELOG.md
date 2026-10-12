@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.2 (2026-10-12)
+
+- The YouTube account is now signed in through the browser **only**: on Done, the cookies go to the worker and the
+  browser deletes its profile. 0.2.0 and 0.2.1 had the browser refresh the session every few hours, and Google
+  signed it out at the first refresh: it treats a session used by two different clients (Chromium and yt-dlp) as
+  stolen and deletes the login cookies (seen in the profile: SID, HSID, LOGIN_INFO, __Secure-1PSID gone seconds
+  after Chromium reopened it). 0.2.1's fix (export after leaving YouTube, no import) didn't change that.
+- Instead of refreshing, the worker checks the session with yt-dlp every 6 hours (`MD_YT_CHECK_HOURS`) and when a
+  download is refused; a sign-out raises the same alerts. **Check now** replaces Refresh now.
+
 ## 0.2.1 (2026-10-12)
 
 - Fix: the YouTube account was signed out at its first refresh. The worker loaded its (older) cookie file into

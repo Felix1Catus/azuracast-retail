@@ -1,9 +1,10 @@
-"""Chromium session for the YouTube account (runs in the music-downloader-browser container).
+"""Chromium for signing the YouTube account in (runs in the music-downloader-browser container).
 
-An administrator signs a (throwaway) Google account in once, through the remote view in Settings; no password
-is stored. The saved Chromium profile keeps that session, and the worker asks it for fresh youtube.com cookies.
-YouTube rotates cookies while a browser has them open, so Chromium only runs while it's needed (a refresh, or
-the remote view) and is closed gracefully afterwards so the profile on disk holds the newest cookies.
+An administrator signs a (throwaway) Google account in through the remote view in Settings; no password is
+stored. On Done, the session's youtube.com cookies are handed to the worker and the browser profile is
+deleted. Google signs a session out when two different clients use it (here: this Chromium and yt-dlp), so
+the browser must never touch it again: yt-dlp is its only user from then on. That is what yt-dlp's own advice
+(export from a private window, then close it) achieves by hand. Each sign-in starts from an empty profile.
 
 Chromium is started as a plain process and Playwright attaches over CDP: launching it through Playwright
 adds automation switches that Google's sign-in page refuses ("This browser or app may not be secure").
@@ -44,7 +45,7 @@ VIEW_KEYS = {"Enter", "Tab", "Backspace", "Escape", "ArrowUp", "ArrowDown", "Arr
 
 
 class Busy(RuntimeError):
-    """The browser is open in the remote view; automatic use has to wait."""
+    """The remote view isn't open."""
 
 
 def _is_youtube(domain: str) -> bool:
@@ -237,24 +238,14 @@ class Browser:
         logged_in = bool(names & LOGIN_COOKIES) and sign_in_button == 0
         return {"logged_in": logged_in, "cookies": to_netscape(cookies)}
 
-    def refresh(self) -> Dict[str, Any]:
-        """The profile is the only source of the session: cookies are exported from it, never imported into it
-        (loading an older copy over a rotated session signs it out)."""
-        def run():
-            if self.view_open:
-                raise Busy("The browser is open in the remote view.")
-            self._open()
-            try:
-                return self._youtube_state()
-            finally:
-                self._close()
-
-        return self.call(run)
-
     # ---------------------------------------------------------------- remote view
 
     def view_start(self) -> Dict[str, Any]:
         def run():
+            if not self._running():
+                # A fresh session for every sign-in; an old one may already be signed out by Google.
+                self._close()
+                shutil.rmtree(PROFILE, ignore_errors=True)
             self._open()
             self.view_open = True
             page = self._page()
@@ -308,8 +299,9 @@ class Browser:
         return self.call(run, timeout=90)
 
     def view_finish(self) -> Dict[str, Any]:
-        """Done in the view: pass Google's session on to YouTube and check it. Signed in: export the cookies and
-        close. Not yet: go back to the sign-in page and stay open, so the admin can carry on."""
+        """Done in the view: pass Google's session on to YouTube and check it. Signed in: export the cookies, close,
+        and delete the profile (the session now belongs to yt-dlp alone). Not yet: go back to the sign-in page and
+        stay open, so the admin can carry on."""
         def run():
             if not self._running():
                 self.view_open = False
@@ -324,6 +316,7 @@ class Browser:
             result = self._youtube_state()
             if result["logged_in"]:
                 self._close()
+                shutil.rmtree(PROFILE, ignore_errors=True)
                 return {**result, "open": False}
             self._page().goto(LOGIN_URL, wait_until="domcontentloaded", timeout=60000)
             return {"logged_in": False, "cookies": "", "open": True}

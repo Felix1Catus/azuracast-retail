@@ -1,7 +1,7 @@
 """API of the music-downloader-browser container (same image as the worker, different command).
 
-Internal only, called by the worker (app/youtube_session.py) with the shared token. It holds the Chromium
-profile of the YouTube account, signed in by an administrator through the remote view (no password is stored).
+Internal only, called by the worker (app/youtube_session.py) with the shared token. An administrator signs the
+YouTube account in through the remote view; the session's cookies go to the worker and the profile is deleted.
 """
 
 import hmac
@@ -43,11 +43,6 @@ def run(fn) -> Dict[str, Any]:
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {"ok": True}
-
-
-@app.post("/refresh", dependencies=auth)
-def refresh() -> Dict[str, Any]:
-    return run(browser.refresh)
 
 
 @app.post("/view/open", dependencies=auth)

@@ -111,7 +111,7 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
                     $group->post('/cookies/test', $s . ':testCookiesAction');
                     // YouTube account: an admin signs in once in the browser view; the worker keeps the cookies fresh.
                     $group->get('/youtube', $s . ':youtubeAction');
-                    $group->post('/youtube/refresh', $s . ':youtubeRefreshAction');
+                    $group->post('/youtube/check', $s . ':youtubeCheckAction');
                     $group->delete('/youtube', $s . ':youtubeDisconnectAction');
                     $group->post('/youtube/view/open', $s . ':youtubeViewOpenAction');
                     $group->get('/youtube/view', $s . ':youtubeViewAction');
