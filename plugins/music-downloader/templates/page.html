@@ -8,15 +8,15 @@
 {{FAVICON}}
 <style>
   :root {
-    --bg: #f4f5f7; --panel: #ffffff; --text: #1d2330; --muted: #677084; --line: #e3e6ec;
-    --accent: #2f7d5b; --accent-ink: #ffffff; --accent-soft: #e3f2ea;
+    --bg: #f4f0e6; --panel: #ffffff; --text: #1f2a24; --muted: #66706a; --line: #e6e0d2;
+    --accent: #2f6f4e; --accent-ink: #ffffff; --accent-soft: #e4efe6;
     --ok: #2f9e6b; --warn: #b7791f; --warn-soft: #fdf3e1; --danger: #c43c3c; --danger-soft: #fbe9e9;
     --info: #3366cc; --bar: #dfe3ea;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #12151b; --panel: #1b1f27; --text: #e6e9ef; --muted: #98a1b3; --line: #2b313c;
-      --accent: #50a17b; --accent-ink: #0c1410; --accent-soft: #1d3329;
+      --bg: #111713; --panel: #1a221d; --text: #e3e9e2; --muted: #9aa59c; --line: #2c3830;
+      --accent: #6dbb8d; --accent-ink: #0c1410; --accent-soft: rgba(109, 187, 141, .14);
       --ok: #50c48c; --warn: #e5b04a; --warn-soft: #33291a; --danger: #e06464; --danger-soft: #3a1f22;
       --info: #7aa2f7; --bar: #2b313c;
     }
@@ -35,7 +35,8 @@
   main { padding: 18px 0 40px; display: grid; gap: 16px; }
   .grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
   @media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0;
+           box-shadow: 0 1px 2px rgba(31, 42, 36, .05), 0 6px 20px rgba(31, 42, 36, .06); }
   .panel h2 { font-size: 15px; margin: 0 0 10px; }
   .panel h2 .sub { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
   label { display: block; font-weight: 600; font-size: 12px; color: var(--muted); margin: 12px 0 4px; }

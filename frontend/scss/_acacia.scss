@@ -49,6 +49,10 @@
   --scrollbar-color: #33403a;
   --bs-body-color: #e3e9e2;
   --bs-secondary-color: #9aa59c;
+  --bs-link-color: #7fc79c;
+  --bs-link-color-rgb: 127, 199, 156;
+  --bs-link-hover-color: #a3dbb9;
+  --bs-link-hover-color-rgb: 163, 219, 185;
 
   .table-striped {
     --bs-table-striped-bg: rgba(255, 255, 255, .025);
@@ -86,13 +90,9 @@ header.navbar {
   background: var(--acacia-surface);
   background-image: none;
   border-bottom: 1px solid var(--acacia-border);
-  min-height: 4.25rem;
+  min-height: $header-nav-height;
   padding: .6rem 1.25rem;
   color: var(--bs-body-color) !important;
-  position: sticky;
-  top: 0;
-  z-index: 1030;
-  backdrop-filter: saturate(1.4) blur(8px);
 
   .navbar-brand {
     display: inline-flex;
@@ -444,6 +444,51 @@ header.navbar {
   --bs-list-group-action-hover-bg: var(--acacia-leaf-soft);
   --bs-list-group-active-bg: var(--acacia-leaf);
   --bs-list-group-active-border-color: var(--acacia-leaf);
+}
+
+// Item names in lists (media files, stations, playlists) read as titles, with the path or detail muted below.
+a.name {
+  color: var(--acacia-heading);
+  font-weight: 600;
+
+  &:hover {
+    color: var(--acacia-leaf);
+  }
+}
+
+.table td small {
+  color: var(--acacia-muted);
+}
+
+// Row actions in tables: soft tinted buttons instead of a column of solid blocks.
+.table .btn-sm {
+  &.btn-primary {
+    --bs-btn-bg: var(--acacia-leaf-soft);
+    --bs-btn-color: var(--acacia-leaf-strong);
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-bg: var(--acacia-leaf);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-border-color: var(--acacia-leaf);
+  }
+
+  &.btn-danger {
+    --bs-btn-bg: color-mix(in srgb, var(--bs-danger) 13%, transparent);
+    --bs-btn-color: var(--bs-danger-text-emphasis);
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-bg: var(--bs-danger);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-border-color: var(--bs-danger);
+  }
+}
+
+// Link lists (Administration, settings menus).
+.list-group-item-action {
+  color: var(--bs-body-color);
+  font-weight: 500;
+
+  &:hover, &:focus {
+    color: var(--acacia-leaf-strong);
+  }
 }
 
 // ------------------------------------------------------------------ badges, progress, alerts
