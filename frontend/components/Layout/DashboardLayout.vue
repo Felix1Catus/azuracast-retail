@@ -38,8 +38,12 @@
         </div>
 
         <div class="dropdown ms-3 d-inline-flex align-items-center">
-            <div class="me-2">
-                {{ displayName }}
+            <div class="header-user me-2">
+                <span
+                    class="header-avatar"
+                    aria-hidden="true"
+                >{{ (displayName || '?').trim().charAt(0).toUpperCase() }}</span>
+                <span class="header-user-name d-none d-md-inline">{{ displayName }}</span>
             </div>
 
             <button
