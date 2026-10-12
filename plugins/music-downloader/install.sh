@@ -21,6 +21,8 @@ set -euo pipefail
 REPO="Felix1Catus/azuracast-retail"
 PLUGIN="music-downloader"       # folder name: defines the PHP namespace Plugin\MusicDownloader
 SERVICE="music-downloader"      # compose service name = the worker's hostname on the Docker network
+POT_SERVICE="music-downloader-pot"   # YouTube PO-token server used by yt-dlp (see worker/app/ytdlp.py)
+POT_IMAGE="brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno"   # same version as bgutil-ytdlp-pot-provider in worker/requirements.txt
 MARK="# managed-by: azuracast plugin installers"
 ENV_FILE="music-downloader.env"
 
@@ -99,13 +101,14 @@ if [ "$ACTION" = uninstall ]; then
     yq -i "
       del(.services.web.volumes[] | select(test(\"plugins/$PLUGIN\"))) |
       del(.services.web.env_file[] | select(. == \"$ENV_FILE\")) |
-      del(.services.\"$SERVICE\")
+      del(.services.\"$SERVICE\") |
+      del(.services.\"$POT_SERVICE\")
     " docker-compose.override.yml || die "Couldn't edit $OV automatically; remove the music-downloader parts by hand."
     yq -i 'del(.services.web.volumes | select(length == 0)) | del(.services.web.env_file | select(length == 0)) | del(.services.web | select(length == 0))' docker-compose.override.yml || true
   fi
   "${DC[@]}" up -d --remove-orphans
   wait_ready
-  docker exec "$C" rm -f /var/azuracast/www_tmp/app_routes.cache.php || true
+  docker exec "$C" sh -c 'rm -f /var/azuracast/www_tmp/app_routes*.cache.php' || true
   say "Music Downloader removed. Plugin files left in $DIR/plugins/$PLUGIN; data volume: ${DC[*]} volume ls."
   exit 0
 fi
@@ -116,7 +119,8 @@ cat <<EOF
 This will:
   1. put the Music Downloader plugin in $DIR/plugins/$PLUGIN (an existing copy is kept as a .bak folder)
   2. build the worker image (spotDL + yt-dlp + ffmpeg + Deno; a few minutes the first time)
-  3. add the plugin mount and the "$SERVICE" worker to $(basename "$OV")
+  3. add the plugin mount, the "$SERVICE" worker and the "$POT_SERVICE" YouTube token server
+     ($POT_IMAGE) to $(basename "$OV")
   4. recreate the AzuraCast container (stations restart; about a minute of downtime)
 EOF
 confirm "Continue?" || die "Cancelled."
@@ -181,6 +185,14 @@ yq -i "
     \"mem_limit\": \"1g\",
     \"logging\": {\"options\": {\"max-size\": \"1m\", \"max-file\": \"3\"}}
   } |
+  .services.\"$POT_SERVICE\" = {
+    \"container_name\": \"azuracast_music_downloader_pot\",
+    \"image\": \"$POT_IMAGE\",
+    \"restart\": \"unless-stopped\",
+    \"cpu_shares\": 256,
+    \"mem_limit\": \"512m\",
+    \"logging\": {\"options\": {\"max-size\": \"1m\", \"max-file\": \"3\"}}
+  } |
   .volumes.music_downloader_data = {}
 " docker-compose.override.yml || die "Couldn't update $OV automatically (a backup is next to it)."
 "${DC[@]}" config -q || die "docker compose rejects the configuration; check $OV (a backup of the previous file is next to it)."
@@ -189,6 +201,12 @@ say "Starting the worker and recreating AzuraCast"
 "${DC[@]}" up -d
 wait_ready
 docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php" || die "The plugin isn't visible inside the container; check the volume in $OV."
+
+printf 'Waiting for the worker'
+for _ in $(seq 1 40); do
+  docker exec "$C" curl -fsS -o /dev/null http://music-downloader:8000/health 2>/dev/null && { echo " ready."; break; }
+  printf '.'; sleep 3
+done
 
 say "Activating (caches, health check)"
 "$DEST/reload.sh" "$C"

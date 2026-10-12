@@ -13,13 +13,14 @@ Steps:
 import json
 import logging
 import os
+import shlex
 import shutil
 import signal
 import sys
 from pathlib import Path
 from typing import List, Optional
 
-from app import config, db
+from app import config, db, ytdlp
 
 log = logging.getLogger("music-downloader.runner")
 
@@ -261,69 +262,77 @@ def _download(conn, job, settings, staging: Path) -> Optional[str]:
             "cookie_file": str(config.COOKIE_FILE) if config.COOKIE_FILE.exists() else None,
             "proxy": settings["proxy"] or None,
             "max_filename_length": MAX_FILENAME_LENGTH,
+            "yt_dlp_args": shlex.join(ytdlp.args()),
+            "ffmpeg_args": "-vn",  # HLS fallback formats carry a video track
             "simple_tui": True,
             "log_level": "INFO",
         }
     )
 
-    failures_in_a_row = 0
-    rows = conn.execute(
-        "SELECT * FROM tracks WHERE job_id = ? AND status IN ('pending', 'downloading') ORDER BY position",
-        (job["id"],),
-    ).fetchall()
+    # Pass 1 downloads everything pending; pass 2 retries this run's failures once (the first YouTube request
+    # after a restart sometimes fails while the PO-token server warms up).
+    for attempt in (1, 2):
+        statuses = "('pending', 'downloading')" if attempt == 1 else "('failed')"
+        rows = conn.execute(
+            f"SELECT * FROM tracks WHERE job_id = ? AND status IN {statuses} ORDER BY position",
+            (job["id"],),
+        ).fetchall()
+        if attempt == 2 and rows:
+            log.info("Retrying %d failed track(s) once", len(rows))
+        failures_in_a_row = 0
 
-    for row in rows:
-        if _cancel_requested(conn, job["id"]):
-            return "cancelled"
+        for row in rows:
+            if _cancel_requested(conn, job["id"]):
+                return "cancelled"
 
-        song = Song.from_dict(json.loads(row["song_json"]))
-        target = create_file_name(
-            song=song,
-            template=str(dest / FILE_TEMPLATE),
-            file_extension=job["format"],
-            file_name_length=MAX_FILENAME_LENGTH,
-        )
-        if target.exists():
-            _set_track(conn, row["id"], "skipped", file=target.name, error="Already in this folder")
-            failures_in_a_row = 0
-            continue
-
-        _set_track(conn, row["id"], "downloading")
-        errors_before = len(downloader.errors)
-        path: Optional[Path] = None
-        error: Optional[str] = None
-        try:
-            _, path = downloader.loop.run_until_complete(downloader.async_search_and_download(song))
-        except Exception as exc:  # pylint: disable=broad-except
-            error = str(exc) or exc.__class__.__name__
-
-        if path is not None and Path(path).exists():
-            failures_in_a_row = 0
-            staged = Path(path)
-            final = dest / staged.name
-            if final.exists():
-                staged.unlink()
-                _set_track(conn, row["id"], "skipped", file=final.name, error="Already in this folder")
-            else:
-                part = final.with_name(final.name + ".mdpart")
-                shutil.copyfile(staged, part)
-                part.chmod(0o664)
-                os.replace(part, final)
-                staged.unlink()
-                _set_track(conn, row["id"], "done", file=final.name)
-        else:
-            failures_in_a_row += 1
-            new_errors = downloader.errors[errors_before:]
-            _set_track(conn, row["id"], "failed", error=_friendly_error(error or (new_errors[-1] if new_errors else None)))
-
-        db.refresh_counts(conn, job["id"])
-
-        if failures_in_a_row >= FAILURES_IN_A_ROW_LIMIT:
-            return (
-                f"Stopped after {FAILURES_IN_A_ROW_LIMIT} failed tracks in a row. If they all say YouTube "
-                "refused the download, YouTube is blocking this server: add YouTube cookies or a proxy in "
-                "Settings, then retry."
+            song = Song.from_dict(json.loads(row["song_json"]))
+            target = create_file_name(
+                song=song,
+                template=str(dest / FILE_TEMPLATE),
+                file_extension=job["format"],
+                file_name_length=MAX_FILENAME_LENGTH,
             )
+            if target.exists():
+                _set_track(conn, row["id"], "skipped", file=target.name, error="Already in this folder")
+                failures_in_a_row = 0
+                continue
+
+            _set_track(conn, row["id"], "downloading")
+            errors_before = len(downloader.errors)
+            path: Optional[Path] = None
+            error: Optional[str] = None
+            try:
+                _, path = downloader.loop.run_until_complete(downloader.async_search_and_download(song))
+            except Exception as exc:  # pylint: disable=broad-except
+                error = str(exc) or exc.__class__.__name__
+
+            if path is not None and Path(path).exists():
+                failures_in_a_row = 0
+                staged = Path(path)
+                final = dest / staged.name
+                if final.exists():
+                    staged.unlink()
+                    _set_track(conn, row["id"], "skipped", file=final.name, error="Already in this folder")
+                else:
+                    part = final.with_name(final.name + ".mdpart")
+                    shutil.copyfile(staged, part)
+                    part.chmod(0o664)
+                    os.replace(part, final)
+                    staged.unlink()
+                    _set_track(conn, row["id"], "done", file=final.name)
+            else:
+                failures_in_a_row += 1
+                new_errors = downloader.errors[errors_before:]
+                _set_track(conn, row["id"], "failed", error=_friendly_error(error or (new_errors[-1] if new_errors else None)))
+
+            db.refresh_counts(conn, job["id"])
+
+            if failures_in_a_row >= FAILURES_IN_A_ROW_LIMIT:
+                return (
+                    f"Stopped after {FAILURES_IN_A_ROW_LIMIT} failed tracks in a row. If they all say YouTube "
+                    "refused the download, YouTube is blocking this server: add YouTube cookies or a proxy in "
+                    "Settings, then retry."
+                )
 
     return None
 

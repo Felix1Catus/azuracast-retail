@@ -7,7 +7,7 @@ comes from YouTube Music (or the other sources listed in Settings).
 
 | | |
 |---|---|
-| **Version** | 0.1.1 (first version, not yet integrated into the AzuraCast Retail installer) |
+| **Version** | 0.1.2 (first version, not yet integrated into the AzuraCast Retail installer) |
 | **Developed on** | AzuraCast Retail 0.23.8-retail.6 · spotDL 4.5.2 · yt-dlp 2026.08.19 · Deno 2.4.5 · ffmpeg 7.1 |
 | **Works with** | AzuraCast 0.23.x on Docker, stations with **local** media storage |
 | **Not supported** | S3 / Dropbox / SFTP media storage; spotify.link short links; ongoing playlist sync (one-time downloads only) |
@@ -25,6 +25,7 @@ AzuraCast panel ──► PHP plugin (in the AzuraCast container)
                       • FastAPI on :8000, never published on a host port
                       • SQLite in the music_downloader_data volume: settings, Spotify logins, jobs, tracks
                       • one job at a time, each in its own process (nice 10, cpu_shares 256, 1 GB RAM limit)
+                      • asks music-downloader-pot (bgutil PO-token server, 512 MB limit) for YouTube tokens
                           │  station_data volume, mounted at the same path as in AzuraCast
                           ▼
          /var/azuracast/stations/<station>/media/<folder>/Artist - Title.mp3
@@ -95,10 +96,16 @@ confirm you're not a bot"). The page then shows *YouTube refused the download*. 
 
 - **YouTube cookies** from a normal (free) YouTube account: sign in to youtube.com in a private window, export
   `cookies.txt` (Netscape format) **from the youtube.com tab** while your account picture shows at the top
-  right, close the window, and paste the file. Only youtube.com cookies are kept; a file without a YouTube
-  login (only Google-account cookies) is refused. **Test with YouTube** checks them. Use a separate account, because
+  right, close the window, and paste the file. Only youtube.com cookies are kept. A signed-in YouTube session
+  is the most robust, but visitor cookies from a real browser often work too: **Test with YouTube** checks them. Use a separate account, because
   YouTube may restrict accounts used this way. Cookies expire, so refresh them when downloads start failing again.
 - **Proxy:** `http://user:pass@host:port` or `socks5://host:port`. A residential proxy avoids the block.
+
+Even when signed in, YouTube may offer the regular web player only as SABR streams, which can't be downloaded.
+The worker therefore asks for the `web_safari` client first (it also gets HLS streams) and attaches PO tokens
+from the `music-downloader-pot` container. If no audio-only stream is offered, it takes the HLS stream's AAC
+audio (about 128 kbps) and drops the video. `MD_YOUTUBE_CLIENTS` and `MD_POT_URL` (in `music-downloader.env`)
+change these choices; see `worker/app/ytdlp.py`.
 
 SoundCloud and Bandcamp are offered as audio sources too, but major-label music on SoundCloud is DRM-protected
 and can't be downloaded.

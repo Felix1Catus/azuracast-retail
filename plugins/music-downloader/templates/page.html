@@ -591,9 +591,9 @@
     const ci = $('#cookie-info');
     ci.hidden = !c;
     if (c) {
-      ci.className = `banner ${c.youtube_login ? 'ok' : 'warn'}`;
+      ci.className = 'banner';
       ci.textContent = `Saved ${when(c.saved_at)} · ${c.count} youtube.com cookies · `
-        + (c.youtube_login ? 'includes a YouTube login' : 'NO YouTube login: replace them');
+        + (c.youtube_login ? 'includes a YouTube login' : 'no YouTube login (often still works: use Test)');
     }
   }
   $('#btn-copy').addEventListener('click', async () => {

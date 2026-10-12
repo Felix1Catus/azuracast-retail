@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.2 (2026-10-12)
+
+- Downloads work on servers that YouTube blocks: with signed-in cookies, YouTube still served the web client
+  only as SABR streams (nothing downloadable). yt-dlp now uses the web_safari client (HLS streams) and gets
+  PO tokens from a new `music-downloader-pot` container (bgutil-ytdlp-pot-provider 2.0.2). When no audio-only
+  stream is offered, the HLS stream's AAC audio is used and ffmpeg drops the video (`-vn`).
+- The cookie test uses the same yt-dlp options as downloads, and says when Google has rotated (invalidated) the cookies.
+- Failed tracks are retried once at the end of a job (the first YouTube request after a restart can fail while
+  the PO-token server warms up).
+- install.sh waits for the worker to answer before its health check.
+- Cookies without a YouTube login are accepted again (shown as such): with PO tokens, YouTube also accepts a
+  real browser's visitor cookies. Only youtube.com cookies are still kept.
+
 ## 0.1.1 (2026-10-12)
 
 - YouTube cookies: only the youtube.com cookies are kept, and cookies without a YouTube login are refused

@@ -9,9 +9,9 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from app import config
+from app import config, ytdlp
 
-# A signed-in YouTube session always has at least one of these on .youtube.com.
+# A signed-in YouTube session has at least one of these on .youtube.com (reported in Settings, not required).
 LOGIN_COOKIES = {"LOGIN_INFO", "SID", "__Secure-1PSID", "__Secure-3PSID"}
 TEST_VIDEO = "https://www.youtube.com/watch?v=jNQXAC9IVRw"  # "Me at the zoo", YouTube's first video
 
@@ -52,18 +52,14 @@ def clean(text: str) -> Tuple[str, Dict[str, Any]]:
     if not kept:
         raise CookieError("The file has no youtube.com cookies. Export it from a youtube.com tab.")
 
+    # A signed-in session is the most robust, but YouTube also accepts a known browser visitor (with PO
+    # tokens, see ytdlp.py), so a missing login is reported, not refused. The live test is what counts.
     names = {name for (_, _, name) in kept}
-    if not names & LOGIN_COOKIES:
-        raise CookieError(
-            "These cookies don't include a YouTube login (no LOGIN_INFO or SID cookie for youtube.com), "
-            "so YouTube would still treat the server as a stranger. Open youtube.com, check that your "
-            "account picture shows at the top right (if not, click Sign in), then export the cookies "
-            "again from that youtube.com tab."
-        )
+    login = bool(names & LOGIN_COOKIES)
 
     body = "# Netscape HTTP Cookie File\n# Saved by Music Downloader (youtube.com cookies only)\n\n"
     body += "\n".join(kept.values()) + "\n"
-    return body, {"count": len(kept), "youtube_login": True}
+    return body, {"count": len(kept), "youtube_login": login}
 
 
 def save(text: str) -> Dict[str, Any]:
@@ -92,8 +88,8 @@ def test(proxy: str) -> Dict[str, Any]:
     cookie file with whatever YouTube sends back, which keeps the session alive."""
     if not config.COOKIE_FILE.exists():
         return {"ok": False, "message": "No cookies saved."}
-    cmd = ["yt-dlp", "--no-update", "--no-warnings", "--cookies", str(config.COOKIE_FILE),
-           "--skip-download", "-f", "bestaudio", "--print", "%(format_id)s %(abr)s", TEST_VIDEO]
+    cmd = ["yt-dlp", "--no-update", "--no-warnings", "--cookies", str(config.COOKIE_FILE), *ytdlp.args(),
+           "--skip-download", "--print", "%(format_id)s %(abr)s", TEST_VIDEO]
     if proxy:
         cmd[1:1] = ["--proxy", proxy]
     try:
@@ -103,7 +99,14 @@ def test(proxy: str) -> Dict[str, Any]:
     if res.returncode == 0 and res.stdout.strip():
         return {"ok": True, "message": "YouTube accepted the cookies: downloads should work."}
     err = next((l for l in res.stderr.splitlines() if l.startswith("ERROR")), res.stderr.strip()[-300:])
+    if "no longer valid" in res.stderr:
+        return {"ok": False, "message": "YouTube says these cookies are no longer valid: Google rotated them because "
+                                        "the browser session that made them is still in use. Export new ones from a "
+                                        "private window and close that window right after exporting."}
     if "Sign in to confirm" in err:
         return {"ok": False, "message": "YouTube still asks to sign in: the cookies are expired or signed out. "
                                         "Export fresh ones from a signed-in youtube.com tab."}
+    if "Requested format is not available" in err:
+        return {"ok": False, "message": "YouTube let the cookies in but offered no downloadable audio. Check that "
+                                        "the music-downloader-pot container is running, or update yt-dlp."}
     return {"ok": False, "message": err[:400] or f"yt-dlp failed (exit code {res.returncode})."}

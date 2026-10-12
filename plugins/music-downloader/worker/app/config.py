@@ -20,6 +20,10 @@ MIN_FREE_MB = int(os.environ.get("MD_MIN_FREE_MB", "1024"))
 CANCEL_GRACE_SECONDS = int(os.environ.get("MD_CANCEL_GRACE_SECONDS", "90"))
 RUNNER_NICE = int(os.environ.get("MD_RUNNER_NICE", "10"))
 
+# YouTube access (see app/ytdlp.py). The PO-token server is the music-downloader-pot container.
+POT_URL = os.environ.get("MD_POT_URL", "http://music-downloader-pot:4416")
+YOUTUBE_CLIENTS = os.environ.get("MD_YOUTUBE_CLIENTS", "web_safari,web")
+
 SPOTIFY_SCOPES = "playlist-read-private playlist-read-collaborative user-library-read user-follow-read"
 
 FORMATS = ("mp3", "m4a", "opus", "ogg", "flac")
