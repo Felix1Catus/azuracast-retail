@@ -48,12 +48,29 @@ failed or cancelled tracks.
 
 ## Install
 
-From a checkout of the fork on the AzuraCast server:
+On the AzuraCast server (Docker install), as root. The plugin is kept in two places: its own private
+repository (this folder at the repository root), and `plugins/music-downloader` in the AzuraCast Retail fork.
+
+**From the plugin's private repository.** The server needs read access: an SSH key on a GitHub account that can
+see the repository, or a read-only deploy key.
+
+```bash
+git clone git@github.com:Felix1Catus/acacia-music-downloader.git /opt/acacia-music-downloader
+sudo bash /opt/acacia-music-downloader/install.sh              # install, or update after a git pull
+sudo bash /opt/acacia-music-downloader/install.sh --uninstall
+```
+
+**From a checkout of the fork:**
 
 ```bash
 sudo bash plugins/music-downloader/install.sh            # install or update
 sudo bash plugins/music-downloader/install.sh --uninstall
 ```
+
+`--dir /path/to/azuracast` selects the installation if it isn't auto-detected; `--yes` skips the confirmation.
+Updating: `git pull`, then run `install.sh` again. It rebuilds the worker and swaps the files in place, and
+only recreates the AzuraCast container when its mounts change. The first install needs about 2 GB of disk
+space for the images.
 
 The installer copies the plugin to `<azuracast>/plugins/music-downloader` and builds the worker image locally.
 It creates `music-downloader.env` (the shared secret, root-only) and adds the plugin mount and the worker
