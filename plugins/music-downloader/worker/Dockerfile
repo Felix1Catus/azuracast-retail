@@ -1,5 +1,6 @@
 # Music Downloader worker: spotDL behind a small internal API (see ../README.md).
 # It runs next to Acacia Radio's "web" container and writes into the same station_data volume.
+# The same image also runs the music-downloader-browser service (YouTube account; command in the compose file).
 #   docker build -t acacia-music-downloader:dev plugins/music-downloader/worker
 ARG DENO_VERSION=2.4.5
 FROM denoland/deno:bin-${DENO_VERSION} AS deno
@@ -12,8 +13,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HOME=/data/home \
     MD_DATA_DIR=/data
 
+# chromium, xvfb, xauth and fonts are for the music-downloader-browser service (same image, see app/browser.py).
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg ca-certificates tini \
+        chromium xvfb xauth fonts-liberation fonts-noto-color-emoji \
     && rm -rf /var/lib/apt/lists/*
 
 # yt-dlp needs a JavaScript runtime for some YouTube videos; without it those tracks fail.

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 (2026-10-12)
+
+- **Connect YouTube account:** an administrator signs a separate Google account in once, in a browser on the
+  server shown on the settings page (click and type into a live picture). No password is stored. A new
+  `music-downloader-browser` container (same image; Chromium under Xvfb, 1 GB limit) keeps the session, and the
+  worker refreshes the YouTube cookies from it every 6 hours, before a job when they're older than 30 minutes,
+  and once mid-job when YouTube refuses them (the downloader is then rebuilt and the retry pass uses the new
+  cookies). Chromium only runs during a refresh or the sign-in.
+- When YouTube signs the account out: a banner on the downloader page, a dashboard notice for settings admins,
+  and one email to administrators when outgoing email is set up.
+- Manually pasted cookies still work without an account; with one connected they're replaced at the next refresh.
+
 ## 0.1.3 (2026-10-12)
 
 - About 4x faster: ~17 s per track instead of ~65-75 s on a 1-CPU server. spotDL's YouTube search fully

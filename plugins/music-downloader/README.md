@@ -26,6 +26,7 @@ Acacia Radio panel ──► PHP plugin (in the Acacia Radio container)
                       • SQLite in the music_downloader_data volume: settings, Spotify logins, jobs, tracks
                       • one job at a time, each in its own process (nice 10, cpu_shares 256, 1 GB RAM limit)
                       • asks music-downloader-pot (bgutil PO-token server, 512 MB limit) for YouTube tokens
+                      • asks music-downloader-browser (same image, Chromium, 1 GB limit) for fresh YouTube cookies
                           │  station_data volume, mounted at the same path as in Acacia Radio
                           ▼
          /var/acacia/stations/<station>/media/<folder>/Artist - Title.mp3
@@ -111,7 +112,15 @@ on**. So:
 Datacenter IP addresses (Vultr, Hetzner, DigitalOcean, AWS…) are often blocked by YouTube ("Sign in to
 confirm you're not a bot"). The page then shows *YouTube refused the download*. Options, in Settings:
 
-- **YouTube cookies** from a normal (free) YouTube account: sign in to youtube.com in a private window, export
+- **YouTube account (recommended):** press **Connect YouTube account** and sign a separate Google account in, in
+  a browser that runs on the server (the `music-downloader-browser` container) and is shown on the page as a
+  live picture you can click and type into. No password is stored: the Chromium profile keeps the session.
+  The worker then refreshes the cookies from that browser every 6 hours (`MD_YT_REFRESH_HOURS`) while idle,
+  before a job when they're older than 30 minutes (`MD_YT_REFRESH_BEFORE_JOB_MINUTES`), and once during a job
+  when YouTube refuses them. Chromium only runs for a refresh (about 15 s) or while the view is open, and is
+  closed cleanly each time: YouTube rotates cookies while a browser has them open. If YouTube signs the account
+  out, settings admins see a dashboard notice and get an email (when email is set up) to sign in again.
+- **YouTube cookies** by hand from a normal (free) YouTube account: sign in to youtube.com in a private window, export
   `cookies.txt` (Netscape format) **from the youtube.com tab** while your account picture shows at the top
   right, close the window, and paste the file. Only youtube.com cookies are kept. A signed-in YouTube session
   is the most robust, but visitor cookies from a real browser often work too: **Test with YouTube** checks them. Use a separate account, because
@@ -138,6 +147,9 @@ and can't be downloaded.
 | `src/Middleware/InjectNavButton.php`, `templates/nav.js` | "Music Downloader" button on station pages |
 | `templates/page.html` | The page (plain HTML + JS, no build step) |
 | `worker/` | The worker image: `app/main.py` (API + scheduler), `app/runner.py` (one job), `app/db.py` |
+| `worker/app/youtube_session.py` | YouTube account: refresh schedule, state and alerts (worker side) |
+| `worker/app/browser.py`, `browser_api.py` | The `music-downloader-browser` service: Chromium, refresh, remote view |
+| `src/Notification/`, `src/Sync/` | Dashboard notice and alert email when the YouTube account needs a new sign-in |
 | `tests/worker_selftest.py` | Offline test of the runner (fake download step; checks files, skips, cancel) |
 | `install.sh`, `reload.sh` | Install/update/uninstall; apply code changes to a running container |
 
@@ -155,7 +167,7 @@ plugins/music-downloader/reload.sh        # after changing PHP or templates on a
 
 ## Built into Acacia Radio
 
-In the fork this module is built in: `docker-compose.retail.yml` runs the worker and token containers, and
+In the fork this module is built in: `docker-compose.retail.yml` runs the worker, token and browser containers, and
 `util/build_image.sh` builds the worker image as `acacia-radio-music-downloader:<version>`. The installer and
 `./docker.sh update` create `music-downloader.env`, and the station menu has a native **Music Downloader**
 item (`StationFeatures::MusicDownloader`, which also switches off the injected button). There, use

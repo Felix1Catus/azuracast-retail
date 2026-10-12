@@ -107,6 +107,14 @@
   .dlg-body { padding: 14px 18px 18px; }
   .kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 13px; margin-bottom: 12px; }
   .kv dt { color: var(--muted); } .kv dd { margin: 0; min-width: 0; word-break: break-word; }
+  #yt-dialog { width: min(1180px, calc(100vw - 24px)); }
+  .yt-screen { position: relative; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+               min-height: 240px; display: grid; place-items: center; }
+  .yt-screen img { width: 100%; display: block; cursor: pointer; outline: none; }
+  .yt-screen img:focus-visible { box-shadow: inset 0 0 0 3px var(--accent); }
+  .yt-screen .yt-wait { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px;
+                        background: color-mix(in srgb, var(--panel) 80%, transparent); }
+  .yt-keys { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   pre.log { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; max-height: 320px;
             overflow: auto; font-size: 11px; white-space: pre-wrap; word-break: break-all; }
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--text); color: var(--bg);
@@ -239,11 +247,25 @@
       <input type="text" id="proxy" spellcheck="false">
       <div class="actions"><button class="btn primary" type="button" id="btn-save-settings">Save settings</button></div>
 
-      <h2 style="margin-top:20px">YouTube cookies <span class="sub" id="cookie-state"></span></h2>
+      <h2 style="margin-top:20px">YouTube account <span class="sub" id="yt-state"></span></h2>
       <p class="small muted" style="margin-top:0">If YouTube blocks this server (“Sign in to confirm you're not a bot”),
-        give it the cookies of a normal YouTube account: in a private browser window, sign in to youtube.com, export
+        sign a <b>separate</b> Google account in once, in a browser that runs on this server (YouTube may restrict
+        accounts used this way, so don't use your main one). No password is stored: the browser keeps the session, and the
+        YouTube cookies are refreshed from it every <span id="yt-hours">6</span> hours, before downloads, and whenever YouTube
+        refuses them. If YouTube ever signs the account out, administrators get a dashboard notice (and an email, when
+        email is set up in Administration &gt; Settings) to sign in again here.</p>
+      <div class="banner" id="yt-info" hidden style="margin-bottom:10px"></div>
+      <div class="actions">
+        <button class="btn primary" type="button" id="btn-yt-connect">Connect YouTube account</button>
+        <button class="btn" type="button" id="btn-yt-refresh" hidden>Refresh now</button>
+        <button class="btn danger" type="button" id="btn-yt-disconnect" hidden>Disconnect</button>
+      </div>
+
+      <h2 style="margin-top:20px">YouTube cookies <span class="sub" id="cookie-state"></span></h2>
+      <p class="small muted" style="margin-top:0">The cookies downloads use. With a YouTube account connected above they're
+        managed for you, and anything pasted here is replaced at the next refresh. Without one, you can give it the
+        cookies of a normal YouTube account by hand: in a private browser window, sign in to youtube.com, export
         <span class="code">cookies.txt</span> (Netscape format) with a cookies extension, close the window, and paste or upload it here.
-        Use a separate account: YouTube may restrict accounts used this way.
         Only the youtube.com cookies are kept.</p>
       <div class="banner" id="cookie-info" hidden style="margin-bottom:10px"></div>
       <textarea id="cookies" placeholder="# Netscape HTTP Cookie File&#10;.youtube.com	TRUE	/	TRUE	..."></textarea>
@@ -281,6 +303,30 @@
       <summary class="small muted" style="cursor:pointer">Technical log</summary>
       <pre class="log" id="dlg-log"></pre>
     </details>
+  </div>
+</dialog>
+
+<dialog id="yt-dialog">
+  <div class="dlg-head">
+    <div><h3>Sign in to YouTube</h3><div class="muted small code" id="yt-url"></div></div>
+    <span class="spacer"></span>
+    <button class="btn small" type="button" id="yt-back">Back</button>
+    <button class="btn small" type="button" id="yt-cancel">Cancel</button>
+    <button class="btn small primary" type="button" id="yt-done">Done</button>
+  </div>
+  <div class="dlg-body">
+    <p class="small muted" style="margin-top:0">This is a browser running on the server. Click in it, and type while the
+      picture has focus (or use the box below). Sign in to the account and answer any Google checks. When YouTube's page
+      shows the account signed in, press <b>Done</b>.</p>
+    <div class="yt-screen">
+      <img id="yt-img" tabindex="0" alt="The browser on the server">
+      <div class="yt-wait" id="yt-wait">Starting the browser…</div>
+    </div>
+    <div class="copy" style="margin-top:10px">
+      <input type="password" id="yt-text" placeholder="Text to type into the browser (hidden)" autocomplete="off">
+      <button class="btn" type="button" id="yt-send">Type it</button>
+    </div>
+    <div class="yt-keys" id="yt-keys"></div>
   </div>
 </dialog>
 
@@ -354,6 +400,12 @@
     if (CFG.flashError) list.push({ kind: 'error', title: 'Spotify login failed', text: CFG.flashError });
     if (!status.worker.ok) list.push({ kind: 'error', title: 'The downloader is offline', text: status.worker.message || 'The worker container is not responding.' });
     if (!status.storage.supported) list.push({ kind: 'warn', title: 'Downloads can\'t be saved for this station', text: status.storage.message });
+    const yt = status.settings?.youtube;
+    if (status.worker.ok && yt?.connected_once && (yt.status === 'expired' || yt.status === 'error')) {
+      list.push({ kind: 'warn', title: yt.status === 'expired' ? 'The YouTube account was signed out' : 'The YouTube account refresh is failing',
+        text: status.isAdmin ? `${yt.message} See Settings > YouTube account below.`
+                             : 'Downloads from YouTube may fail until an administrator signs the YouTube account in again.' });
+    }
     if (status.worker.ok && status.settings && !status.settings.spotify_app_ready) {
       list.push({ kind: 'warn', title: 'Spotify login isn\'t set up yet',
         text: status.isAdmin ? 'Enter the Spotify app\'s Client ID and Secret under Settings below. Public playlists work meanwhile.'
@@ -367,7 +419,13 @@
     renderAccount();
     fillChoices();
     $('#btn-start').disabled = !status.worker.ok || !status.storage.supported;
-    if (status.isAdmin) { $('#settings-panel').hidden = false; }
+    if (status.isAdmin) {
+      $('#settings-panel').hidden = false;
+      // The dashboard notice links to #settings.
+      if (location.hash === '#settings' && !$('#settings-details').open) {
+        $('#settings-details').open = true; $('#settings-panel').scrollIntoView();
+      }
+    }
   }
 
   function banners(list) {
@@ -585,6 +643,7 @@
     const fill = (sel, values, def, labels = {}) => { sel.replaceChildren(...values.map((v) => el('option', { value: v, text: labels[v] || v }))); sel.value = def; };
     fill($('#def-format'), s.choices.formats, s.default_format);
     fill($('#def-bitrate'), s.choices.bitrates, s.default_bitrate, BITRATE_LABEL);
+    renderYoutube(s.youtube);
     const c = s.cookies;
     $('#cookie-state').textContent = c ? '· saved' : '· none';
     $('#btn-del-cookies').hidden = !c;
@@ -636,6 +695,123 @@
   $('#btn-del-cookies').addEventListener('click', async () => {
     if (!confirm('Remove the saved YouTube cookies?')) return;
     try { await api(`${SETTINGS_API}/cookies`, { method: 'DELETE' }); toast('Cookies removed.'); loadSettings(); } catch (e) { toast(e.message, true); }
+  });
+
+  // ---------- YouTube account ----------
+  const YT_STATE = { connected: '· connected', expired: '· signed out', error: '· refresh failing', disconnected: '· not connected' };
+  let ytPoll = null;
+  function renderYoutube(y) {
+    if (!y) return;
+    const once = y.connected_once;
+    $('#yt-state').textContent = once ? (YT_STATE[y.status] || '') : '· not connected';
+    $('#yt-hours').textContent = y.refresh_hours;
+    $('#btn-yt-connect').textContent = once ? 'Sign in again' : 'Connect YouTube account';
+    $('#btn-yt-connect').classList.toggle('primary', !once || y.status !== 'connected');
+    $('#btn-yt-refresh').hidden = !once;
+    $('#btn-yt-disconnect').hidden = !once;
+    $('#btn-yt-refresh').disabled = y.busy;
+    $('#btn-yt-refresh').textContent = y.busy ? 'Refreshing…' : 'Refresh now';
+    const info = $('#yt-info');
+    const parts = [];
+    if (y.message) parts.push(y.message);
+    if (once && y.last_refresh) parts.push(`Last refresh ${when(y.last_refresh)}.`);
+    info.hidden = !parts.length;
+    info.className = `banner ${y.status === 'connected' ? 'ok' : (once ? 'warn' : '')}`;
+    info.textContent = parts.join(' ');
+    clearTimeout(ytPoll);
+    if (y.busy) ytPoll = setTimeout(loadYoutube, 3000);
+  }
+  async function loadYoutube() {
+    try { renderYoutube(await api(`${SETTINGS_API}/youtube`)); } catch (e) { toast(e.message, true); }
+  }
+  $('#btn-yt-refresh').addEventListener('click', async () => {
+    try { renderYoutube(await api(`${SETTINGS_API}/youtube/refresh`, { method: 'POST', body: {} })); } catch (e) { toast(e.message, true); }
+  });
+  $('#btn-yt-disconnect').addEventListener('click', async () => {
+    if (!confirm('Disconnect the YouTube account? The browser session is deleted, and so are the cookies it provided.')) return;
+    try { renderYoutube(await api(`${SETTINGS_API}/youtube`, { method: 'DELETE' })); toast('YouTube account disconnected.'); loadSettings(); }
+    catch (e) { toast(e.message, true); }
+  });
+
+  // The browser view: frames are screenshots; clicks, keys and scrolling are sent back in order.
+  const ytDlg = $('#yt-dialog'); const ytImg = $('#yt-img');
+  let ytOpen = false; let ytQueue = Promise.resolve(); let ytTyped = ''; let ytTypeTimer = null; let ytWheel = 0; let ytWheelTimer = null;
+  const ytWait = (text) => { $('#yt-wait').hidden = !text; $('#yt-wait').textContent = text || ''; };
+  function ytSend(input) {
+    ytQueue = ytQueue.then(() => api(`${SETTINGS_API}/youtube/view/input`, { method: 'POST', body: input }))
+      .catch((e) => toast(e.message, true));
+    return ytQueue;
+  }
+  function ytFlushTyped() {
+    clearTimeout(ytTypeTimer);
+    if (ytTyped) { ytSend({ type: 'type', text: ytTyped }); ytTyped = ''; }
+  }
+  async function ytFrames() {
+    while (ytOpen) {
+      try {
+        const f = await api(`${SETTINGS_API}/youtube/view`);
+        if (!ytOpen) break;
+        if (!f.open) { ytWait('The browser was closed (it closes after 10 idle minutes). Close this window and connect again.'); break; }
+        ytImg.src = `data:image/jpeg;base64,${f.image}`; $('#yt-url').textContent = f.url || ''; ytWait('');
+      } catch (e) { ytWait(e.message); }
+      await new Promise((r) => setTimeout(r, 800));
+    }
+  }
+  $('#btn-yt-connect').addEventListener('click', async () => {
+    ytImg.removeAttribute('src'); $('#yt-url').textContent = ''; ytWait('Starting the browser… (up to a minute)');
+    ytDlg.showModal(); ytOpen = true;
+    try { await api(`${SETTINGS_API}/youtube/view/open`, { method: 'POST', body: {} }); ytImg.focus(); ytFrames(); }
+    catch (e) { ytWait(e.message); }
+  });
+  ytImg.addEventListener('click', (e) => {
+    if (!ytImg.naturalWidth) return;
+    ytFlushTyped(); ytImg.focus();
+    const scale = ytImg.naturalWidth / ytImg.clientWidth;
+    ytSend({ type: 'click', x: Math.round(e.offsetX * scale), y: Math.round(e.offsetY * scale) });
+  });
+  const YT_KEYS = ['Enter', 'Tab', 'Backspace', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+  ytImg.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key.length === 1) {
+      e.preventDefault(); ytTyped += e.key; clearTimeout(ytTypeTimer); ytTypeTimer = setTimeout(ytFlushTyped, 250);
+    } else if (YT_KEYS.includes(e.key)) {
+      e.preventDefault(); ytFlushTyped(); ytSend({ type: 'key', key: e.key });
+    }
+  });
+  ytImg.addEventListener('wheel', (e) => {
+    e.preventDefault(); ytWheel += e.deltaY; clearTimeout(ytWheelTimer);
+    ytWheelTimer = setTimeout(() => { ytSend({ type: 'scroll', dy: Math.round(ytWheel) }); ytWheel = 0; }, 200);
+  }, { passive: false });
+  for (const k of ['Enter', 'Tab', 'Backspace', 'Escape']) {
+    $('#yt-keys').append(el('button', { class: 'btn small', type: 'button', text: k, onclick: () => { ytFlushTyped(); ytSend({ type: 'key', key: k }); } }));
+  }
+  $('#yt-keys').append(el('button', { class: 'btn small', type: 'button', text: 'Back to Google sign-in',
+    onclick: () => ytSend({ type: 'login_page' }) }));
+  $('#yt-send').addEventListener('click', () => {
+    const t = $('#yt-text').value; if (!t) return;
+    ytFlushTyped(); ytSend({ type: 'type', text: t }); $('#yt-text').value = ''; ytImg.focus();
+  });
+  $('#yt-text').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#yt-send').click(); } });
+  $('#yt-back').addEventListener('click', () => ytSend({ type: 'back' }));
+  // Escape belongs to the remote browser while the picture has focus; never close the dialog by accident.
+  ytDlg.addEventListener('cancel', (e) => e.preventDefault());
+  $('#yt-cancel').addEventListener('click', async () => {
+    ytOpen = false; ytDlg.close();
+    try { await api(`${SETTINGS_API}/youtube/view/cancel`, { method: 'POST', body: {} }); } catch {}
+    loadYoutube();
+  });
+  $('#yt-done').addEventListener('click', async () => {
+    ytFlushTyped(); await ytQueue;
+    const btn = $('#yt-done'); btn.disabled = true; ytOpen = false;
+    ytWait('Checking the sign-in and testing the cookies with YouTube… (up to 2 minutes)');
+    try {
+      const y = await api(`${SETTINGS_API}/youtube/view/finish`, { method: 'POST', body: {} });
+      if (y.view_open) {  // not signed in yet: the browser stays open on the sign-in page
+        toast(y.message, true); ytOpen = true; ytFrames(); return;
+      }
+      ytDlg.close(); renderYoutube(y); loadSettings(); loadStatus();
+      toast(y.status === 'connected' ? 'YouTube account connected.' : (y.message || 'Not signed in.'), y.status !== 'connected');
+    } catch (e) { ytWait(e.message); ytOpen = true; ytFrames(); } finally { btn.disabled = false; }
   });
 
   // Drop ?spotify=... from the address bar so a reload doesn't repeat the message.

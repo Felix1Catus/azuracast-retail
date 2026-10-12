@@ -32,6 +32,13 @@ RUNNER_NICE = int(os.environ.get("MD_RUNNER_NICE", "10"))
 POT_URL = os.environ.get("MD_POT_URL", "http://music-downloader-pot:4416")
 YOUTUBE_CLIENTS = os.environ.get("MD_YOUTUBE_CLIENTS", "mweb,web_safari")
 
+# YouTube account (app/youtube_session.py): the music-downloader-browser container keeps the account signed in
+# and hands out fresh cookies every MD_YT_REFRESH_HOURS, and before a job when they're older than
+# MD_YT_REFRESH_BEFORE_JOB_MINUTES.
+BROWSER_URL = os.environ.get("MD_BROWSER_URL", "http://music-downloader-browser:8001")
+YT_REFRESH_SECONDS = int(float(os.environ.get("MD_YT_REFRESH_HOURS", "6")) * 3600)
+YT_REFRESH_BEFORE_JOB_SECONDS = int(os.environ.get("MD_YT_REFRESH_BEFORE_JOB_MINUTES", "30")) * 60
+
 # spotDL breaks ties between similar YouTube matches by view count, fetching each candidate's page with yt-dlp
 # (up to 8 per track; with PO tokens and JS challenges that's ~50 s of a ~65 s track). Off by default: the
 # best text/duration match is used instead. Set MD_RANK_BY_VIEWS=1 to restore spotDL's behaviour.
@@ -50,4 +57,6 @@ DEFAULT_SETTINGS = {
     "audio_providers": "youtube-music,youtube",
     "default_format": "mp3",
     "default_bitrate": "auto",
+    "yt_state": "{}",
+    "cookie_source": "manual",  # manual (pasted cookies.txt) | account (from the YouTube account's browser)
 }

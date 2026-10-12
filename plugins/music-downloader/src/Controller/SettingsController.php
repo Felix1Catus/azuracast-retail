@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * /api/music-downloader/settings (global "administer settings"): the Spotify app's Client ID/Secret,
- * YouTube cookies, proxy, audio sources and default format. Shared by every station on the server.
+ * YouTube cookies and account, proxy, audio sources and default format. Shared by every station on the server.
  */
 final class SettingsController
 {
@@ -79,5 +79,55 @@ final class SettingsController
     public function deleteCookiesAction(ServerRequest $request, Response $response, array $params): ResponseInterface
     {
         return $this->relay($response, $this->worker, 'DELETE', '/settings/cookies');
+    }
+
+    // ---------------------------------------------------------------- YouTube account
+
+    public function youtubeAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        return $this->relay($response, $this->worker, 'GET', '/youtube');
+    }
+
+    /** Starts a refresh in the background; the page polls youtubeAction. */
+    public function youtubeRefreshAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        return $this->relay($response, $this->worker, 'POST', '/youtube/refresh', json: []);
+    }
+
+    public function youtubeDisconnectAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        return $this->relay($response, $this->worker, 'DELETE', '/youtube', timeout: 60.0);
+    }
+
+    /** Starts Chromium on Google's sign-in page (up to a minute on a small server). */
+    public function youtubeViewOpenAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        return $this->relay($response, $this->worker, 'POST', '/youtube/view/open', json: [], timeout: 120.0);
+    }
+
+    /** One frame of the browser view: a JPEG (base64) plus the page's address. */
+    public function youtubeViewAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        return $this->relay($response, $this->worker, 'GET', '/youtube/view', timeout: 45.0)
+            ->withHeader('Cache-Control', 'no-store');
+    }
+
+    /** A click, typed text, a key, a scroll, "back" or "login_page" in the browser view. */
+    public function youtubeViewInputAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        $body = (array)$request->getParsedBody();
+        $input = array_intersect_key($body, array_flip(['type', 'x', 'y', 'text', 'key', 'dy']));
+        return $this->relay($response, $this->worker, 'POST', '/youtube/view/input', json: $input, timeout: 100.0);
+    }
+
+    /** Done: keep the session if YouTube shows the account signed in, then test the cookies (up to 2 minutes). */
+    public function youtubeViewFinishAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        return $this->relay($response, $this->worker, 'POST', '/youtube/view/finish', json: [], timeout: 240.0);
+    }
+
+    public function youtubeViewCancelAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        return $this->relay($response, $this->worker, 'POST', '/youtube/view/cancel', json: [], timeout: 60.0);
     }
 }

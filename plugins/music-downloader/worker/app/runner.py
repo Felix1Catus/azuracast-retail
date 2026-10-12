@@ -20,13 +20,15 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
-from app import config, db, ytdlp
+from app import config, db, youtube_session, ytdlp
 
 log = logging.getLogger("music-downloader.runner")
 
 FILE_TEMPLATE = "{artists} - {title}.{output-ext}"
 MAX_FILENAME_LENGTH = 180
 FAILURES_IN_A_ROW_LIMIT = 5
+# yt-dlp errors that mean YouTube no longer accepts the cookies.
+SIGNED_OUT_MARKERS = ("Sign in to confirm", "no longer valid", "cookies are no longer valid")
 
 
 class JobError(Exception):
@@ -252,24 +254,29 @@ def _download(conn, job, settings, staging: Path) -> Optional[str]:
         p.strip() for p in settings["audio_providers"].split(",") if p.strip() in config.AUDIO_PROVIDERS
     ] or ["youtube-music"]
 
-    downloader = Downloader(
-        settings={
-            "output": str(staging / FILE_TEMPLATE),
-            "format": job["format"],
-            "bitrate": job["bitrate"],
-            "audio_providers": providers,
-            "lyrics_providers": [],
-            "threads": 1,
-            "overwrite": "skip",
-            "cookie_file": str(config.COOKIE_FILE) if config.COOKIE_FILE.exists() else None,
-            "proxy": settings["proxy"] or None,
-            "max_filename_length": MAX_FILENAME_LENGTH,
-            "yt_dlp_args": shlex.join(ytdlp.args()),
-            "ffmpeg_args": "-vn",  # HLS fallback formats carry a video track
-            "simple_tui": True,
-            "log_level": "INFO",
-        }
-    )
+    def new_downloader():
+        # spotDL's YouTube provider reads the cookie file when it's created, so a refresh needs a new one.
+        return Downloader(
+            settings={
+                "output": str(staging / FILE_TEMPLATE),
+                "format": job["format"],
+                "bitrate": job["bitrate"],
+                "audio_providers": providers,
+                "lyrics_providers": [],
+                "threads": 1,
+                "overwrite": "skip",
+                "cookie_file": str(config.COOKIE_FILE) if config.COOKIE_FILE.exists() else None,
+                "proxy": settings["proxy"] or None,
+                "max_filename_length": MAX_FILENAME_LENGTH,
+                "yt_dlp_args": shlex.join(ytdlp.args()),
+                "ffmpeg_args": "-vn",  # HLS fallback formats carry a video track
+                "simple_tui": True,
+                "log_level": "INFO",
+            }
+        )
+
+    downloader = new_downloader()
+    refreshed_cookies = False
 
     # Pass 1 downloads everything pending; pass 2 retries this run's failures once (the first YouTube request
     # after a restart sometimes fails while the PO-token server warms up).
@@ -325,7 +332,19 @@ def _download(conn, job, settings, staging: Path) -> Optional[str]:
             else:
                 failures_in_a_row += 1
                 new_errors = downloader.errors[errors_before:]
-                _set_track(conn, row["id"], "failed", error=_friendly_error(error or (new_errors[-1] if new_errors else None)))
+                raw_error = error or (new_errors[-1] if new_errors else None)
+                _set_track(conn, row["id"], "failed", error=_friendly_error(raw_error))
+                if not refreshed_cookies and raw_error and any(m in raw_error for m in SIGNED_OUT_MARKERS):
+                    # Once per job: get fresh cookies from the YouTube account's browser; the retry pass
+                    # downloads this track again.
+                    refreshed_cookies = True
+                    log.info("YouTube refused the cookies; refreshing them from the YouTube account")
+                    try:
+                        if youtube_session.refresh().get("status") == "connected":
+                            downloader = new_downloader()
+                            failures_in_a_row = 0
+                    except Exception:  # pylint: disable=broad-except
+                        log.exception("YouTube cookie refresh failed")
 
             db.refresh_counts(conn, job["id"])
 

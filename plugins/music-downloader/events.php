@@ -36,6 +36,20 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
         })
     );
 
+    // YouTube account alerts: a dashboard notice for settings admins, and an email (see Sync\YouTubeAlertTask).
+    // Resolved from the DI container when the dashboard asks for notifications; it catches its own errors.
+    $dispatcher->addCallableListener(
+        Event\GetNotifications::class,
+        \Plugin\MusicDownloader\Notification\YouTubeNotice::class
+    );
+
+    $dispatcher->addListener(
+        Event\GetSyncTasks::class,
+        $guard('sync tasks', static function (Event\GetSyncTasks $event) {
+            $event->addTask(\Plugin\MusicDownloader\Sync\YouTubeAlertTask::class);
+        })
+    );
+
     $dispatcher->addListener(
         Event\BuildRoutes::class,
         $guard('routes', static function (Event\BuildRoutes $event) {
@@ -95,6 +109,15 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
                     $group->put('/cookies', $s . ':putCookiesAction');
                     $group->delete('/cookies', $s . ':deleteCookiesAction');
                     $group->post('/cookies/test', $s . ':testCookiesAction');
+                    // YouTube account: an admin signs in once in the browser view; the worker keeps the cookies fresh.
+                    $group->get('/youtube', $s . ':youtubeAction');
+                    $group->post('/youtube/refresh', $s . ':youtubeRefreshAction');
+                    $group->delete('/youtube', $s . ':youtubeDisconnectAction');
+                    $group->post('/youtube/view/open', $s . ':youtubeViewOpenAction');
+                    $group->get('/youtube/view', $s . ':youtubeViewAction');
+                    $group->post('/youtube/view/input', $s . ':youtubeViewInputAction');
+                    $group->post('/youtube/view/finish', $s . ':youtubeViewFinishAction');
+                    $group->post('/youtube/view/cancel', $s . ':youtubeViewCancelAction');
                 }
             )->add(new Middleware\Permissions(GlobalPermissions::Settings))
                 ->add(Middleware\Module\Api::class)

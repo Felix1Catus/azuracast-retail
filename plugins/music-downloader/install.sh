@@ -22,6 +22,7 @@ REPO="Felix1Catus/azuracast-retail"
 PLUGIN="music-downloader"       # folder name: defines the PHP namespace Plugin\MusicDownloader
 SERVICE="music-downloader"      # compose service name = the worker's hostname on the Docker network
 POT_SERVICE="music-downloader-pot"   # YouTube PO-token server used by yt-dlp (see worker/app/ytdlp.py)
+BROWSER_SERVICE="music-downloader-browser"   # YouTube account's Chromium (worker image; see worker/app/browser.py)
 POT_IMAGE="brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno"   # same version as bgutil-ytdlp-pot-provider in worker/requirements.txt
 MARK="# managed-by: acacia plugin installers"
 ENV_FILE="music-downloader.env"
@@ -105,7 +106,8 @@ if [ "$ACTION" = uninstall ]; then
       del(.services.web.volumes[] | select(test(\"plugins/$PLUGIN\"))) |
       del(.services.web.env_file[] | select(. == \"$ENV_FILE\")) |
       del(.services.\"$SERVICE\") |
-      del(.services.\"$POT_SERVICE\")
+      del(.services.\"$POT_SERVICE\") |
+      del(.services.\"$BROWSER_SERVICE\")
     " docker-compose.override.yml || die "Couldn't edit $OV automatically; remove the music-downloader parts by hand."
     yq -i 'del(.services.web.volumes | select(length == 0)) | del(.services.web.env_file | select(length == 0)) | del(.services.web | select(length == 0))' docker-compose.override.yml || true
   fi
@@ -122,8 +124,8 @@ cat <<EOF
 This will:
   1. put the Music Downloader plugin in $DIR/plugins/$PLUGIN (an existing copy is kept as a .bak folder)
   2. build the worker image (spotDL + yt-dlp + ffmpeg + Deno; a few minutes the first time)
-  3. add the plugin mount, the "$SERVICE" worker and the "$POT_SERVICE" YouTube token server
-     ($POT_IMAGE) to $(basename "$OV")
+  3. add the plugin mount, the "$SERVICE" worker, the "$POT_SERVICE" YouTube token server
+     ($POT_IMAGE) and the "$BROWSER_SERVICE" YouTube account browser to $(basename "$OV")
   4. recreate the Acacia Radio container (stations restart; about a minute of downtime)
 EOF
 confirm "Continue?" || die "Cancelled."
@@ -196,7 +198,24 @@ yq -i "
     \"mem_limit\": \"512m\",
     \"logging\": {\"options\": {\"max-size\": \"1m\", \"max-file\": \"3\"}}
   } |
-  .volumes.music_downloader_data = {}
+  .services.\"$BROWSER_SERVICE\" = {
+    \"container_name\": \"acacia_music_downloader_browser\",
+    \"image\": \"$IMAGE\",
+    \"pull_policy\": \"never\",
+    \"command\": [\"xvfb-run\", \"-a\", \"-s\", \"-screen 0 1280x800x24 -nolisten tcp\", \"python\", \"-m\", \"uvicorn\",
+                \"app.browser_api:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8001\", \"--no-access-log\"],
+    \"env_file\": [\"$ENV_FILE\"],
+    \"volumes\": [\"music_downloader_browser:/data\"],
+    \"healthcheck\": {\"test\": [\"CMD\", \"python\", \"-c\", \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=4)\"],
+                    \"interval\": \"60s\", \"timeout\": \"5s\", \"start_period\": \"20s\"},
+    \"restart\": \"unless-stopped\",
+    \"cpu_shares\": 256,
+    \"mem_limit\": \"1g\",
+    \"shm_size\": \"256m\",
+    \"logging\": {\"options\": {\"max-size\": \"1m\", \"max-file\": \"3\"}}
+  } |
+  .volumes.music_downloader_data = {} |
+  .volumes.music_downloader_browser = {}
 " docker-compose.override.yml || die "Couldn't update $OV automatically (a backup is next to it)."
 "${DC[@]}" config -q || die "docker compose rejects the configuration; check $OV (a backup of the previous file is next to it)."
 
@@ -224,8 +243,9 @@ Next steps:
      Redirect URI shown there in the Spotify developer dashboard.
   3. Give other roles the station permission "Download Music" under Administration > Roles.
 
-If downloads fail with "YouTube refused the download", this server's IP is blocked by YouTube: add YouTube
-cookies or a proxy in Settings (see README.md).
+If downloads fail with "YouTube refused the download", this server's IP is blocked by YouTube: use
+"Connect YouTube account" in Settings (sign in once; the cookies are then kept fresh), or add cookies or a
+proxy by hand (see README.md).
 
 Update later by re-running this script. Remove with --uninstall.
 EOF

@@ -4,3 +4,5 @@ spotdl==4.5.2
 yt-dlp[default]==2026.8.19
 # yt-dlp plugin that fetches YouTube "PO tokens" from the music-downloader-pot container (bgutil server, same version).
 bgutil-ytdlp-pot-provider==2.0.2
+# Attaches to the YouTube account's Chromium over CDP (app/browser.py); uses Debian's chromium, not its own browsers.
+playwright==1.55.0

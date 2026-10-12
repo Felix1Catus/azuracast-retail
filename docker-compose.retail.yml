@@ -9,8 +9,9 @@
 #     (Administration > Settings > "Use Web Proxy for Radio" must stay on). No SFTP port.
 #   - no `updater` container: it would replace this image with upstream.
 #   - Music Downloader (built-in module, plugins/music-downloader): the `music-downloader` worker (spotDL,
-#     built by util/build_image.sh) and `music-downloader-pot` (YouTube PO tokens). Both are internal only
-#     and share a secret through music-downloader.env, which the installer and `./docker.sh update` create.
+#     built by util/build_image.sh), `music-downloader-pot` (YouTube PO tokens) and `music-downloader-browser`
+#     (the YouTube account's Chromium, same image as the worker). All are internal only and share a secret
+#     through music-downloader.env, which the installer and `./docker.sh update` create.
 #
 # Other plugins are mounted from docker-compose.override.yml.
 #
@@ -69,6 +70,33 @@ services:
         max-size: "1m"
         max-file: "3"
 
+  music-downloader-browser:
+    container_name: acacia_music_downloader_browser
+    # Same image as the worker; keeps the YouTube account's Chromium profile (app/browser.py).
+    # Chromium only runs during a cookie refresh or while an admin uses the browser view.
+    image: "${MUSIC_DOWNLOADER_IMAGE:-acacia-radio-music-downloader:latest}"
+    pull_policy: never
+    command: [ "xvfb-run", "-a", "-s", "-screen 0 1280x800x24 -nolisten tcp",
+               "python", "-m", "uvicorn", "app.browser_api:app", "--host", "0.0.0.0", "--port", "8001", "--no-access-log" ]
+    env_file:
+      - path: music-downloader.env
+        required: false
+    volumes:
+      - music_downloader_browser:/data
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=4)" ]
+      interval: 60s
+      timeout: 5s
+      start_period: 20s
+    restart: unless-stopped
+    cpu_shares: 256
+    mem_limit: 1g
+    shm_size: 256m
+    logging:
+      options:
+        max-size: "1m"
+        max-file: "3"
+
   music-downloader-pot:
     container_name: acacia_music_downloader_pot
     # Same version as bgutil-ytdlp-pot-provider in plugins/music-downloader/worker/requirements.txt.
@@ -83,6 +111,7 @@ services:
 
 volumes:
   music_downloader_data: { }
+  music_downloader_browser: { }
   db_data: { }
   acme: { }
   shoutcast2_install: { }

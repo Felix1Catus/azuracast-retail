@@ -24,9 +24,10 @@ trait RelaysWorker
         array $query = [],
         ?array $json = null,
         int $successStatus = 200,
+        float $timeout = 20.0,
     ): ResponseInterface {
         try {
-            [$status, $data] = $worker->call($method, $path, $query, $json);
+            [$status, $data] = $worker->call($method, $path, $query, $json, timeout: $timeout);
         } catch (WorkerUnavailable $e) {
             return $response->withJson(['message' => $e->getMessage()], 503);
         }

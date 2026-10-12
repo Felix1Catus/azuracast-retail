@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel, Field
 
-from app import config, cookies, db, spotify_auth
+from app import config, cookies, db, spotify_auth, youtube_session
 
 log = logging.getLogger("music-downloader")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -105,6 +105,11 @@ class Scheduler(threading.Thread):
                 self.launch(row["id"])
 
     def launch(self, job_id: int) -> None:
+        # Fresh YouTube cookies from the account's browser, unless they were refreshed recently.
+        try:
+            youtube_session.refresh(max_age=config.YT_REFRESH_BEFORE_JOB_SECONDS)
+        except Exception:  # pylint: disable=broad-except
+            log.exception("YouTube refresh before job %s failed", job_id)
         workdir = config.JOBS_DIR / str(job_id)
         workdir.mkdir(parents=True, exist_ok=True)
         with open(workdir / "runner.log", "ab") as logfile:
@@ -167,6 +172,7 @@ def startup() -> None:
         }
     )
     scheduler.start()
+    youtube_session.Keeper().start()
 
 
 # ------------------------------------------------------------------ health + settings
@@ -185,6 +191,7 @@ def public_settings(conn) -> Dict[str, Any]:
         "spotify_app_ready": bool(s["client_id"] and s["client_secret"]),
         "has_cookies": config.COOKIE_FILE.exists(),
         "cookies": cookies.info(),
+        "youtube": youtube_session.public_view(conn),
         "proxy": s["proxy"],
         "audio_providers": [p for p in s["audio_providers"].split(",") if p],
         "default_format": s["default_format"],
@@ -254,6 +261,7 @@ async def put_cookies(request: Request) -> Dict[str, Any]:
     except cookies.CookieError as exc:
         raise HTTPException(422, str(exc)) from exc
     with db.session() as conn:
+        db.set_setting(conn, "cookie_source", "manual")
         return public_settings(conn)
 
 
@@ -269,6 +277,83 @@ def delete_cookies() -> Dict[str, Any]:
     config.COOKIE_FILE.unlink(missing_ok=True)
     with db.session() as conn:
         return public_settings(conn)
+
+
+# ------------------------------------------------------------------ YouTube account (app/youtube_session.py)
+
+
+def _youtube(fn):
+    try:
+        return fn()
+    except youtube_session.Busy as exc:
+        raise HTTPException(409, str(exc)) from exc
+    except youtube_session.BadInput as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except youtube_session.BrowserError as exc:
+        raise HTTPException(502, str(exc)) from exc
+
+
+def _youtube_view() -> Dict[str, Any]:
+    with db.session() as conn:
+        return youtube_session.public_view(conn)
+
+
+@app.get("/youtube", dependencies=auth)
+def get_youtube() -> Dict[str, Any]:
+    return _youtube_view()
+
+
+@app.post("/youtube/refresh", dependencies=auth)
+def refresh_youtube() -> Dict[str, Any]:
+    _youtube(youtube_session.refresh_in_background)
+    return _youtube_view()
+
+
+@app.delete("/youtube", dependencies=auth)
+def disconnect_youtube() -> Dict[str, Any]:
+    youtube_session.disconnect()
+    return _youtube_view()
+
+
+@app.post("/youtube/view/open", dependencies=auth)
+def open_youtube_view() -> Dict[str, Any]:
+    return _youtube(youtube_session.open_view)
+
+
+@app.get("/youtube/view", dependencies=auth)
+def youtube_view_frame() -> Dict[str, Any]:
+    return _youtube(lambda: youtube_session.browser("GET", "/view", timeout=40))
+
+
+@app.post("/youtube/view/input", dependencies=auth)
+def youtube_view_input(body: Dict[str, Any]) -> Dict[str, Any]:
+    return _youtube(lambda: youtube_session.browser("POST", "/view/input", body, timeout=100))
+
+
+@app.post("/youtube/view/finish", dependencies=auth)
+def youtube_view_finish() -> Dict[str, Any]:
+    return _youtube(youtube_session.finish_view)
+
+
+@app.post("/youtube/view/cancel", dependencies=auth)
+def youtube_view_cancel() -> Dict[str, Any]:
+    _youtube(lambda: youtube_session.browser("POST", "/view/cancel"))
+    return _youtube_view()
+
+
+@app.get("/youtube/alert", dependencies=auth)
+def youtube_alert() -> Dict[str, Any]:
+    return {"alert": youtube_session.pending_alert()}
+
+
+class AlertAckIn(BaseModel):
+    at: int
+
+
+@app.post("/youtube/alert/ack", dependencies=auth)
+def youtube_alert_ack(body: AlertAckIn) -> Dict[str, Any]:
+    youtube_session.ack_alert(body.at)
+    return {"ok": True}
 
 
 # ------------------------------------------------------------------ Spotify login
