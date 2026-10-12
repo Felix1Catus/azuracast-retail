@@ -9,7 +9,7 @@
                     style="width: 100%;"
                     :data="chartsData.average.metrics"
                     :alt="chartsData.average.alt"
-                    :aspect-ratio="3"
+                    :aspect-ratio="4"
                     :options="dashboardChartOptions"
                 />
             </tab>
@@ -18,7 +18,7 @@
                     style="width: 100%;"
                     :data="chartsData.unique.metrics"
                     :alt="chartsData.unique.alt"
-                    :aspect-ratio="3"
+                    :aspect-ratio="4"
                     :options="dashboardChartOptions"
                 />
             </tab>

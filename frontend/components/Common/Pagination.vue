@@ -1,5 +1,8 @@
 <template>
-    <nav class="d-flex">
+    <nav
+        v-if="pageCount > 1"
+        class="d-flex"
+    >
         <ul class="pagination mb-0">
             <pagination-item
                 v-if="hasFirst"

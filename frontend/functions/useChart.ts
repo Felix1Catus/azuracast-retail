@@ -56,6 +56,11 @@ Chart.defaults.plugins.tooltip.padding = 10;
 Chart.defaults.plugins.tooltip.cornerRadius = 8;
 Chart.defaults.plugins.tooltip.boxPadding = 4;
 Chart.defaults.plugins.tooltip.usePointStyle = true;
+const linearScale = (Chart.defaults.scales as Record<string, any>).linear;
+if (linearScale) {
+    linearScale.beginAtZero = true;
+    linearScale.ticks = { ...linearScale.ticks, precision: 0 };
+}
 
 interface ChartAltValue {
     label: string;
