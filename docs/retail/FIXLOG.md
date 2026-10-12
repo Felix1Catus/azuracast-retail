@@ -8,6 +8,21 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.10 (2026-10-12)
+
+The Acacia Radio design, and a fix for stale plugin routes. Application behaviour is unchanged. Update from retail.8
+or retail.9 with `./docker.sh update-self && ./docker.sh update`; from retail.7, follow the retail.8 steps with
+`v0.23.8-retail.10`.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Acacia Radio design.** Savanna palette (acacia leaf green, blossom gold, bark, sky, clay on sand) in light and dark mode; light sticky header with the logo; cards with thin borders and blossom-accented titles instead of solid blue bars; rounded leaf-tint menu items; restyled tabs, dropdowns, modals, buttons (no all-caps), forms, tables, badges and progress bars | `frontend/scss/_acacia.scss`, `_variables.scss` | Dev server |
+| — | **Login and public pages:** savanna dusk with an acacia on the horizon (night version in dark mode), drawn in CSS/SVG; frosted login card with the logo | `frontend/scss/_acacia.scss` | Dev server, dark mode |
+| — | **Charts:** acacia palette, smooth lines without dots, light gridlines, rounded bars, softer fills, one tooltip for all series, whole-number axes from zero, flatter dashboard chart | `frontend/functions/useChart.ts`, `frontend/vendor/chartjs_colorschemes.ts`, `DashboardCharts.vue` | Dev server |
+| — | **Lighter pages:** system UI font instead of six Roboto web fonts, no hexagon background images (874 KB) or header image. Login page about 340 KB instead of about 900 KB | `frontend/scss` | Dev server: measured |
+| — | **Single-page lists** no longer show a page selector | `Pagination.vue` | Dev server |
+| — | **Stale plugin routes after updates:** the route cache is keyed on file times, but opcache could still run the old `events.php`, caching old routes under the new key (new routes answered 405). Changed route files are now invalidated in opcache first; plugin reload/install scripts restart PHP before clearing `app_routes*.cache.php` | `backend/src/AppFactory.php`, `plugins/*/reload.sh`, `plugins/*/install.sh` | Found on the dev server while updating Music Downloader |
+
 ## 0.23.8-retail.9 (2026-10-12)
 
 Fix for retail.8. Update from retail.8 with `./docker.sh update-self && ./docker.sh update`; from retail.7, follow
