@@ -20,7 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
 #[AsCommand(
-    name: 'azuracast:api:docs',
+    name: 'acacia:api:docs',
     description: 'Trigger regeneration of Acacia Radio API documentation.',
 )]
 final class GenerateApiDocsCommand extends CommandAbstract
@@ -57,9 +57,9 @@ final class GenerateApiDocsCommand extends CommandAbstract
         ?string $version = null,
         string $apiBaseUrl = 'https://acaciaradio.tech/api'
     ): ?OpenApi {
-        define('AZURACAST_API_URL', $apiBaseUrl);
-        define('AZURACAST_API_NAME', 'Acacia Radio Public Demo Server');
-        define('AZURACAST_VERSION', $version ?? Version::STABLE_VERSION);
+        define('ACACIA_API_URL', $apiBaseUrl);
+        define('ACACIA_API_NAME', 'Acacia Radio Public Demo Server');
+        define('ACACIA_VERSION', $version ?? Version::STABLE_VERSION);
 
         $srcDir = $this->environment->getBackendDirectory() . '/src';
 

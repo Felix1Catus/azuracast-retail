@@ -6,7 +6,7 @@ namespace App;
 
 use App\Enums\ApplicationEnvironment;
 use App\Enums\ReleaseChannel;
-use App\Installer\EnvFiles\AzuraCastEnvFile;
+use App\Installer\EnvFiles\AcaciaRadioEnvFile;
 use App\Radio\Configuration;
 use App\Traits\AvailableStaticallyTrait;
 use App\Utilities\File;
@@ -44,9 +44,9 @@ final class Environment
 
     public const string LANG = 'LANG';
 
-    public const string RELEASE_CHANNEL = 'AZURACAST_VERSION';
+    public const string RELEASE_CHANNEL = 'ACACIA_VERSION';
 
-    public const string SFTP_PORT = 'AZURACAST_SFTP_PORT';
+    public const string SFTP_PORT = 'ACACIA_SFTP_PORT';
 
     public const string AUTO_ASSIGN_PORT_MIN = 'AUTO_ASSIGN_PORT_MIN';
     public const string AUTO_ASSIGN_PORT_MAX = 'AUTO_ASSIGN_PORT_MAX';
@@ -86,9 +86,9 @@ final class Environment
 
         if (! $this->isDocker) {
             try {
-                $azuracastEnvPath = AzuraCastEnvFile::buildPathFromBase($this->baseDir);
-                $azuracastEnv = AzuraCastEnvFile::fromEnvFile($azuracastEnvPath);
-                $this->data = array_merge($elements, $azuracastEnv->toArray());
+                $acaciaEnvPath = AcaciaRadioEnvFile::buildPathFromBase($this->baseDir);
+                $acaciaEnv = AcaciaRadioEnvFile::fromEnvFile($acaciaEnvPath);
+                $this->data = array_merge($elements, $acaciaEnv->toArray());
             } catch (Exception) {
                 $this->data = $elements;
             }
@@ -128,7 +128,7 @@ final class Environment
     }
 
     /**
-     * @return string The parent directory the application is within, i.e. `/var/azuracast`.
+     * @return string The parent directory the application is within, i.e. `/var/acacia`.
      */
     public function getParentDirectory(): string
     {
@@ -349,12 +349,12 @@ final class Environment
             ),
             'dbname' => Types::string(
                 $this->data[self::DB_NAME] ?? null,
-                'azuracast',
+                'acacia',
                 true
             ),
             'user' => Types::string(
                 $this->data[self::DB_USER] ?? null,
-                'azuracast',
+                'acacia',
                 true
             ),
             'password' => Types::string(

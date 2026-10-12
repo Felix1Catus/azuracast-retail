@@ -6,7 +6,7 @@ import {
     DataTableItemProvider,
     DataTableRow,
 } from "~/functions/useHasDatatable.ts";
-import { useAzuraCast } from "~/vendor/azuracast.ts";
+import { useAcaciaRadio } from "~/vendor/acacia.ts";
 
 export function useClientItemProvider<Row extends DataTableRow = DataTableRow>(
     items: MaybeRefOrGetter<Row[]>,
@@ -54,7 +54,7 @@ export function useClientItemProvider<Row extends DataTableRow = DataTableRow>(
         return filteredItems.value.length;
     });
 
-    const { localeShort } = useAzuraCast();
+    const { localeShort } = useAcaciaRadio();
 
     const rows = computed(() => {
         let itemsOnPage = filteredItems.value;

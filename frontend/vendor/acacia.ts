@@ -9,7 +9,7 @@ import injectRequired from "~/functions/injectRequired.ts";
 
 export const globalConstantsKey = Symbol() as InjectionKey<VueAppGlobals>;
 
-export const useAzuraCastStore = defineStore(
+export const useAcaciaRadioStore = defineStore(
     "global-props",
     (): {
         props: VueAppGlobals;
@@ -20,13 +20,13 @@ export const useAzuraCastStore = defineStore(
     },
 );
 
-export const useAzuraCast = (): VueAppGlobals => {
-    const { props } = useAzuraCastStore();
+export const useAcaciaRadio = (): VueAppGlobals => {
+    const { props } = useAcaciaRadioStore();
     return props;
 };
 
-export const useAzuraCastDashboardGlobals = (): VueDashboardGlobals => {
-    const { dashboardProps } = useAzuraCast();
+export const useAcaciaRadioDashboardGlobals = (): VueDashboardGlobals => {
+    const { dashboardProps } = useAcaciaRadio();
     if (!dashboardProps) {
         throw new Error("Dashboard properties are undefined in this request.");
     }
@@ -34,8 +34,8 @@ export const useAzuraCastDashboardGlobals = (): VueDashboardGlobals => {
     return dashboardProps;
 };
 
-export const useAzuraCastUser = (): VueUserGlobals => {
-    const { user } = useAzuraCast();
+export const useAcaciaRadioUser = (): VueUserGlobals => {
+    const { user } = useAcaciaRadio();
 
     if (!user) {
         throw Error("User is not logged in.");

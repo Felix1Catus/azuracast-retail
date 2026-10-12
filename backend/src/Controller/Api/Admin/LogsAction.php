@@ -164,25 +164,25 @@ final class LogsAction extends StationLogsAction
         $tempDir = $this->environment->getTempDirectory();
         $logPaths = [
             new LogType(
-                'azuracast_log',
+                'acacia_log',
                 __('Acacia Radio Application Log'),
                 $tempDir . '/app-' . gmdate('Y-m-d') . '.log',
                 true,
             ),
             new LogType(
-                'azuracast_nowplaying_log',
+                'acacia_nowplaying_log',
                 __('Acacia Radio Now Playing Log'),
                 $tempDir . '/app_nowplaying-' . gmdate('Y-m-d') . '.log',
                 true,
             ),
             new LogType(
-                'azuracast_sync_log',
+                'acacia_sync_log',
                 __('Acacia Radio Synchronized Task Log'),
                 $tempDir . '/app_sync-' . gmdate('Y-m-d') . '.log',
                 true
             ),
             new LogType(
-                'azuracast_worker_log',
+                'acacia_worker_log',
                 __('Acacia Radio Queue Worker Log'),
                 $tempDir . '/app_worker-' . gmdate('Y-m-d') . '.log',
                 true
@@ -234,14 +234,14 @@ final class LogsAction extends StationLogsAction
         $liquidsoapDir = $this->environment->getParentDirectory() . '/liquidsoap';
 
         $logPaths[] = new LogType(
-            'azuracast_liq_functions',
+            'acacia_liq_functions',
             __('Acacia Radio Common Liquidsoap Functions'),
-            $liquidsoapDir . '/azuracast.liq',
+            $liquidsoapDir . '/acacia.liq',
             false,
         );
 
         $logPaths[] = new LogType(
-            'azuracast_liq_autocue',
+            'acacia_liq_autocue',
             __('AutoCue Liquidsoap Functions'),
             $liquidsoapDir . '/autocue.liq',
             false,

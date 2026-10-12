@@ -21,7 +21,7 @@ build: # Rebuild all containers and restart
 
 post-update:
 	$(MAKE) down
-	docker compose run --rm web azuracast_dev_install --update
+	docker compose run --rm web acacia_dev_install --update
 	$(MAKE) up
 
 update: # Update everything (i.e. after a branch update)
@@ -37,17 +37,17 @@ update-depot: # Update everything using Depot
 	$(MAKE) post-update
 
 test:
-	docker compose exec --user=azuracast web composer run cleanup-and-test
+	docker compose exec --user=acacia web composer run cleanup-and-test
 
 bash:
-	docker compose exec --user=azuracast web bash
+	docker compose exec --user=acacia web bash
 
 bash-root:
 	docker compose exec web bash
 
 generate-locales:
-	docker compose exec --user=azuracast web azuracast_cli locale:generate
+	docker compose exec --user=acacia web acacia_cli locale:generate
 
 import-locales:
-	docker compose exec --user=azuracast web azuracast_cli locale:import
+	docker compose exec --user=acacia web acacia_cli locale:import
 

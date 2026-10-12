@@ -20,7 +20,7 @@ abstract class AbstractDatabaseCommand extends CommandAbstract
     use EntityManagerAwareTrait;
     use EnvironmentAwareTrait;
 
-    public const string DB_BACKUP_PATH = '/tmp/azuracast_backup_mariadb/db.sql';
+    public const string DB_BACKUP_PATH = '/tmp/acacia_backup_mariadb/db.sql';
 
     protected function getDatabaseSettingsAsCliFlags(): array
     {

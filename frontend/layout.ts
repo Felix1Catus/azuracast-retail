@@ -5,7 +5,7 @@ import { App, Component, createApp, h, reactive } from "vue";
 import AppWrapper from "~/components/Layout/AppWrapper.vue";
 import { VueAppGlobals } from "~/entities/ApiInterfaces.ts";
 import installAxios from "~/vendor/axios";
-import { globalConstantsKey, useAzuraCast } from "~/vendor/azuracast";
+import { globalConstantsKey, useAcaciaRadio } from "~/vendor/acacia";
 import { installTranslate } from "~/vendor/gettext";
 import installTanstack from "~/vendor/tanstack.ts";
 
@@ -17,7 +17,7 @@ export default function initApp(
 } {
     const vueApp: App<Element> = createApp({
         setup() {
-            const { componentProps } = useAzuraCast();
+            const { componentProps } = useAcaciaRadio();
             return {
                 componentProps,
             };

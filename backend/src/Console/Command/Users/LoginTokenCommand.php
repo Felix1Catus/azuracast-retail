@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:account:login-token',
+    name: 'acacia:account:login-token',
     description: 'Create a unique login token URL for the specified account.',
 )]
 final class LoginTokenCommand extends CommandAbstract

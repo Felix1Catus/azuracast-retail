@@ -1,13 +1,13 @@
-let azuracast.utilities = ()
+let acacia.utilities = ()
 
 # Reimplement LS's now-deprecated drop_metadata function.
-def azuracast.utilities.drop_metadata(~id:drop_meta_id=null, s)
+def acacia.utilities.drop_metadata(~id:drop_meta_id=null, s)
     let {metadata=_, ...tracks} = source.tracks(s)
     source(id=drop_meta_id, tracks)
 end
 
 # Skip command (used by web UI)
-def azuracast.utilities.add_skip_command(s) =
+def acacia.utilities.add_skip_command(s) =
     def skip(_) =
         source.skip(s)
         "Done!"
@@ -27,7 +27,7 @@ end
 # format: insert key1="val1",key2="val2",...
 # @flag extra
 # @category Source / Track processing
-def azuracast.utilities.add_custom_metadata_command(
+def acacia.utilities.add_custom_metadata_command(
     ~id:custom_meta_id=null,
     s
 ) =

@@ -282,7 +282,7 @@ const openPopupPlayer = () => {
 
     window.open(
         popupUrl.value,
-        "azuracast-player-popup",
+        "acacia-player-popup",
         "width=540,height=760,resizable=yes,scrollbars=yes",
     );
 };
@@ -304,7 +304,7 @@ const blankContinuousStorage: ContinuousStorage = {
 };
 
 const continuousStorage = useOptionalStorage<ContinuousStorage>(
-    () => `azuracast-player-state-${props.nowPlayingProps.stationShortName}`,
+    () => `acacia-player-state-${props.nowPlayingProps.stationShortName}`,
     blankContinuousStorage,
 );
 

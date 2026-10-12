@@ -22,7 +22,7 @@ import FullCalendar, { CalendarApi, CalendarOptions } from "@fullcalendar/vue3";
 import allLocales from "@fullcalendar/vue3/locales-all";
 import timeGridPlugin from "@fullcalendar/vue3/timegrid";
 import { computed, h, useTemplateRef } from "vue";
-import { useAzuraCast } from "~/vendor/azuracast";
+import { useAcaciaRadio } from "~/vendor/acacia";
 import IconIcChevronLeft from "~icons/ic/baseline-chevron-left";
 import IconIcChevronRight from "~icons/ic/baseline-chevron-right";
 
@@ -64,7 +64,7 @@ bootstrap5Plugin.optionDefaults.buttons = {
     },
 };
 
-const { localeShort, timeConfig } = useAzuraCast();
+const { localeShort, timeConfig } = useAcaciaRadio();
 
 const calendarOptions = computed<CalendarOptions>(() => {
     return {

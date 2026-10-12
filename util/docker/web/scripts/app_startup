@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [ `whoami` != 'azuracast' ]; then
-    exec gosu azuracast app_startup
+if [ `whoami` != 'acacia' ]; then
+    exec gosu acacia app_startup
 fi
 
 # Wait for initial services to become available
@@ -9,8 +9,8 @@ uptime_wait redis || exit 1
 uptime_wait db || exit 1
 
 # Run initial app setup steps before spinning up other services
-azuracast_cli azuracast:setup --init || exit 1
-azuracast_cli azuracast:acme:get-certificate || true
+acacia_cli acacia:setup --init || exit 1
+acacia_cli acacia:acme:get-certificate || true
 
 # Start PHP-FPM and Centrifugo
 supervisorctl start php-fpm

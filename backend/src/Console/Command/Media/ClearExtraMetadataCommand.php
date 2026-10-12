@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:media:clear-extra',
+    name: 'acacia:media:clear-extra',
     description: 'Clear all extra metadata from the specified media.',
 )]
 final class ClearExtraMetadataCommand extends AbstractBatchMediaCommand

@@ -2,4 +2,4 @@
 set -e
 set -x
 
-chown -R azuracast:azuracast /var/azuracast
+chown -R acacia:acacia /var/acacia

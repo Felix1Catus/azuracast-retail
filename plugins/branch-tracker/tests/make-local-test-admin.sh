@@ -3,7 +3,7 @@
 # with a generated password saved to backups/local-test-admin (gitignored, mode 600). Used to look at the
 # dashboard in a browser on localhost. Never run against prod.
 set -euo pipefail
-CONTAINER=${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}
+CONTAINER=${TRACKER_CONTAINER:-$(docker ps --filter label=com.docker.compose.service=web --format '{{.Names}}' | head -n 1)}
 STATION=${STATION:-store}
 cd "$(dirname "$0")/../../.."
 C=$CONTAINER

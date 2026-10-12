@@ -33,5 +33,5 @@ printf "[mariadb]\nhost-cache-size=0\nskip-name-resolve\n" > /etc/mysql/mariadb.
 
 mkdir /docker-entrypoint-initdb.d
 
-cp /bd_build/mariadb/mariadb/db.sql /docker-entrypoint-initdb.d/00-azuracast.sql
+cp /bd_build/mariadb/mariadb/db.sql /docker-entrypoint-initdb.d/00-acacia.sql
 cp /bd_build/mariadb/mariadb/db.cnf.tmpl /etc/mysql/db.cnf.tmpl

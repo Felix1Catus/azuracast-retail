@@ -129,7 +129,7 @@ final class Annotations implements EventSubscriberInterface
         $cacheKey = $this->autoCueCache->getCacheKey($media);
 
         $event->addAnnotations([
-            'azuracast_cache_key' => $cacheKey,
+            'acacia_cache_key' => $cacheKey,
             ...$this->processAutocueAnnotations(
                 $station,
                 $this->autoCueCache->getForCacheKey($cacheKey),
@@ -240,7 +240,7 @@ final class Annotations implements EventSubscriberInterface
         $annotations[Meta::FADE_OUT] ??= $defaultFade;
 
         return [
-            'azuracast_autocue' => true,
+            'acacia_autocue' => true,
             'liq_amplify' => Types::stringOrNull($annotations[Meta::AMPLIFY] ?? null),
             'autocue_cue_in' => Types::float($annotations[Meta::CUE_IN]),
             'autocue_cue_out' => Types::float($annotations[Meta::CUE_OUT]),

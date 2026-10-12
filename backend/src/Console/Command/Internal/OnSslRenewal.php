@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'azuracast:internal:on-ssl-renewal',
+    name: 'acacia:internal:on-ssl-renewal',
     description: 'Reload broadcast frontends when an SSL certificate changes.',
 )]
 final class OnSslRenewal extends CommandAbstract

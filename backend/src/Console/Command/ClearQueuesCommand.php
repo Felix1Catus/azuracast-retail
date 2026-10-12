@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:station-queues:clear',
+    name: 'acacia:station-queues:clear',
     description: 'Clear all unplayed station queues.'
 )]
 final class ClearQueuesCommand extends CommandAbstract

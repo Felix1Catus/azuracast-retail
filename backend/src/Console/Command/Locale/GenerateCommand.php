@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:locale:generate',
+    name: 'acacia:locale:generate',
     description: 'Generate the translation locale file.',
     aliases: ['locale:generate']
 )]

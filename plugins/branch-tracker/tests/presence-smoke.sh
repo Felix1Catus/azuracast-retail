@@ -9,14 +9,14 @@
 # NOTE: simulated time applies to the whole station, so any other branch signed in on this LOCAL
 # copy at the time is also timed out / reset. Never run against prod.
 set -uo pipefail
-CONTAINER=${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}
+CONTAINER=${TRACKER_CONTAINER:-$(docker ps --filter label=com.docker.compose.service=web --format '{{.Names}}' | head -n 1)}
 STATION=${STATION:-store}
 STATION_TZ=$(curl -s "${BASE:-http://localhost:8080}/api/station/$STATION" | jq -r ".timezone // \"UTC\"")
 cd "$(dirname "$0")/../../.."
 BASE=${BASE:-http://localhost:8080}
 ADMIN="$BASE/api/station/$STATION/branches"; PUB="$BASE/api/station/$STATION/branch"; STREAM="$BASE/listen/$STATION/radio.mp3"
 KEY=$(cat backups/local-api-key 2>/dev/null) || { echo "Run tests/make-local-api-key.sh first"; exit 1; }
-CLI="docker exec -u azuracast $CONTAINER azuracast_cli"
+CLI="docker exec -u acacia $CONTAINER acacia_cli"
 PASS=0; FAIL=0
 ok()   { PASS=$((PASS+1)); printf '  ok    %s\n' "$1"; }
 bad()  { FAIL=$((FAIL+1)); printf '  FAIL  %s  %s\n' "$1" "${2:-}"; }

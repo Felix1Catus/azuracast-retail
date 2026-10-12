@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:cache:clear',
+    name: 'acacia:cache:clear',
     description: 'Clear all application caches.',
     aliases: ['cache:clear']
 )]

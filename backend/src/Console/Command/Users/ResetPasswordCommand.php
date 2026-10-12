@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:account:reset-password',
+    name: 'acacia:account:reset-password',
     description: 'Reset the password of the specified account.',
 )]
 final class ResetPasswordCommand extends CommandAbstract

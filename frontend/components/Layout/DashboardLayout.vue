@@ -123,9 +123,9 @@ import { GlobalPermissions } from "~/entities/ApiInterfaces.ts";
 import { useTheme } from "~/functions/theme.ts";
 import { useUserAllowed } from "~/functions/useUserAllowed.ts";
 import {
-    useAzuraCastDashboardGlobals,
-    useAzuraCastUser,
-} from "~/vendor/azuracast.ts";
+    useAcaciaRadioDashboardGlobals,
+    useAcaciaRadioUser,
+} from "~/vendor/acacia.ts";
 import { useProvideLightbox } from "~/vendor/lightbox.ts";
 import IconIcAccountCircle from "~icons/ic/baseline-account-circle";
 import IconIcExitToApp from "~icons/ic/baseline-exit-to-app";
@@ -135,9 +135,9 @@ import IconIcMenu from "~icons/ic/baseline-menu";
 import IconIcMenuOpen from "~icons/ic/baseline-menu-open";
 import IconIcSettings from "~icons/ic/baseline-settings";
 
-const { instanceName, logoutUrl } = useAzuraCastDashboardGlobals();
+const { instanceName, logoutUrl } = useAcaciaRadioDashboardGlobals();
 
-const { displayName } = useAzuraCastUser();
+const { displayName } = useAcaciaRadioUser();
 
 const { userAllowed } = useUserAllowed();
 const showAdmin = userAllowed(GlobalPermissions.View);

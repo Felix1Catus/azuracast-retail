@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ `whoami` != 'acacia' ]; then
+    exec gosu acacia acacia_cli "$@"
+fi
+
+cd /var/acacia/www
+exec php backend/bin/console "$@"

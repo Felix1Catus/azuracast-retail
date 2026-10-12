@@ -1,7 +1,7 @@
 services:
   installer:
-    container_name: azuracast_installer
-    image: 'ghcr.io/azuracast/azuracast:${AZURACAST_VERSION:-latest}'
+    container_name: acacia_installer
+    image: 'ghcr.io/azuracast/azuracast:${ACACIA_VERSION:-latest}'
     volumes:
       - './:/installer'
     restart: 'no'

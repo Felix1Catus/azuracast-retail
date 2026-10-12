@@ -21,7 +21,7 @@ import {
     zhCN,
 } from "date-fns/locale";
 import { isString } from "es-toolkit";
-import { useAzuraCast } from "~/vendor/azuracast.ts";
+import { useAcaciaRadio } from "~/vendor/acacia.ts";
 
 const localeLookup: Record<string, Locale> = {
     en_US: enUS,
@@ -47,7 +47,7 @@ const localeLookup: Record<string, Locale> = {
 
 export const getDateFnLocale = (localeName?: string): Locale => {
     if (!isString(localeName)) {
-        const { locale } = useAzuraCast();
+        const { locale } = useAcaciaRadio();
         localeName = locale;
     }
 

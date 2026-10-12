@@ -46,7 +46,7 @@ final class PrometheusAction implements SingleActionInterface
     use EntityManagerAwareTrait;
     use EnvironmentAwareTrait;
 
-    public const string APP_NAMESPACE = 'azuracast';
+    public const string APP_NAMESPACE = 'acacia';
 
     public function __invoke(ServerRequest $request, Response $response, array $params): ResponseInterface
     {

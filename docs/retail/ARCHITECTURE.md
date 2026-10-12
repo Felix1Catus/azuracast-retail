@@ -12,14 +12,14 @@ The production image (`Dockerfile`, target `final`) is a single Debian Trixie + 
 | `php-fpm` | `util/docker/web/` | Runs the Slim app (`web/index.php`) | **Keep** |
 | `php-nowplaying` | `backend/src/Sync/NowPlaying/` | Loop that polls every station's frontend (Icecast) and backend (Liquidsoap). It builds the Now Playing API, records listeners and history, and fires webhooks | **Keep** (branch online status comes from listeners) |
 | `php-worker` | `backend/src/MessageQueue/`, `backend/src/Message/` | Symfony Messenger consumer (Redis transport): media processing, webhook dispatch, backups, notifications | **Keep** |
-| `cron` | `backend/src/Sync/Task/*` via `azuracast:sync:run` | Scheduled tasks (see §5) | **Keep** |
+| `cron` | `backend/src/Sync/Task/*` via `acacia:sync:run` | Scheduled tasks (see §5) | **Keep** |
 | `centrifugo` | `util/docker/web/centrifugo/` | WebSocket and SSE push of Now Playing to players and the panel | **Keep** (live board) |
 | `sftpgo` | `util/docker/web/service.full/sftpgo.conf`, `backend/src/Controller/Api/Internal/SftpAuthAction.php` | SFTP media upload per station | **Remove** (uploads go through the panel) |
 | `mariadb`, `redis` | `util/docker/mariadb`, `util/docker/redis` | Database, cache, sessions, queue | **Keep** |
 | `station_N_backend` / `station_N_frontend` | written at runtime by `backend/src/Radio/Configuration.php` into `/etc/supervisor/...` | One Liquidsoap and one Icecast per station | **Keep** |
 | `vite` (dev only) | `util/docker/dev/service.full/vite.conf` | Frontend hot reload | dev only |
 
-Startup scripts in `util/docker/*/startup_scripts/` run first. Among other things, they run `azuracast:setup` (migrations, fixtures, settings) and, when `COMPOSER_PLUGIN_MODE=true`, `composer update` so that plugins under `plugins/*/composer.json` are installed.
+Startup scripts in `util/docker/*/startup_scripts/` run first. Among other things, they run `acacia:setup` (migrations, fixtures, settings) and, when `COMPOSER_PLUGIN_MODE=true`, `composer update` so that plugins under `plugins/*/composer.json` are installed.
 
 ## 2. Backend (PHP, `backend/src`, about 1,100 files)
 
@@ -51,7 +51,7 @@ There is **no event for the station menu**, which lives in the frontend (see §3
 | Now Playing | `Sync/NowPlaying/Task/NowPlayingTask.php`, `Entity/ApiGenerator/*` | Updates `Listener` rows (in `ListenerRepository`) and `SongHistory`, then dispatches `DispatchWebhookMessage` |
 | Webhooks | `Webhook/Dispatcher.php`, `Webhook/LocalWebhookHandler.php`, `Webhook/Connector/*` | The local handler writes static NP JSON and pushes to Centrifugo. Connectors cover Discord, Telegram, Mastodon, TuneIn, GA, Matomo and generic HTTP |
 | Scheduling | `Entity/StationSchedule`, `Radio/AutoDJ/Scheduler.php` | Day-of-week and time windows per playlist or streamer, in the station's timezone |
-| Console | `Console/Command/*` | `azuracast:setup`, `backup`, `restore`, `settings:set`, `sync:*`, `locale:*`, `api:docs` |
+| Console | `Console/Command/*` | `acacia:setup`, `backup`, `restore`, `settings:set`, `sync:*`, `locale:*`, `api:docs` |
 | Version | `Version.php` | Reads `.gitinfo` (written at build time) or falls back to `git` |
 | Updater | `Sync/Task/CheckUpdatesTask.php`, `Service/WebUpdater.php` | Calls the upstream update service; the web updater pulls the **upstream** image |
 
@@ -124,7 +124,7 @@ Station ─┬─ StationMount / StationRemote / StationHlsStream     (outputs)
 | `final` | repo + composer `--no-dev` + `assets` | runnable image |
 
 ```bash
-util/build_image.sh azuracast-retail:dev
+util/build_image.sh acacia-radio:dev
 ```
 
 Upstream also pulls Crowdin translations in CI. The fork uses the `.po` files committed in `translations/`.

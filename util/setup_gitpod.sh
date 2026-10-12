@@ -125,7 +125,7 @@ GITPOD_URL=$(gp url 443)
 mkcrt "$GITPOD_URL" -cert-file ./util/local_ssl/default.crt -key-file ./util/local_ssl/default.key
 
 # Update env file to provision this URL as the base URL for Acacia Radio.
-.env --file azuracast.env set INIT_BASE_URL="$GITPOD_URL"
+.env --file acacia.env set INIT_BASE_URL="$GITPOD_URL"
 
 # Set up SSH key from remote env.
 if [[ -z "$SSH_PUBLIC_KEY" ]]; then

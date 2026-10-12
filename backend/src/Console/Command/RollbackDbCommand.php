@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 
 #[AsCommand(
-    name: 'azuracast:setup:rollback',
+    name: 'acacia:setup:rollback',
     description: 'Roll back the database to the state associated with a certain stable release.',
 )]
 final class RollbackDbCommand extends AbstractDatabaseCommand

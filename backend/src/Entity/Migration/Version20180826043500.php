@@ -21,7 +21,7 @@ final class Version20180826043500 extends AbstractMigration
 
     private function changeCharset(string $collate): void
     {
-        $dbName = $this->connection->getDatabase() ?? 'azuracast';
+        $dbName = $this->connection->getDatabase() ?? 'acacia';
 
         $tables = [
             'analytics',

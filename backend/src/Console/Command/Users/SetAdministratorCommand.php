@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:account:set-administrator',
+    name: 'acacia:account:set-administrator',
     description: 'Set the account specified as a global administrator.',
 )]
 final class SetAdministratorCommand extends CommandAbstract

@@ -81,34 +81,34 @@ RUN --mount=type=bind,source=./util/docker/common,target=/bd_build,rw \
     bash /bd_build/chown_dirs.sh
 
 
-USER azuracast
+USER acacia
 
-RUN touch /var/azuracast/.docker
+RUN touch /var/acacia/.docker
 
 USER root
 
-VOLUME "/var/azuracast/stations"
-VOLUME "/var/azuracast/backups"
+VOLUME "/var/acacia/stations"
+VOLUME "/var/acacia/backups"
 VOLUME "/var/lib/mysql"
-VOLUME "/var/azuracast/storage/acme"
-VOLUME "/var/azuracast/storage/geoip"
-VOLUME "/var/azuracast/storage/rsas"
-VOLUME "/var/azuracast/storage/sftpgo"
-VOLUME "/var/azuracast/storage/shoutcast2"
-VOLUME "/var/azuracast/storage/stereo_tool"
-VOLUME "/var/azuracast/storage/uploads"
+VOLUME "/var/acacia/storage/acme"
+VOLUME "/var/acacia/storage/geoip"
+VOLUME "/var/acacia/storage/rsas"
+VOLUME "/var/acacia/storage/sftpgo"
+VOLUME "/var/acacia/storage/shoutcast2"
+VOLUME "/var/acacia/storage/stereo_tool"
+VOLUME "/var/acacia/storage/uploads"
 
 EXPOSE 80 443
 
 # Sensible default environment variables.
 ENV LANG="en_US.UTF-8" \
-    PATH="${PATH}:/var/azuracast/storage/shoutcast2" \
+    PATH="${PATH}:/var/acacia/storage/shoutcast2" \
     APPLICATION_ENV="production" \
     MYSQL_HOST="localhost" \
     MYSQL_PORT=3306 \
-    MYSQL_USER="azuracast" \
+    MYSQL_USER="acacia" \
     MYSQL_PASSWORD="azur4c457" \
-    MYSQL_DATABASE="azuracast" \
+    MYSQL_DATABASE="acacia" \
     ENABLE_REDIS="true" \
     REDIS_HOST="localhost" \
     REDIS_PORT=6379 \
@@ -136,11 +136,11 @@ RUN bash /bd_build/dev/setup.sh \
     && bash /bd_build/cleanup.sh \
     && rm -rf /bd_build
 
-USER azuracast
+USER acacia
 
-WORKDIR /var/azuracast/www
+WORKDIR /var/acacia/www
 
-COPY --chown=azuracast:azuracast . .
+COPY --chown=acacia:acacia . .
 
 RUN composer install --no-ansi --no-interaction \
     && composer clear-cache
@@ -171,13 +171,13 @@ COPY --from=node:24-trixie-slim /usr/local/lib/node_modules /usr/local/lib/node_
 RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
-USER azuracast
+USER acacia
 
-WORKDIR /var/azuracast/www
+WORKDIR /var/acacia/www
 
-COPY --chown=azuracast:azuracast . .
+COPY --chown=acacia:acacia . .
 
-# The asset commands (azuracast:locale:import, azuracast:api:docs) are dev commands: they are only
+# The asset commands (acacia:locale:import, acacia:api:docs) are dev commands: they are only
 # registered outside production and need composer dev packages. Nothing from this stage ships except
 # the files copied into "final". No Redis or database runs during the build.
 ENV APPLICATION_ENV="development" \
@@ -193,9 +193,9 @@ ARG COMPOSER_MAX_PARALLEL_HTTP=12
 RUN composer install --no-ansi --no-interaction \
     && npm ci --include=dev \
     && chmod a+x backend/bin/* \
-    && backend/bin/console azuracast:locale:import \
+    && backend/bin/console acacia:locale:import \
     && npm run build \
-    && backend/bin/console azuracast:api:docs \
+    && backend/bin/console acacia:api:docs \
     && if [ -n "$GIT_COMMIT" ]; then \
         printf 'COMMIT_LONG="%s"\nCOMMIT_DATE="%s"\nBRANCH="%s"\n' "$GIT_COMMIT" "$GIT_COMMIT_DATE" "$GIT_BRANCH" > .gitinfo; \
     else \
@@ -207,11 +207,11 @@ RUN composer install --no-ansi --no-interaction \
 #
 FROM pre-final AS final
 
-USER azuracast
+USER acacia
 
-WORKDIR /var/azuracast/www
+WORKDIR /var/acacia/www
 
-COPY --chown=azuracast:azuracast . .
+COPY --chown=acacia:acacia . .
 
 ARG COMPOSER_MAX_PARALLEL_HTTP=12
 
@@ -219,16 +219,16 @@ RUN composer install --no-dev --no-ansi --no-autoloader --no-interaction \
     && composer dump-autoload --optimize --classmap-authoritative \
     && composer clear-cache
 
-COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/vite_dist ./web/static/vite_dist
-COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/web/static/openapi.yml ./web/static/openapi.yml
-COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/translations ./translations
-COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/.gitinfo ./.gitinfo
+COPY --from=assets --chown=acacia:acacia /var/acacia/www/web/static/vite_dist ./web/static/vite_dist
+COPY --from=assets --chown=acacia:acacia /var/acacia/www/web/static/openapi.yml ./web/static/openapi.yml
+COPY --from=assets --chown=acacia:acacia /var/acacia/www/translations ./translations
+COPY --from=assets --chown=acacia:acacia /var/acacia/www/.gitinfo ./.gitinfo
 
 USER root
 
 # Acacia Radio fallback jingle in place of the upstream one, in every format/bitrate Icecast falls back to.
-RUN sh /var/azuracast/www/util/branding/build_fallback_audio.sh \
-        /var/azuracast/www/resources/error.mp3 /usr/local/share/icecast/web
+RUN sh /var/acacia/www/util/branding/build_fallback_audio.sh \
+        /var/acacia/www/resources/error.mp3 /usr/local/share/icecast/web
 
 # Entrypoint and default command
 ENTRYPOINT ["tini", "--", "/usr/local/bin/my_init"]

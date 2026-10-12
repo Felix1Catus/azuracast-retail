@@ -27,7 +27,7 @@ use Symfony\Component\Messenger\Worker;
 use Throwable;
 
 #[AsCommand(
-    name: 'azuracast:queue:process',
+    name: 'acacia:queue:process',
     description: 'Process the message queue.',
     aliases: ['queue:process']
 )]

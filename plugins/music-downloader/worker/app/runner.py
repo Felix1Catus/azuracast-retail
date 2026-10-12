@@ -7,7 +7,7 @@ Steps:
   1. resolve: read the playlist/album/track from Spotify (with the user's Spotify login when there is one,
      otherwise, or when the login can't read it, with spotDL's public access) and store one row per track
   2. download: one track at a time into a staging folder, then move the finished file into the station's
-     media folder (copied under a temporary ".mdpart" name and renamed, so AzuraCast never scans half a file)
+     media folder (copied under a temporary ".mdpart" name and renamed, so Acacia Radio never scans half a file)
 """
 
 import json

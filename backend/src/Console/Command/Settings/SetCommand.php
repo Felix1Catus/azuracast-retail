@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:settings:set',
+    name: 'acacia:settings:set',
     description: 'Set the value of a setting in the Acacia Radio settings database.',
 )]
 final class SetCommand extends CommandAbstract

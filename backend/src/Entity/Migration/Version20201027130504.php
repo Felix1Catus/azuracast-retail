@@ -27,7 +27,7 @@ final class Version20201027130504 extends AbstractMigration
             [
                 'type' => 'backup',
                 'adapter' => 'local',
-                'path' => '/var/azuracast/backups',
+                'path' => '/var/acacia/backups',
             ]
         );
 

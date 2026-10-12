@@ -264,7 +264,7 @@ final class Station implements Stringable, IdentifiableEntityInterface
     }
 
     #[
-        OA\Property(example: "/var/azuracast/stations/azuratest_radio"),
+        OA\Property(example: "/var/acacia/stations/azuratest_radio"),
         ORM\Column(length: 255, nullable: false),
         Serializer\Groups([EntityGroupsInterface::GROUP_ADMIN, EntityGroupsInterface::GROUP_ALL])
     ]

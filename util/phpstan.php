@@ -8,9 +8,9 @@ ini_set('display_errors', 1);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-const AZURACAST_VERSION = App\Version::STABLE_VERSION;
-const AZURACAST_API_URL = 'https://localhost/api';
-const AZURACAST_API_NAME = 'Testing API';
+const ACACIA_VERSION = App\Version::STABLE_VERSION;
+const ACACIA_API_URL = 'https://localhost/api';
+const ACACIA_API_NAME = 'Testing API';
 
 $tempDir = sys_get_temp_dir();
 

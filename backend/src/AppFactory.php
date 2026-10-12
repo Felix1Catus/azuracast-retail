@@ -165,7 +165,7 @@ final class AppFactory
 
         // Try to load from .env file
         if ($environment->isDevelopment() || !$environment->isDocker()) {
-            $envFile = $environment->getBaseDirectory() . '/azuracast.env';
+            $envFile = $environment->getBaseDirectory() . '/acacia.env';
 
             if (file_exists($envFile)) {
                 $fileContents = file_get_contents($envFile);

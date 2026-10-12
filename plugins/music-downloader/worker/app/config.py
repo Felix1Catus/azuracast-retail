@@ -8,11 +8,19 @@ DB_PATH = DATA_DIR / "worker.db"
 JOBS_DIR = DATA_DIR / "jobs"  # per-job staging folders and Spotify token caches
 COOKIE_FILE = DATA_DIR / "youtube-cookies.txt"
 
-# Shared secret with the AzuraCast plugin. Without it the API refuses everything but /health.
+# Shared secret with the Acacia Radio plugin. Without it the API refuses everything but /health.
 TOKEN = os.environ.get("MD_WORKER_TOKEN", "")
 
-# Downloads may only land below this folder (AzuraCast's station_data volume, mounted at the same path).
-STATIONS_ROOT = Path(os.environ.get("MD_STATIONS_ROOT", "/var/azuracast/stations"))
+# Downloads may only land below this folder (Acacia Radio's station_data volume, mounted at the same path).
+# Installs from before the rebrand mount it at the original project's path until ./docker.sh update migrates them;
+# The web container always sends /var/acacia/stations paths, which LEGACY_STATIONS_ROOT translates.
+CANONICAL_STATIONS_ROOT = Path("/var/acacia/stations")
+LEGACY_STATIONS_ROOT = Path("/var/azuracast/stations")  # rebrand:keep
+STATIONS_ROOT = Path(
+    os.environ.get("MD_STATIONS_ROOT")
+    or (LEGACY_STATIONS_ROOT if LEGACY_STATIONS_ROOT.is_dir() and not CANONICAL_STATIONS_ROOT.is_dir()
+        else CANONICAL_STATIONS_ROOT)
+)
 
 # Playlist lookup is network-bound, so it can use several threads; downloads run one track at a time.
 SEARCH_THREADS = int(os.environ.get("MD_SEARCH_THREADS", "4"))

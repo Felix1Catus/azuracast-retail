@@ -70,7 +70,7 @@
 
                     <pre v-if="props.isDocker"><code>./docker.sh restore path_to_backup.zip</code></pre>
                     <pre
-                        v-else><code>/var/azuracast/www/bin/console azuracast:restore path_to_backup.zip</code></pre>
+                        v-else><code>/var/acacia/www/bin/console acacia:restore path_to_backup.zip</code></pre>
 
                     <p class="card-text text-warning">
                         {{
@@ -165,7 +165,7 @@ import formatFileSize from "~/functions/formatFileSize";
 import { useApiRouter } from "~/functions/useApiRouter.ts";
 import { HasRelistEmit } from "~/functions/useBaseEditModal.ts";
 import useConfirmAndDelete from "~/functions/useConfirmAndDelete";
-import { useAzuraCast } from "~/vendor/azuracast";
+import { useAcaciaRadio } from "~/vendor/acacia";
 import { useTranslate } from "~/vendor/gettext";
 import { useLuxon } from "~/vendor/luxon";
 import IconIcAssignment from "~icons/ic/baseline-assignment";
@@ -186,7 +186,7 @@ const runBackupUrl = getApiUrl("/admin/backups/run");
 const settingsUrl = getApiUrl("/admin/settings/backup");
 
 const { $gettext } = useTranslate();
-const { timeConfig } = useAzuraCast();
+const { timeConfig } = useAcaciaRadio();
 const { DateTime, timestampToRelative } = useLuxon();
 
 type Row = Required<ApiAdminBackup>;

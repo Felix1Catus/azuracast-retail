@@ -23,7 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
-    name: 'azuracast:new-version',
+    name: 'acacia:new-version',
     description: 'Update the codebase in preparation for a new stable release version.',
 )]
 final class NewVersionCommand extends CommandAbstract
@@ -55,7 +55,7 @@ final class NewVersionCommand extends CommandAbstract
 
         $this->runCommand(
             $output,
-            'azuracast:api:docs',
+            'acacia:api:docs',
             [
                 '--api-version' => $version,
             ]

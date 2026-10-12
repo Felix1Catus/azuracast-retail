@@ -20,7 +20,7 @@ upstream vite {
 server {
     listen 127.0.0.1:6010;
 
-    root /var/azuracast/www/web;
+    root /var/acacia/www/web;
     index index.php;
 
     server_name localhost;
@@ -52,11 +52,11 @@ server {
 }
 
 server {
-    listen {{ default .Env.AZURACAST_HTTP_PORT "80" }};
-    listen {{ default .Env.AZURACAST_HTTPS_PORT "443" }} default_server http2 ssl;
+    listen {{ default .Env.ACACIA_HTTP_PORT "80" }};
+    listen {{ default .Env.ACACIA_HTTPS_PORT "443" }} default_server http2 ssl;
 
-    ssl_certificate        {{ default .Env.ACME_DIR "/var/azuracast/storage/acme" }}/ssl.crt;
-    ssl_certificate_key    {{ default .Env.ACME_DIR "/var/azuracast/storage/acme" }}/ssl.key;
+    ssl_certificate        {{ default .Env.ACME_DIR "/var/acacia/storage/acme" }}/ssl.crt;
+    ssl_certificate_key    {{ default .Env.ACME_DIR "/var/acacia/storage/acme" }}/ssl.key;
 
     ssl_protocols TLSv1.3 TLSv1.2;
     ssl_prefer_server_ciphers on;
@@ -66,7 +66,7 @@ server {
     ssl_session_cache shared:TLS:2m;
     ssl_buffer_size 4k;
 
-    root /var/azuracast/www/web;
+    root /var/acacia/www/web;
     index index.php;
 
     server_name localhost;
@@ -77,7 +77,7 @@ server {
 
     # LetsEncrypt handling
     location /.well-known/acme-challenge {
-        alias {{ default .Env.ACME_DIR "/var/azuracast/storage/acme" }}/challenges;
+        alias {{ default .Env.ACME_DIR "/var/acacia/storage/acme" }}/challenges;
         try_files $uri =404;
     }
 
@@ -86,7 +86,7 @@ server {
         expires 10s;
         add_header Access-Control-Allow-Origin *;
 
-        alias /var/azuracast/www_tmp/nowplaying;
+        alias /var/acacia/www_tmp/nowplaying;
         try_files $uri =404;
     }
 
@@ -113,12 +113,12 @@ server {
     location /static/uploads {
         rewrite ^(.+)\.(?:\w+)\.(js|css|png|jpg|webp)$ $1.$2 last;
 
-        alias {{ default .Env.UPLOADS_DIR "/var/azuracast/storage/uploads" }};
+        alias {{ default .Env.UPLOADS_DIR "/var/acacia/storage/uploads" }};
         try_files $uri =404;
     }
 
     location /static/maps {
-        alias /var/azuracast/maps;
+        alias /var/acacia/maps;
         expires 7d;
         try_files $uri =404;
     }
@@ -184,22 +184,22 @@ server {
     location /internal/backups/ {
         internal;
         add_header Access-Control-Allow-Origin "$upstream_http_access_control_allow_origin";
-        alias /var/azuracast/backups/;
+        alias /var/acacia/backups/;
     }
 
     location /internal/storage/ {
         internal;
         add_header Access-Control-Allow-Origin "$upstream_http_access_control_allow_origin";
-        alias /var/azuracast/storage/;
+        alias /var/acacia/storage/;
     }
 
     location /internal/stations/ {
         internal;
         add_header Access-Control-Allow-Origin "$upstream_http_access_control_allow_origin";
-        alias /var/azuracast/stations/;
+        alias /var/acacia/stations/;
     }
 
-    include /var/azuracast/stations/*/config/nginx.conf;
+    include /var/acacia/stations/*/config/nginx.conf;
 
-    include /etc/nginx/azuracast.conf.d/*.conf;
+    include /etc/nginx/acacia.conf.d/*.conf;
 }

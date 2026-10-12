@@ -22,7 +22,7 @@ import { storeToRefs } from "pinia";
 import { Protocol } from "pmtiles";
 import { onMounted, onUnmounted, shallowRef, useTemplateRef, watch } from "vue";
 import { Theme, useTheme } from "~/functions/theme.ts";
-import { useAzuraCast } from "~/vendor/azuracast.ts";
+import { useAcaciaRadio } from "~/vendor/acacia.ts";
 import { useTranslate } from "~/vendor/gettext.ts";
 
 defineSlots<{
@@ -37,7 +37,7 @@ const $container = useTemplateRef("$container");
 const $map = shallowRef<MapLibreMap | null>(null);
 
 const { currentTheme } = storeToRefs(useTheme());
-const { localeShort } = useAzuraCast();
+const { localeShort } = useAcaciaRadio();
 const { $gettext } = useTranslate();
 
 const buildStyle = (theme: Theme): StyleSpecification => ({

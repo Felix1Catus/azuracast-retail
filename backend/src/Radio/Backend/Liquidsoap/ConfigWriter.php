@@ -93,7 +93,7 @@ final class ConfigWriter implements EventSubscriberInterface
                 ->withPath('/api/internal/' . $station->id . '/liquidsoap')
         );
 
-        $commonLibPath = $this->environment->getParentDirectory() . '/liquidsoap/azuracast.liq';
+        $commonLibPath = $this->environment->getParentDirectory() . '/liquidsoap/acacia.liq';
 
         $mediaStorageLocation = $station->media_storage_location;
         $stationMediaDir = $mediaStorageLocation->adapter->isLocal()
@@ -139,27 +139,27 @@ final class ConfigWriter implements EventSubscriberInterface
 
             environment.set("TZ", {$stationTz})
 
-            settings.azuracast.liquidsoap_api_port := {$httpApiPort}
-            settings.azuracast.api_url := {$stationApiUrl}
-            settings.azuracast.api_key := {$stationApiAuth}
-            settings.azuracast.media_path := "{$stationMediaDir}"
-            settings.azuracast.fallback_path := {$fallbackPath}
-            settings.azuracast.temp_path := {$tempPath}
+            settings.acacia.liquidsoap_api_port := {$httpApiPort}
+            settings.acacia.api_url := {$stationApiUrl}
+            settings.acacia.api_key := {$stationApiAuth}
+            settings.acacia.media_path := "{$stationMediaDir}"
+            settings.acacia.fallback_path := {$fallbackPath}
+            settings.acacia.temp_path := {$tempPath}
 
-            settings.azuracast.compute_autocue := {$useComputeAutocue}
+            settings.acacia.compute_autocue := {$useComputeAutocue}
 
-            settings.azuracast.default_fade := {$defaultFade}
-            settings.azuracast.default_cross := {$defaultCross}
-            settings.azuracast.enable_crossfade := {$enableCrossfade}
-            settings.azuracast.crossfade_type := "{$crossfadeType}"
-            settings.azuracast.crossfade_smart_high := {$crossfadeSmartHigh}
-            settings.azuracast.crossfade_smart_medium := {$crossfadeSmartMedium}
-            settings.azuracast.crossfade_smart_margin := {$crossfadeSmartMargin}
+            settings.acacia.default_fade := {$defaultFade}
+            settings.acacia.default_cross := {$defaultCross}
+            settings.acacia.enable_crossfade := {$enableCrossfade}
+            settings.acacia.crossfade_type := "{$crossfadeType}"
+            settings.acacia.crossfade_smart_high := {$crossfadeSmartHigh}
+            settings.acacia.crossfade_smart_medium := {$crossfadeSmartMedium}
+            settings.acacia.crossfade_smart_margin := {$crossfadeSmartMargin}
 
-            settings.azuracast.live_broadcast_text := {$liveBroadcastText}
+            settings.acacia.live_broadcast_text := {$liveBroadcastText}
 
             # Start HTTP API Server
-            azuracast.start_http_api()
+            acacia.start_http_api()
 
             LIQ
         );
@@ -293,7 +293,7 @@ final class ConfigWriter implements EventSubscriberInterface
             }
 
             if ($playlist->is_jingle) {
-                $playlistConfigLines[] = $playlistVarName . ' = azuracast.utilities.drop_metadata(' . $playlistVarName . ')';
+                $playlistConfigLines[] = $playlistVarName . ' = acacia.utilities.drop_metadata(' . $playlistVarName . ')';
             }
 
             if (PlaylistTypes::Advanced === $playlist->type) {
@@ -454,7 +454,7 @@ final class ConfigWriter implements EventSubscriberInterface
         if (!$station->backend_config->use_manual_autodj) {
             $event->appendBlock(
                 <<< LIQ
-                radio = azuracast.enable_autodj(radio)
+                radio = acacia.enable_autodj(radio)
                 LIQ
             );
         }
@@ -474,10 +474,10 @@ final class ConfigWriter implements EventSubscriberInterface
 
         $event->appendBlock(
             <<< LIQ
-            requests = request.queue(id="{$requestsQueueName}", timeout=settings.azuracast.request_timeout())
+            requests = request.queue(id="{$requestsQueueName}", timeout=settings.acacia.request_timeout())
             radio = fallback(id="requests_fallback", track_sensitive = true, [requests, radio])
 
-            interrupting_queue = request.queue(id="{$interruptingQueueName}", timeout=settings.azuracast.request_timeout())
+            interrupting_queue = request.queue(id="{$interruptingQueueName}", timeout=settings.acacia.request_timeout())
             radio = fallback(id="interrupting_fallback", track_sensitive = false, [interrupting_queue, radio])
             LIQ
         );
@@ -508,12 +508,12 @@ final class ConfigWriter implements EventSubscriberInterface
         $event->appendBlock(
             <<<LIQ
             # Allow Telnet to skip the current track.
-            azuracast.utilities.add_skip_command(radio)
+            acacia.utilities.add_skip_command(radio)
 
             # Apply amplification metadata (if supplied)
             # This can be disabled by setting:
-            #   settings.azuracast.apply_amplify := false
-            radio = azuracast.apply_amplify(radio)
+            #   settings.acacia.apply_amplify := false
+            radio = acacia.apply_amplify(radio)
             LIQ
         );
 
@@ -534,10 +534,10 @@ final class ConfigWriter implements EventSubscriberInterface
         $event->appendBlock(
             <<<LS
             # Log current metadata for debugging.
-            source.methods(radio).on_metadata(synchronous=false, azuracast.log_meta)
+            source.methods(radio).on_metadata(synchronous=false, acacia.log_meta)
 
             # Apply crossfade.
-            radio = azuracast.apply_crossfade(radio)
+            radio = acacia.apply_crossfade(radio)
             LS
         );
 
@@ -565,7 +565,7 @@ final class ConfigWriter implements EventSubscriberInterface
             self::toRawString($djMount),
             'id = "input_streamer"',
             'port = ' . $this->liquidsoap->getStreamPort($station),
-            'auth = azuracast.dj_auth',
+            'auth = acacia.dj_auth',
             'icy = true',
             'icy_metadata_charset = ' . self::toRawString($charset),
             'metadata_charset = ' . self::toRawString($charset),
@@ -587,13 +587,13 @@ final class ConfigWriter implements EventSubscriberInterface
 
             # Live Broadcasting
             live = input.harbor({$harborParams})
-            live.on_connect(synchronous=false, azuracast.live_connected)
-            live.on_disconnect(synchronous=false, azuracast.live_disconnected)
+            live.on_connect(synchronous=false, acacia.live_connected)
+            live.on_disconnect(synchronous=false, acacia.live_disconnected)
 
             def insert_missing(m) =
                 def updates =
                     if m == [] then
-                        [("title", "#{settings.azuracast.live_broadcast_text()}"), ("is_live", "true")]
+                        [("title", "#{settings.acacia.live_broadcast_text()}"), ("is_live", "true")]
                     else
                         [("is_live", "true")]
                     end
@@ -623,12 +623,12 @@ final class ConfigWriter implements EventSubscriberInterface
             # Skip non-live track when live DJ goes live.
             def check_live() =
                 if live.is_ready() then
-                    if not azuracast.to_live() then
-                        azuracast.to_live := true
+                    if not acacia.to_live() then
+                        acacia.to_live := true
                         radio_without_live.skip()
                     end
                 else
-                    azuracast.to_live := false
+                    acacia.to_live := false
                 end
             end
 
@@ -651,8 +651,8 @@ final class ConfigWriter implements EventSubscriberInterface
                 output.file(
                     {$formatString},
                     fun () -> begin
-                        if (azuracast.live_enabled()) then
-                            time.string("#{settings.azuracast.temp_path()}/#{azuracast.live_dj()}/{$recordPathPrefix}_%Y%m%d-%H%M%S.{$recordExtension}.tmp")
+                        if (acacia.live_enabled()) then
+                            time.string("#{settings.acacia.temp_path()}/#{acacia.live_dj()}/{$recordPathPrefix}_%Y%m%d-%H%M%S.{$recordExtension}.tmp")
                         else
                             ""
                         end
@@ -681,7 +681,7 @@ final class ConfigWriter implements EventSubscriberInterface
         $event->appendBlock(
             <<<LIQ
             # Allow for Telnet-driven insertion of custom metadata.
-            azuracast.utilities.add_custom_metadata_command(id="custom_metadata", radio)
+            acacia.utilities.add_custom_metadata_command(id="custom_metadata", radio)
             LIQ
         );
 
@@ -692,13 +692,13 @@ final class ConfigWriter implements EventSubscriberInterface
         $event->appendBlock(
             <<<LIQ
             # Add Fallback
-            radio = azuracast.add_fallback(radio)
+            radio = acacia.add_fallback(radio)
 
             # Send metadata changes back to Acacia Radio
-            source.methods(radio).on_metadata(synchronous=false, azuracast.send_feedback)
+            source.methods(radio).on_metadata(synchronous=false, acacia.send_feedback)
 
             # Handle "Jingle Mode" tracks by replaying the previous metadata.
-            radio = azuracast.handle_jingle_mode(radio)
+            radio = acacia.handle_jingle_mode(radio)
             LIQ
         );
 
@@ -898,7 +898,7 @@ final class ConfigWriter implements EventSubscriberInterface
                 segments_overhead={$hlsSegmentsOverhead},
                 segment_name=hls_segment_name,
                 persist_at="{$configDir}/hls.config",
-                temp_dir="#{settings.azuracast.temp_path()}",
+                temp_dir="#{settings.acacia.temp_path()}",
                 "{$hlsBaseDir}",
                 hls_streams,
                 {$radioVarName}

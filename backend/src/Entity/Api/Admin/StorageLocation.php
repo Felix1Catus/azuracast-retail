@@ -23,7 +23,7 @@ final class StorageLocation
 
     #[OA\Property(
         description: 'The URI associated with the storage location.',
-        example: '/var/azuracast/www'
+        example: '/var/acacia/www'
     )]
     public string $uri;
 

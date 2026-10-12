@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:acme:get-certificate',
+    name: 'acacia:acme:get-certificate',
     description: 'Get a new or updated ACME (LetsEncrypt) certificate.',
     aliases: ['acme:cert']
 )]

@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Runs the presence sync now (it also runs every minute via azuracast:sync:run) and prints live status.
+ * Runs the presence sync now (it also runs every minute via acacia:sync:run) and prints live status.
  * --now lets tests simulate a later time, e.g. the 00:30 reset; times are in the station's timezone.
  */
 #[AsCommand(

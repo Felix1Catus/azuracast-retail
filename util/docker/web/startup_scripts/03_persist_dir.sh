@@ -5,12 +5,12 @@ export DEBIAN_FRONTEND=noninteractive
 echo "Creating persist directories..."
 
 mkdir -p \
-  /var/azuracast/storage/acme \
-  /var/azuracast/storage/geoip \
-  /var/azuracast/storage/rsas \
-  /var/azuracast/storage/sftpgo \
-  /var/azuracast/storage/shoutcast2 \
-  /var/azuracast/storage/stereo_tool \
-  /var/azuracast/storage/uploads
+  /var/acacia/storage/acme \
+  /var/acacia/storage/geoip \
+  /var/acacia/storage/rsas \
+  /var/acacia/storage/sftpgo \
+  /var/acacia/storage/shoutcast2 \
+  /var/acacia/storage/stereo_tool \
+  /var/acacia/storage/uploads
 
-chown azuracast:azuracast /var/azuracast/storage/* || true
+chown acacia:acacia /var/acacia/storage/* || true

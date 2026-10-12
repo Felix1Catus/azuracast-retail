@@ -28,7 +28,7 @@ Acacia Radio panel ──► PHP plugin (in the Acacia Radio container)
                       • asks music-downloader-pot (bgutil PO-token server, 512 MB limit) for YouTube tokens
                           │  station_data volume, mounted at the same path as in Acacia Radio
                           ▼
-         /var/azuracast/stations/<station>/media/<folder>/Artist - Title.mp3
+         /var/acacia/stations/<station>/media/<folder>/Artist - Title.mp3
                           │
                           ▼
          Acacia Radio's media scan (every 5 minutes) adds the files to the library
@@ -67,12 +67,12 @@ sudo bash plugins/music-downloader/install.sh            # install or update
 sudo bash plugins/music-downloader/install.sh --uninstall
 ```
 
-`--dir /path/to/azuracast` selects the installation if it isn't auto-detected; `--yes` skips the confirmation.
+`--dir /path/to/acacia` selects the installation if it isn't auto-detected; `--yes` skips the confirmation.
 Updating: `git pull`, then run `install.sh` again. It rebuilds the worker and swaps the files in place, and
 only recreates the Acacia Radio container when its mounts change. The first install needs about 2 GB of disk
 space for the images.
 
-The installer copies the plugin to `<azuracast>/plugins/music-downloader` and builds the worker image locally.
+The installer copies the plugin to `<acacia>/plugins/music-downloader` and builds the worker image locally.
 It creates `music-downloader.env` (the shared secret, root-only) and adds the plugin mount and the worker
 service to `docker-compose.override.yml` (backed up first). It then recreates the Acacia Radio container
 (about a minute of downtime) and checks that Acacia Radio can reach the worker.
@@ -144,9 +144,9 @@ and can't be downloaded.
 ## Development
 
 ```bash
-docker build -t azuracast-music-downloader:dev plugins/music-downloader/worker
+docker build -t acacia-music-downloader:dev plugins/music-downloader/worker
 docker run --rm -e MD_DATA_DIR=/tmp/md -e MD_STATIONS_ROOT=/tmp/stations \
-  -v "$PWD/plugins/music-downloader/tests:/tests:ro" azuracast-music-downloader:dev python /tests/worker_selftest.py
+  -v "$PWD/plugins/music-downloader/tests:/tests:ro" acacia-music-downloader:dev python /tests/worker_selftest.py
 plugins/music-downloader/reload.sh        # after changing PHP or templates on a server where it's mounted
 ```
 
@@ -156,7 +156,7 @@ plugins/music-downloader/reload.sh        # after changing PHP or templates on a
 ## Built into Acacia Radio
 
 In the fork this module is built in: `docker-compose.retail.yml` runs the worker and token containers, and
-`util/build_image.sh` builds the worker image as `azuracast-retail-music-downloader:<version>`. The installer and
+`util/build_image.sh` builds the worker image as `acacia-radio-music-downloader:<version>`. The installer and
 `./docker.sh update` create `music-downloader.env`, and the station menu has a native **Music Downloader**
 item (`StationFeatures::MusicDownloader`, which also switches off the injected button). There, use
 `./docker.sh update` and not this `install.sh`; the installer refuses such installs. See

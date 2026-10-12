@@ -28,18 +28,18 @@ ln -s /usr/bin/liquidsoap /usr/local/bin/liquidsoap
 
 # Add temp directories for caching.
 mkdir -p /tmp/liquidsoap_cache
-chown -R azuracast:azuracast /tmp/liquidsoap_cache
+chown -R acacia:acacia /tmp/liquidsoap_cache
 
-mkdir -p /var/azuracast/www_tmp/liquidsoap_cache
-chown -R azuracast:azuracast /var/azuracast/www_tmp/liquidsoap_cache
+mkdir -p /var/acacia/www_tmp/liquidsoap_cache
+chown -R acacia:acacia /var/acacia/www_tmp/liquidsoap_cache
 
 # Pre-warm the initial LS opcode cache.
 export LIQ_CACHE_SYSTEM_DIR=/tmp/liquidsoap_cache
-export LIQ_CACHE_USER_DIR=/var/azuracast/www_tmp/liquidsoap_cache
+export LIQ_CACHE_USER_DIR=/var/acacia/www_tmp/liquidsoap_cache
 
-gosu azuracast liquidsoap --cache-stdlib
+gosu acacia liquidsoap --cache-stdlib
 
 # Add Common Acacia Radio Functions
-mkdir -p /var/azuracast/liquidsoap
-cp /bd_build/stations/liquidsoap/* /var/azuracast/liquidsoap
-chown -R azuracast:azuracast /var/azuracast/liquidsoap
+mkdir -p /var/acacia/liquidsoap
+cp /bd_build/stations/liquidsoap/* /var/acacia/liquidsoap
+chown -R acacia:acacia /var/acacia/liquidsoap

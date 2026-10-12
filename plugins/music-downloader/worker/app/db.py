@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS settings (
     value TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS accounts (
-    user_id INTEGER PRIMARY KEY,          -- AzuraCast user id
+    user_id INTEGER PRIMARY KEY,          -- Acacia Radio user id
     spotify_id TEXT NOT NULL,
     display_name TEXT,
     product TEXT,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     kind TEXT NOT NULL,                   -- playlist | album | track
     title TEXT,
     dest_dir TEXT NOT NULL,               -- absolute folder inside the station's media
-    dest_label TEXT NOT NULL,             -- the same folder as shown in AzuraCast ("/" = media root)
+    dest_label TEXT NOT NULL,             -- the same folder as shown in Acacia Radio ("/" = media root)
     format TEXT NOT NULL,
     bitrate TEXT NOT NULL,
     user_id INTEGER NOT NULL,

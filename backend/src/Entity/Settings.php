@@ -62,7 +62,7 @@ final class Settings implements Stringable
     }
 
     #[
-        OA\Property(description: "Site Base URL", example: "https://your.azuracast.site"),
+        OA\Property(description: "Site Base URL", example: "https://your.acacia.site"),
         ORM\Column(length: 255, nullable: true),
         Serializer\Groups(self::GROUP_GENERAL)
     ]

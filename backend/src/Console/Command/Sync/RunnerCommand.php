@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use function usleep;
 
 #[AsCommand(
-    name: 'azuracast:sync:run',
+    name: 'acacia:sync:run',
     description: 'Task to run the minute\'s synchronized tasks.'
 )]
 final class RunnerCommand extends AbstractSyncRunnerCommand
@@ -91,7 +91,7 @@ final class RunnerCommand extends AbstractSyncRunnerCommand
             $taskShortName,
             'sync_task',
             [
-                'azuracast:sync:task',
+                'acacia:sync:task',
                 $taskClass,
             ],
             $timeout

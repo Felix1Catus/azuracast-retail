@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 #[AsCommand(
-    name: 'azuracast:sync:nowplaying:station',
+    name: 'acacia:sync:nowplaying:station',
     description: 'Task to run the Now Playing worker task for a specific station.',
 )]
 final class NowPlayingPerStationCommand extends AbstractSyncCommand

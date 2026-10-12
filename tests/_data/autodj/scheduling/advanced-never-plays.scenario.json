@@ -1,5 +1,5 @@
 {
-  "description": "An 'Advanced' (custom Liquidsoap) playlist is never auto-scheduled by azuracast.",
+  "description": "An 'Advanced' (custom Liquidsoap) playlist is never auto-scheduled by acacia.",
   "modes": [
     "in_memory",
     "integration"

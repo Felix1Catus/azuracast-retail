@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:media:reprocess',
+    name: 'acacia:media:reprocess',
     description: 'Manually reload all media metadata from file.',
 )]
 final class ReprocessCommand extends AbstractBatchMediaCommand

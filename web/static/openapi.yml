@@ -7151,7 +7151,7 @@ components:
             uri:
               description: 'The URI associated with the storage location.'
               type: string
-              example: /var/azuracast/www
+              example: /var/acacia/www
             stations:
               description: 'The stations using this storage location, if any.'
               type: array
@@ -9683,7 +9683,7 @@ components:
         base_url:
           description: 'Site Base URL'
           type: string
-          example: 'https://your.azuracast.site'
+          example: 'https://your.acacia.site'
           nullable: true
         instance_name:
           description: 'Acacia Radio Instance Name'
@@ -9982,7 +9982,7 @@ components:
               nullable: true
             radio_base_dir:
               type: string
-              example: /var/azuracast/stations/azuratest_radio
+              example: /var/acacia/stations/azuratest_radio
             enable_requests:
               description: 'Whether listeners can request songs to play on this station.'
               type: boolean
@@ -10652,7 +10652,7 @@ components:
             path:
               description: 'The local path, if the local adapter is used, or path prefix for S3/remote adapters.'
               type: string
-              example: /var/azuracast/stations/azuratest_radio/media
+              example: /var/acacia/stations/azuratest_radio/media
             s3CredentialKey:
               description: 'The credential key for S3 adapters.'
               type: string

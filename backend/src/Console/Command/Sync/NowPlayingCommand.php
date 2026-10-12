@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:sync:nowplaying',
+    name: 'acacia:sync:nowplaying',
     description: 'Task to run the Now Playing worker task.'
 )]
 final class NowPlayingCommand extends AbstractSyncRunnerCommand
@@ -156,7 +156,7 @@ final class NowPlayingCommand extends AbstractSyncRunnerCommand
             $shortName,
             'nowplaying',
             [
-                'azuracast:sync:nowplaying:station',
+                'acacia:sync:nowplaying:station',
                 $shortName,
             ]
         );

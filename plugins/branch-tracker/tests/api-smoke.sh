@@ -3,7 +3,7 @@
 # throwaway branch (code SMOKE-TEST); does not touch imported branches.
 #   plugins/branch-tracker/tests/api-smoke.sh
 set -uo pipefail
-CONTAINER=${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}
+CONTAINER=${TRACKER_CONTAINER:-$(docker ps --filter label=com.docker.compose.service=web --format '{{.Names}}' | head -n 1)}
 STATION=${STATION:-store}
 cd "$(dirname "$0")/../../.."
 BASE=${BASE:-http://localhost:8080}

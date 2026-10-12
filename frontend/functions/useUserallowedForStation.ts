@@ -4,10 +4,10 @@ import {
 } from "~/entities/ApiInterfaces.ts";
 import { useStationId } from "~/functions/useStationQuery.ts";
 import { useUserAllowed } from "~/functions/useUserAllowed.ts";
-import { useAzuraCastUser } from "~/vendor/azuracast.ts";
+import { useAcaciaRadioUser } from "~/vendor/acacia.ts";
 
 export function useUserAllowedForStation() {
-    const { permissions } = useAzuraCastUser();
+    const { permissions } = useAcaciaRadioUser();
     const { userAllowed } = useUserAllowed();
     const stationId = useStationId();
 

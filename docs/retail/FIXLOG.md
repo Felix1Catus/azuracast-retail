@@ -27,7 +27,7 @@ These fixes were found by setting up a fresh install on the development server (
 | — | **Leftover `UpdateCheck` registration removed.** The class was deleted in retail.2 (#13) but `events.php` still registered it, so every notification load logged "No entry or class found". A scan of `backend/config` finds no other references to deleted classes | `backend/config/events.php` | Dev server: no new errors after dashboard loads |
 | — | **The radio web proxy is always on.** Only 80/443 are published, but the setup wizard saved `use_radio_proxy=false` over the installer's setting, so listen URLs pointed at the closed port 8000. `Settings::$use_radio_proxy` now always reads and stores `true`, and the toggle is gone from System Settings | `Settings.php`, `GeneralTab.vue` | Dev server: listen and mount URLs are `/listen/store/radio.mp3` |
 
-Not a bug: a new station starts only after **Start Station** on its overview page. Until then `azuracast:radio:restart` skips it, as upstream does.
+Not a bug: a new station starts only after **Start Station** on its overview page. Until then `acacia:radio:restart` skips it, as upstream does.
 
 ## 0.23.8-retail.4 (2026-10-11)
 
@@ -35,9 +35,9 @@ Base: upstream 0.23.8 rolling, upstream `ebf75a267` (unchanged). Application cod
 
 | # | Change | Files | Verified |
 |---|---|---|---|
-| — | **One-command installer** for a fresh Ubuntu/Debian server. It checks the machine, installs Docker, clones the source, builds the newest release, writes `/var/azuracast` (ports 80/443), starts Acacia Radio with the `/listen/` proxy and, with `--domain`, gets HTTPS. Safe to run again | `util/install_retail.sh`, INSTALL §2a | Fresh Ubuntu 24.04 VPS (1 vCPU, 4 GB): install from GitHub in 7 min 53 s; setup wizard on :80; :443 answers; `/source` and the Branch Board module respond; ports 8000/2022/8005 closed. Re-run: 33 s, settings kept. Also tested in a Docker-in-Docker container without systemd |
+| — | **One-command installer** for a fresh Ubuntu/Debian server. It checks the machine, installs Docker, clones the source, builds the newest release, writes `/var/acacia` (ports 80/443), starts Acacia Radio with the `/listen/` proxy and, with `--domain`, gets HTTPS. Safe to run again | `util/install_retail.sh`, INSTALL §2a | Fresh Ubuntu 24.04 VPS (1 vCPU, 4 GB): install from GitHub in 7 min 53 s; setup wizard on :80; :443 answers; `/source` and the Branch Board module respond; ports 8000/2022/8005 closed. Re-run: 33 s, settings kept. Also tested in a Docker-in-Docker container without systemd |
 | — | **Installer fixes found in testing:** without systemd, the Docker daemon starts detached (a Ctrl-C used to stop its port proxies). The final URL shows the public address | `util/install_retail.sh` | Re-run after a daemon restart |
-| — | **`docker.sh update` re-run keeps the rollback target.** Updating to the installed version used to set `AZURACAST_RETAIL_PREVIOUS_IMAGE` to itself | `docker.sh` | Local install and VPS |
+| — | **`docker.sh update` re-run keeps the rollback target.** Updating to the installed version used to set `ACACIA_PREVIOUS_IMAGE` to itself | `docker.sh` | Local install and VPS |
 | — | **Docs:** the repository is public (no token needed); the HTTPS step no longer points at `docker.sh setup-letsencrypt`, which only prints a hint | INSTALL.md, FORK.md | — |
 
 ## 0.23.8-retail.3 (2026-10-11)
@@ -115,7 +115,7 @@ The features below are switched off server-side, and every way into them is remo
 
 Also: requests for a feature a station doesn't offer now return **404** instead of 500 (`StationUnsupportedException`).
 
-**Verified** on a copy of production data (`azuracast-retail:dev` plus hot-loaded backend):
+**Verified** on a copy of production data (`acacia-radio:dev` plus hot-loaded backend):
 - The feature flags read `false` even when set to 1 in the database, and saving a station stores 0.
 - Liquidsoap config has no harbor, HLS or relay output, and the stream plays.
 - Removed pages and APIs answer 404/405, while kept APIs answer 200: playlists, files, mounts, queue, schedule, reports, listeners, history and admin.
@@ -138,7 +138,7 @@ Base: upstream 0.23.8 rolling, upstream `ebf75a267`.
 | R-9 | **Autoloader note.** Documented that the image uses a classmap-authoritative autoloader | #8 | `FORK.md`, `INSTALL.md` | n/a |
 | R-5 | **Self-contained image build.** A Dockerfile `assets` stage builds the frontend, translations, OpenAPI docs and `.gitinfo`. `util/build_image.sh` adds git version info, retries and a composer parallelism setting, and works with any buildx builder | n/a | `Dockerfile`, `util/build_image.sh` | Full build from a clean checkout |
 | AGPL | **`/source` endpoint** serves a cached `.tar.gz` of the running code (without `vendor`, `node_modules` or build output; lock files included), linked from the panel footer | n/a | `SourceCodeAction.php`, `routes/public.php`, `PanelFooter.vue` | HTTP 200, `application/gzip`, about 7.9 MB, 2,664 entries |
-| R-3 | **Restore re-enables sync.** `azuracast:restore` turns `sync_disabled` off in a `finally` block | n/a | `RestoreCommand.php` | Code review; this bug hit production |
+| R-3 | **Restore re-enables sync.** `acacia:restore` turns `sync_disabled` off in a `finally` block | n/a | `RestoreCommand.php` | Code review; this bug hit production |
 | R-1, R-2 | **Global "enable all webhooks" switch fixed.** It was wired to On-Demand. Now it gates the Webhooks feature, and the dispatcher skips outgoing connectors when it is off | n/a | `StationFeatures.php`, `Webhook/Dispatcher.php` | Code review |
 
 ## Template for new entries

@@ -4,7 +4,7 @@
 # Uses its own throwaway branch. Leaves stream auth OFF at the end. Restarts the station 3 times.
 #   plugins/branch-tracker/tests/session-smoke.sh [--with-throttle]   (throttle test blocks logins for 5 min)
 set -uo pipefail
-CONTAINER=${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}
+CONTAINER=${TRACKER_CONTAINER:-$(docker ps --filter label=com.docker.compose.service=web --format '{{.Names}}' | head -n 1)}
 STATION=${STATION:-store}
 cd "$(dirname "$0")/../../.."
 BASE=${BASE:-http://localhost:8080}
@@ -12,7 +12,7 @@ ADMIN="$BASE/api/station/$STATION/branches"
 PUB="$BASE/api/station/$STATION/branch"
 STREAM="$BASE/listen/$STATION/radio.mp3"
 KEY=$(cat backups/local-api-key 2>/dev/null) || { echo "Run tests/make-local-api-key.sh first"; exit 1; }
-CLI="docker exec -u azuracast $CONTAINER azuracast_cli"
+CLI="docker exec -u acacia $CONTAINER acacia_cli"
 SQL() { docker exec -i $CONTAINER sh -c 'mariadb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" -N'; }
 PASS=0; FAIL=0
 

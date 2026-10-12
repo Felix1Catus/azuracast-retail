@@ -1,5 +1,5 @@
 import { DateTime, Duration, Settings } from "luxon";
-import { useAzuraCast } from "~/vendor/azuracast";
+import { useAcaciaRadio } from "~/vendor/acacia";
 
 type TimestampToRelative = (timestamp: number | null | undefined) => string;
 
@@ -10,7 +10,7 @@ interface UseLuxon {
 }
 
 export function useLuxon(): UseLuxon {
-    const { localeWithDashes, timeConfig } = useAzuraCast();
+    const { localeWithDashes, timeConfig } = useAcaciaRadio();
     Settings.defaultLocale = localeWithDashes;
 
     const timestampToRelative: TimestampToRelative = (

@@ -10,7 +10,7 @@ use Doctrine\DBAL\Exception\TableNotFoundException;
 use Plugin\BranchTracker\Service\PresenceService;
 
 /**
- * Every minute (azuracast:sync:run): link Icecast connections to sessions, end idle sessions,
+ * Every minute (acacia:sync:run): link Icecast connections to sessions, end idle sessions,
  * and apply the 00:30 daily reset, for every station that has branches.
  */
 final class PresenceTask extends AbstractTask

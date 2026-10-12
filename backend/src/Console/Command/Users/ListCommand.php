@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:account:list',
+    name: 'acacia:account:list',
     description: 'List all accounts in the system.',
 )]
 final class ListCommand extends CommandAbstract

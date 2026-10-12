@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:queue:clear',
+    name: 'acacia:queue:clear',
     description: 'Clear the contents of the message queue.',
     aliases: ['queue:clear']
 )]

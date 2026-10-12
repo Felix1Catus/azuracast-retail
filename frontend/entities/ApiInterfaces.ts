@@ -386,12 +386,12 @@ export interface ApiAdminRelay {
     shortcode?: string | null;
     /**
      * Station description
-     * @example "An AzuraCast station!"
+     * @example "An Acacia Radio station!"
      */
     description?: string | null;
     /**
      * Station homepage URL
-     * @example "https://www.azuracast.com/"
+     * @example "https://www.acacia.com/"
      */
     url?: string | null;
     /**
@@ -552,7 +552,7 @@ export type ApiAdminStorageLocation = HasLinks & {
     isFull?: boolean;
     /**
      * The URI associated with the storage location.
-     * @example "/var/azuracast/www"
+     * @example "/var/acacia/www"
      */
     uri?: string;
     /** The stations using this storage location, if any. */
@@ -930,7 +930,7 @@ export interface ApiNowPlayingStation {
     shortcode: string;
     /**
      * Station description
-     * @example "An AzuraCast station!"
+     * @example "An Acacia Radio station!"
      */
     description: string;
     /**
@@ -2077,12 +2077,12 @@ export interface Settings {
     app_unique_identifier?: string;
     /**
      * Site Base URL
-     * @example "https://your.azuracast.site"
+     * @example "https://your.acacia.site"
      */
     base_url?: string | null;
     /**
-     * AzuraCast Instance Name
-     * @example "My AzuraCast Instance"
+     * Acacia Radio Instance Name
+     * @example "My Acacia Radio Instance"
      */
     instance_name?: string | null;
     /**
@@ -2180,7 +2180,7 @@ export interface Settings {
      */
     last_fm_api_key?: string | null;
     /**
-     * Hide AzuraCast Branding on Public Pages
+     * Hide Acacia Radio Branding on Public Pages
      * @example "false"
      */
     hide_product_name?: boolean;
@@ -2276,7 +2276,7 @@ export interface Settings {
     mail_enabled?: boolean;
     /**
      * The name of the sender of system e-mails.
-     * @example "AzuraCast"
+     * @example "Acacia Radio"
      */
     mail_sender_name?: string | null;
     /**
@@ -2361,11 +2361,11 @@ export type Station = HasAutoIncrementId & {
     backend_config?: StationBackendConfiguration;
     /** @example "A sample radio station." */
     description?: string | null;
-    /** @example "https://demo.azuracast.com/" */
+    /** @example "https://demo.acacia.com/" */
     url?: string | null;
     /** @example "Various" */
     genre?: string | null;
-    /** @example "/var/azuracast/stations/azuratest_radio" */
+    /** @example "/var/acacia/stations/azuratest_radio" */
     radio_base_dir?: string;
     /**
      * Whether listeners can request songs to play on this station.
@@ -2817,7 +2817,7 @@ export type StorageLocation = HasAutoIncrementId & {
     adapter?: StorageLocationAdapters;
     /**
      * The local path, if the local adapter is used, or path prefix for S3/remote adapters.
-     * @example "/var/azuracast/stations/azuratest_radio/media"
+     * @example "/var/acacia/stations/azuratest_radio/media"
      */
     path?: string;
     /**
@@ -2927,7 +2927,7 @@ export interface HasUniqueId {
 }
 
 export type User = HasAutoIncrementId & {
-    /** @example "demo@azuracast.com" */
+    /** @example "demo@acacia.com" */
     email?: string;
     /** @example "" */
     auth_password?: string;

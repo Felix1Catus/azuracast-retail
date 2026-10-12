@@ -2,14 +2,14 @@ import { toRefs } from "@vueuse/core";
 import { DateTime } from "luxon";
 import { MaybeRefOrGetter, toValue } from "vue";
 import { useStationData } from "~/functions/useStationQuery.ts";
-import { useAzuraCast } from "~/vendor/azuracast.ts";
+import { useAcaciaRadio } from "~/vendor/acacia.ts";
 import { useLuxon } from "~/vendor/luxon.ts";
 
 export default function useStationDateTimeFormatter(
     timezone?: MaybeRefOrGetter<string>,
 ) {
     const { DateTime } = useLuxon();
-    const { timeConfig } = useAzuraCast();
+    const { timeConfig } = useAcaciaRadio();
 
     if (!timezone) {
         const stationData = useStationData();

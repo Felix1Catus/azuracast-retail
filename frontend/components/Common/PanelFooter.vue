@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAzuraCastDashboardGlobals } from "~/vendor/azuracast.ts";
+import { useAcaciaRadioDashboardGlobals } from "~/vendor/acacia.ts";
 
-const { version, platform } = useAzuraCastDashboardGlobals();
+const { version, platform } = useAcaciaRadioDashboardGlobals();
 </script>

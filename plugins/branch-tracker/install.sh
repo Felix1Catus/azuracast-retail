@@ -50,14 +50,14 @@ if docker compose version >/dev/null 2>&1; then DC=(docker compose); elif comman
 docker info >/dev/null 2>&1 || die "Cannot talk to Docker. Run as root (sudo) or as a member of the docker group."
 
 if [ -z "$DIR" ]; then
-  for d in "$PWD" /var/azuracast /opt/azuracast /root /home/*/azuracast; do
-    if [ -f "$d/docker-compose.yml" ] && grep -qiE 'image:.*azuracast' "$d/docker-compose.yml"; then DIR="$d"; break; fi
+  for d in "$PWD" /var/acacia /var/azuracast /opt/azuracast /root /home/*/azuracast; do  # rebrand:keep (finds installs from before the rebrand)
+    if [ -f "$d/docker-compose.yml" ] && grep -qiE 'image:.*(acacia|azuracast)' "$d/docker-compose.yml"; then DIR="$d"; break; fi  # rebrand:keep
   done
 fi
-[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "Acacia Radio not found. Pass --dir /path/to/azuracast (the folder containing docker-compose.yml)."
+[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "Acacia Radio not found. Pass --dir /path/to/acacia (the folder containing docker-compose.yml)."
 DIR=$(cd "$DIR" && pwd)
 cd "$DIR"
-grep -qiE 'image:.*azuracast' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like Acacia Radio's."
+grep -qiE 'image:.*(acacia|azuracast)' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like Acacia Radio's."  # rebrand:keep
 
 container() {
   local id; id=$("${DC[@]}" ps -q web 2>/dev/null | head -1)
@@ -65,7 +65,7 @@ container() {
 }
 C=$(container || true)
 [ -n "$C" ] || die "Acacia Radio's web container isn't running. Start it first: cd $DIR && ${DC[*]} up -d"
-cli() { docker exec -u azuracast "$C" azuracast_cli "$@"; }
+cli() { docker exec -u acacia "$C" acacia_cli "$@"; }
 stations() { docker exec "$C" curl -fsS http://127.0.0.1:6010/api/stations 2>/dev/null | grep -oE '"shortcode":"[^"]+"' | cut -d'"' -f4; }
 
 AZV=$(cli --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
@@ -74,7 +74,7 @@ say "Acacia Radio ${AZV:-?} found in $DIR (container: $C)"
 OV="$DIR/docker-compose.override.yml"
 VOL_RO=":ro"
 if command -v getenforce >/dev/null 2>&1 && [ "$(getenforce 2>/dev/null)" = "Enforcing" ]; then VOL_RO=":ro,z"; fi
-VOLUME="./plugins/$PLUGIN:/var/azuracast/www/plugins/$PLUGIN$VOL_RO"
+VOLUME="./plugins/$PLUGIN:/var/acacia/www/plugins/$PLUGIN$VOL_RO"
 
 yq() { docker run --rm -v "$DIR:/workdir" -w /workdir mikefarah/yq:4 "$@"; }
 
@@ -93,7 +93,7 @@ if [ "$ACTION" = uninstall ]; then
   echo "This unlocks every station's stream, turns off the public-page PIN login, removes the plugin mount"
   echo "and recreates the Acacia Radio container (about a minute of downtime). Branch data stays in the database."
   confirm "Uninstall Tracker?" || die "Cancelled."
-  if docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php"; then
+  if docker exec "$C" test -f "/var/acacia/www/plugins/$PLUGIN/events.php"; then
     for s in $(stations); do
       cli branch-tracker:stream-auth "$s" off >/dev/null 2>&1 && echo "  $s: stream auth off" || true
       cli branch-tracker:public-page "$s" off >/dev/null 2>&1 || true
@@ -110,7 +110,7 @@ if [ "$ACTION" = uninstall ]; then
   fi
   "${DC[@]}" up -d
   wait_ready
-  docker exec "$C" rm -f /var/azuracast/www_tmp/app_routes.cache.php || true
+  docker exec "$C" rm -f /var/acacia/www_tmp/app_routes.cache.php || true
   say "Tracker removed. Plugin files left in $DIR/plugins/$PLUGIN (delete them if you like)."
   exit 0
 fi
@@ -178,13 +178,13 @@ fi
 say "Recreating the Acacia Radio container"
 "${DC[@]}" up -d
 wait_ready
-docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php" || die "The plugin isn't visible inside the container; check the volume in $OV."
+docker exec "$C" test -f "/var/acacia/www/plugins/$PLUGIN/events.php" || die "The plugin isn't visible inside the container; check the volume in $OV."
 
 say "Activating (migrations, caches, health check)"
 "$DEST/reload.sh" "$C"
 
 say "Enabling Acacia Radio analytics ($ANALYTICS)"
-cli azuracast:settings:set analytics "$ANALYTICS" >/dev/null && echo "done"
+cli acacia:settings:set analytics "$ANALYTICS" >/dev/null && echo "done"
 
 say "Tracker $NEWV is installed"
 ST=$(stations | tr '\n' ' ')
@@ -195,11 +195,11 @@ Next steps (per station; your stations: ${ST:-none yet}):
   Open the board:       log in to Acacia Radio, open a station, click the green "Branch Board" button
                         (or go to /branch-tracker/<station>)
   Add branches:         board > Manage > Add branch   (each gets a PIN, shown once)
-  Track branch streams: docker exec -u azuracast $C azuracast_cli branch-tracker:stream-auth <station> observe
+  Track branch streams: docker exec -u acacia $C acacia_cli branch-tracker:stream-auth <station> observe
   PIN login on the station's public page:
-                        docker exec -u azuracast $C azuracast_cli branch-tracker:public-page <station> on
+                        docker exec -u acacia $C acacia_cli branch-tracker:public-page <station> on
   Lock the stream to signed-in branches (when everyone uses the new player):
-                        docker exec -u azuracast $C azuracast_cli branch-tracker:stream-auth <station> enforce
+                        docker exec -u acacia $C acacia_cli branch-tracker:stream-auth <station> enforce
 
 Update later by re-running this script with --ref <new tag>. Remove with --uninstall.
 EOF

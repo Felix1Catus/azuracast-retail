@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Build the production image with version info taken from the local git checkout, and the Music Downloader
 # worker image (plugins/music-downloader/worker) with the same version:
-#   util/build_image.sh [tag]        (default tag: azuracast-retail:dev)
-#   -> <tag>  and  <repository>-music-downloader:<version>, e.g. azuracast-retail-music-downloader:dev
+#   util/build_image.sh [tag]        (default tag: acacia-radio:dev)
+#   -> <tag>  and  <repository>-music-downloader:<version>, e.g. acacia-radio-music-downloader:dev
 #
 # Environment:
 #   COMPOSER_MAX_PARALLEL_HTTP  parallel composer downloads (default 12; try 2 on a flaky network)
@@ -11,7 +11,7 @@
 set -euo pipefail
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
-TAG="${1:-azuracast-retail:dev}"
+TAG="${1:-acacia-radio:dev}"
 ATTEMPTS="${BUILD_ATTEMPTS:-1}"
 WORKER_TAG="$(util/music_downloader_tag.sh "$TAG")"
 

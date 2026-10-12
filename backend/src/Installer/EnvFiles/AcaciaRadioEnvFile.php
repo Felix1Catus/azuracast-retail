@@ -11,7 +11,7 @@ use Psr\Log\LogLevel;
 
 use function __;
 
-final class AzuraCastEnvFile extends AbstractEnvFile
+final class AcaciaRadioEnvFile extends AbstractEnvFile
 {
     /** @inheritDoc */
     public static function getConfiguration(Environment $environment): array
@@ -231,7 +231,7 @@ final class AzuraCastEnvFile extends AbstractEnvFile
                     'name' => __('Enable Performance Profiling Extension'),
                     'description' => sprintf(
                         __('Profiling data can be viewed by visiting %s.'),
-                        'http://your-azuracast-site/?SPX_KEY=dev&SPX_UI_URI=/',
+                        'http://your-acacia-site/?SPX_KEY=dev&SPX_UI_URI=/',
                     ),
                 ],
                 Environment::PROFILING_EXTENSION_ALWAYS_ON => [
@@ -288,6 +288,6 @@ final class AzuraCastEnvFile extends AbstractEnvFile
 
     public static function buildPathFromBase(string $baseDir): string
     {
-        return $baseDir . DIRECTORY_SEPARATOR . 'azuracast.env';
+        return $baseDir . DIRECTORY_SEPARATOR . 'acacia.env';
     }
 }

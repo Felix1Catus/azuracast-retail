@@ -7,16 +7,16 @@
 #                   the 60 s opcache window can cache the OLD routes under the NEW key (new routes then 405), so
 #                   every route cache is removed after PHP restarts.
 set -euo pipefail
-C=${1:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast-retail|^azuracast:/ {print $1; exit}')}
+C=${1:-$(docker ps --filter label=com.docker.compose.service=web --format '{{.Names}}' | head -n 1)}
 [ -n "$C" ] || { echo "Acacia Radio container not found; pass its name: ./reload.sh <container>"; exit 1; }
-P=/var/azuracast/www/plugins/music-downloader
+P=/var/acacia/www/plugins/music-downloader
 
 echo "==> lint"
 docker exec "$C" sh -c "find $P -name '*.php' -print0 | xargs -0 -n1 php -l" | grep -v '^No syntax errors' && exit 1 || true
 
 echo "==> restart PHP workers + clear route caches"
 docker exec "$C" supervisorctl restart php-fpm php-nowplaying php-worker >/dev/null
-docker exec "$C" sh -c 'rm -f /var/azuracast/www_tmp/app_routes*.cache.php'
+docker exec "$C" sh -c 'rm -f /var/acacia/www_tmp/app_routes*.cache.php'
 
 echo "==> worker reachable from Acacia Radio"
 docker exec "$C" sh -c 'curl -fsS "${MUSIC_DOWNLOADER_WORKER_URL:-http://music-downloader:8000}/health"' && echo

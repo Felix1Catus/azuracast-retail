@@ -22,7 +22,7 @@ final class EnvFile extends AbstractEnvFile
                     'name' => __(
                         '(Docker Compose) All Docker containers are prefixed by this name. Do not change this after installation.'
                     ),
-                    'default' => 'azuracast',
+                    'default' => 'acacia',
                     'required' => true,
                 ],
                 'COMPOSE_HTTP_TIMEOUT' => [
@@ -32,59 +32,59 @@ final class EnvFile extends AbstractEnvFile
                     'default' => 300,
                     'required' => true,
                 ],
-                'AZURACAST_VERSION' => [
+                'ACACIA_VERSION' => [
                     'name' => __('Release Channel'),
                     'options' => ['latest', 'stable'],
                     'default' => 'latest',
                     'required' => true,
                 ],
-                'AZURACAST_HTTP_PORT' => [
+                'ACACIA_HTTP_PORT' => [
                     'name' => __('HTTP Port'),
                     'description' => __(
                         'The main port Acacia Radio listens to for insecure HTTP connections.',
                     ),
                     'default' => 80,
                 ],
-                'AZURACAST_HTTPS_PORT' => [
+                'ACACIA_HTTPS_PORT' => [
                     'name' => __('HTTPS Port'),
                     'description' => __(
                         'The main port Acacia Radio listens to for secure HTTPS connections.',
                     ),
                     'default' => 443,
                 ],
-                'AZURACAST_SFTP_PORT' => [
+                'ACACIA_SFTP_PORT' => [
                     'name' => __('SFTP Port'),
                     'description' => __(
                         'The port Acacia Radio listens to for SFTP file management connections.',
                     ),
                     'default' => 2022,
                 ],
-                'AZURACAST_STATION_PORTS' => [
+                'ACACIA_STATION_PORTS' => [
                     'name' => __('Station Ports'),
                     'description' => __(
                         'The ports Acacia Radio should listen to for station broadcasts and incoming DJ connections.',
                     ),
                     'default' => implode(',', Configuration::enumerateDefaultPorts()),
                 ],
-                'AZURACAST_PUID' => [
+                'ACACIA_PUID' => [
                     'name' => __('Docker User UID'),
                     'description' => __(
                         'Set the UID of the user running inside the Docker containers. Matching this with your host UID can fix permission issues.',
                     ),
                     'default' => 1000,
                 ],
-                'AZURACAST_PGID' => [
+                'ACACIA_PGID' => [
                     'name' => __('Docker User GID'),
                     'description' => __(
                         'Set the GID of the user running inside the Docker containers. Matching this with your host GID can fix permission issues.'
                     ),
                     'default' => 1000,
                 ],
-                'AZURACAST_PODMAN_MODE' => [
+                'ACACIA_PODMAN_MODE' => [
                     'name' => __('Use Podman instead of Docker.'),
                     'default' => false,
                 ],
-                'AZURACAST_COMPOSE_PRIVILEGED' => [
+                'ACACIA_COMPOSE_PRIVILEGED' => [
                     'name' => __('Advanced: Use Privileged Docker Settings'),
                     'default' => true,
                 ],

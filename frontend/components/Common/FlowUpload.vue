@@ -68,7 +68,7 @@ import Flow from "@flowjs/flow.js";
 import { defaultsDeep, forEach, toInteger } from "es-toolkit/compat";
 import { onMounted, onUnmounted, reactive, useTemplateRef } from "vue";
 import formatFileSize from "~/functions/formatFileSize";
-import { useAzuraCast } from "~/vendor/azuracast";
+import { useAcaciaRadio } from "~/vendor/acacia";
 import { useTranslate } from "~/vendor/gettext";
 import IconIcCloudUpload from "~icons/ic/baseline-cloud-upload";
 
@@ -162,7 +162,7 @@ const $fileBrowseTarget = useTemplateRef("$fileBrowseTarget");
 
 const $fileDropTarget = useTemplateRef("$fileDropTarget");
 
-const { apiCsrf } = useAzuraCast();
+const { apiCsrf } = useAcaciaRadio();
 
 const { $gettext } = useTranslate();
 

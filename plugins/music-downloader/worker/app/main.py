@@ -1,7 +1,7 @@
-"""Music Downloader worker API. Internal only: reachable from AzuraCast's container on the Docker network,
+"""Music Downloader worker API. Internal only: reachable from Acacia Radio's container on the Docker network,
 never published on a host port. Every call except /health needs the shared token (MD_WORKER_TOKEN).
 
-The AzuraCast plugin does the user-facing checks (login, permissions, which station and folder); this API
+The Acacia Radio plugin does the user-facing checks (login, permissions, which station and folder); this API
 trusts the user id and station it is given, and only checks that files stay inside the stations folder.
 """
 
@@ -149,6 +149,11 @@ def startup() -> None:
         conn.execute("UPDATE jobs SET status = 'cancelled', finished_at = ? WHERE status = 'cancelling'", (db.now(),))
         conn.execute("UPDATE tracks SET status = 'pending' WHERE status = 'downloading'")
         conn.execute("DELETE FROM oauth_states WHERE created_at < ?", (db.now() - spotify_auth.STATE_TTL,))
+        # Jobs saved before the stations root moved (rebrand) point at the other root; retry/resume need this one.
+        for job in conn.execute("SELECT id, dest_dir FROM jobs").fetchall():
+            moved = translate_stations_path(job["dest_dir"])
+            if moved != job["dest_dir"]:
+                conn.execute("UPDATE jobs SET dest_dir = ? WHERE id = ?", (moved, job["id"]))
 
     import spotdl  # pylint: disable=import-outside-toplevel
     import yt_dlp.version  # pylint: disable=import-outside-toplevel
@@ -363,6 +368,15 @@ def auth_finish(body: AuthFinishIn) -> Dict[str, Any]:
 # ------------------------------------------------------------------ jobs
 
 
+def translate_stations_path(path: str) -> str:
+    """Map a folder between the canonical and legacy stations roots to the one mounted here (config.py)."""
+    for other in (config.CANONICAL_STATIONS_ROOT, config.LEGACY_STATIONS_ROOT):
+        prefix = str(other) + "/"
+        if other != config.STATIONS_ROOT and path.startswith(prefix):
+            return str(config.STATIONS_ROOT) + "/" + path[len(prefix):]
+    return path
+
+
 def parse_spotify_url(url: str) -> Optional[Dict[str, str]]:
     m = SPOTIFY_URL.match(url or "")
     if not m:
@@ -420,7 +434,7 @@ def create_job(body: JobIn) -> Dict[str, Any]:
         raise HTTPException(422, "Unknown format or bitrate.")
 
     root = config.STATIONS_ROOT.resolve()
-    dest = Path(body.dest_dir).resolve()
+    dest = Path(translate_stations_path(body.dest_dir)).resolve()
     if not dest.is_relative_to(root) or dest == root:
         raise HTTPException(422, "The destination must be inside a station's media folder.")
 

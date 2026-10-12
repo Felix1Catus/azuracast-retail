@@ -88,7 +88,7 @@ import {
 import { QueryKeys } from "~/entities/Queries.ts";
 import { useApiItemProvider } from "~/functions/dataTable/useApiItemProvider.ts";
 import { useApiRouter } from "~/functions/useApiRouter.ts";
-import { useAzuraCast } from "~/vendor/azuracast";
+import { useAcaciaRadio } from "~/vendor/acacia";
 import { useTranslate } from "~/vendor/gettext";
 import { useLuxon } from "~/vendor/luxon";
 import IconIcAddCircle from "~icons/ic/baseline-add-circle";
@@ -106,7 +106,7 @@ const dateRange = ref({
 });
 
 const { $gettext } = useTranslate();
-const { timeConfig } = useAzuraCast();
+const { timeConfig } = useAcaciaRadio();
 
 type Row = AuditLog;
 

@@ -1,6 +1,6 @@
 # Code review: bugs and improvements
 
-This review covers upstream 0.23.8 (upstream `5ca47e6`) as forked into azuracast-retail. Each finding has an ID that is referenced from the GitHub issues and [REDESIGN.md](REDESIGN.md).
+This review covers upstream 0.23.8 (upstream `5ca47e6`) as forked into acacia-radio. Each finding has an ID that is referenced from the GitHub issues and [REDESIGN.md](REDESIGN.md).
 
 **Status values:**
 - **Fixed:** fixed in the fork; see [FIXLOG.md](FIXLOG.md).
@@ -33,14 +33,14 @@ The local handler, which writes the static Now Playing files and pushes to Centr
 ### R-3 · Restoring a backup leaves sync paused forever: **Fixed**
 `backend/src/Console/Command/Backup/RestoreCommand.php`
 
-`azuracast:restore` sets `sync_disabled = true` before importing and never sets it back. After a restore, nothing runs until someone runs `azuracast:settings:set sync_disabled false` by hand:
+`acacia:restore` sets `sync_disabled = true` before importing and never sets it back. After a restore, nothing runs until someone runs `acacia:settings:set sync_disabled false` by hand:
 - no Now Playing updates
 - no AutoDJ queue building
 - no scheduled tasks
 
 We hit this on both the production server and the local clone.
 
-**Fix:** the final `azuracast:setup --update` step is now wrapped in `try/finally`, which turns sync back on even if the update fails.
+**Fix:** the final `acacia:setup --update` step is now wrapped in `try/finally`, which turns sync back on even if the update fails.
 
 ### R-4 · Static Now Playing files ignore the station's "public API" setting: **Fixed** (upstream merged)
 Upstream `ebf75a267` (#8604) touches `backend/src/Webhook/LocalWebhookHandler.php` and `backend/src/VueComponent/NowPlayingComponent.php`.
@@ -61,7 +61,7 @@ The Dockerfile `final` stage copies the repo and runs composer only. In upstream
 A plain `docker build` therefore produced a panel with no JavaScript.
 
 **Fix:**
-- A new `assets` stage (Node 24 + composer) runs `locale:import`, `npm run build` and `azuracast:api:docs`, and writes `.gitinfo` from build args.
+- A new `assets` stage (Node 24 + composer) runs `locale:import`, `npm run build` and `acacia:api:docs`, and writes `.gitinfo` from build args.
 - `util/build_image.sh` passes the git info in.
 - Translations come from the `.po` files committed in the repo, not from Crowdin.
 
@@ -120,5 +120,5 @@ Plugins can add routes, permissions, entities, sync tasks and console commands, 
 ## Smaller notes
 
 - The `Powered by Acacia Radio` footer and donate link are upstream branding. AGPL does not require keeping them, but the copyright and license notices must stay. Keep "Powered by Acacia Radio" (it is accurate) and drop the donate line in the retail theme.
-- `MYSQL_PASSWORD="azur4c457"` is a default in the Dockerfile `ENV`. It is harmless while MariaDB only listens inside the container, but production should set its own in `azuracast.env`.
+- `MYSQL_PASSWORD="azur4c457"` is a default in the Dockerfile `ENV`. It is harmless while MariaDB only listens inside the container, but production should set its own in `acacia.env`.
 - `Settings.sync_disabled` is only visible under Administration → Settings → Debugging, and nothing warns when it is on. Add a dashboard banner, since R-3 shows how easily it gets stuck.

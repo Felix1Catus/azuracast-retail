@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:acme:reload',
+    name: 'acacia:acme:reload',
     description: 'Reload certificate-using services (in case of manual HTTPS cert update).',
     aliases: ['acme:reload']
 )]

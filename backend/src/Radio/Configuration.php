@@ -150,7 +150,7 @@ final class Configuration
 
         foreach ($programs as $programName => $adapter) {
             $configLines = [
-                'user' => 'azuracast',
+                'user' => 'acacia',
                 'priority' => 950,
                 'startsecs' => 10,
                 'startretries' => 5,

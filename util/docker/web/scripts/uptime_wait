@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if [ `whoami` != 'azuracast' ]; then
-    exec gosu azuracast uptime_wait "$@"
+if [ `whoami` != 'acacia' ]; then
+    exec gosu acacia uptime_wait "$@"
 fi
 
-cd /var/azuracast/www
+cd /var/acacia/www
 exec php backend/bin/uptime_wait "$@"

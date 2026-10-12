@@ -23,7 +23,7 @@ PLUGIN="music-downloader"       # folder name: defines the PHP namespace Plugin\
 SERVICE="music-downloader"      # compose service name = the worker's hostname on the Docker network
 POT_SERVICE="music-downloader-pot"   # YouTube PO-token server used by yt-dlp (see worker/app/ytdlp.py)
 POT_IMAGE="brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno"   # same version as bgutil-ytdlp-pot-provider in worker/requirements.txt
-MARK="# managed-by: azuracast plugin installers"
+MARK="# managed-by: acacia plugin installers"
 ENV_FILE="music-downloader.env"
 
 DIR=""; REF=""; YES=0; ACTION=install
@@ -54,14 +54,14 @@ DC=(docker compose)
 docker info >/dev/null 2>&1 || die "Cannot talk to Docker. Run as root (sudo) or as a member of the docker group."
 
 if [ -z "$DIR" ]; then
-  for d in "$PWD" /var/azuracast /opt/azuracast /root /home/*/azuracast; do
-    if [ -f "$d/docker-compose.yml" ] && grep -qiE 'image:.*azuracast' "$d/docker-compose.yml"; then DIR="$d"; break; fi
+  for d in "$PWD" /var/acacia /var/azuracast /opt/azuracast /root /home/*/azuracast; do  # rebrand:keep (finds installs from before the rebrand)
+    if [ -f "$d/docker-compose.yml" ] && grep -qiE 'image:.*(acacia|azuracast)' "$d/docker-compose.yml"; then DIR="$d"; break; fi  # rebrand:keep
   done
 fi
-[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "Acacia Radio not found. Pass --dir /path/to/azuracast (the folder containing docker-compose.yml)."
+[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "Acacia Radio not found. Pass --dir /path/to/acacia (the folder containing docker-compose.yml)."
 DIR=$(cd "$DIR" && pwd)
 cd "$DIR"
-grep -qiE 'image:.*azuracast' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like Acacia Radio's."
+grep -qiE 'image:.*(acacia|azuracast)' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like Acacia Radio's."  # rebrand:keep
 grep -qE '^\s+station_data:' docker-compose.yml || die "docker-compose.yml has no station_data volume; this installer expects Acacia Radio's standard layout."
 if [ "$ACTION" = install ] && grep -qE '^  music-downloader:' docker-compose.yml; then
   die "Music Downloader is built into this installation (Acacia Radio): docker-compose.yml already runs it. Update with ./docker.sh update instead."
@@ -77,7 +77,7 @@ C=$(container || true)
 OV="$DIR/docker-compose.override.yml"
 VOL_RO=":ro"
 if command -v getenforce >/dev/null 2>&1 && [ "$(getenforce 2>/dev/null)" = "Enforcing" ]; then VOL_RO=":ro,z"; fi
-VOLUME="./plugins/$PLUGIN:/var/azuracast/www/plugins/$PLUGIN$VOL_RO"
+VOLUME="./plugins/$PLUGIN:/var/acacia/www/plugins/$PLUGIN$VOL_RO"
 
 yq() { docker run --rm -u "$(id -u):$(id -g)" -v "$DIR:/workdir" -w /workdir mikefarah/yq:4 "$@"; }
 
@@ -111,7 +111,7 @@ if [ "$ACTION" = uninstall ]; then
   fi
   "${DC[@]}" up -d --remove-orphans
   wait_ready
-  docker exec "$C" sh -c 'rm -f /var/azuracast/www_tmp/app_routes*.cache.php' || true
+  docker exec "$C" sh -c 'rm -f /var/acacia/www_tmp/app_routes*.cache.php' || true
   say "Music Downloader removed. Plugin files left in $DIR/plugins/$PLUGIN; data volume: ${DC[*]} volume ls."
   exit 0
 fi
@@ -159,7 +159,7 @@ chmod -R a+rX "$DEST"
 chmod +x "$DEST"/*.sh 2>/dev/null || true
 echo "Music Downloader $NEWV in $DEST"
 
-IMAGE="azuracast-music-downloader:$NEWV"
+IMAGE="acacia-music-downloader:$NEWV"
 say "Building the worker image $IMAGE"
 docker build -t "$IMAGE" "$DEST/worker" || die "The worker image didn't build."
 
@@ -178,18 +178,18 @@ yq -i "
   .services.web.volumes = (((.services.web.volumes // []) | map(select(test(\"plugins/$PLUGIN\") | not))) + [\"$VOLUME\"]) |
   .services.web.env_file = (((.services.web.env_file // []) | map(select(. != \"$ENV_FILE\"))) + [\"$ENV_FILE\"]) |
   .services.\"$SERVICE\" = {
-    \"container_name\": \"azuracast_music_downloader\",
+    \"container_name\": \"acacia_music_downloader\",
     \"image\": \"$IMAGE\",
     \"pull_policy\": \"never\",
     \"env_file\": [\"$ENV_FILE\"],
-    \"volumes\": [\"station_data:/var/azuracast/stations\", \"music_downloader_data:/data\"],
+    \"volumes\": [\"station_data:/var/acacia/stations\", \"music_downloader_data:/data\"],
     \"restart\": \"unless-stopped\",
     \"cpu_shares\": 256,
     \"mem_limit\": \"1g\",
     \"logging\": {\"options\": {\"max-size\": \"1m\", \"max-file\": \"3\"}}
   } |
   .services.\"$POT_SERVICE\" = {
-    \"container_name\": \"azuracast_music_downloader_pot\",
+    \"container_name\": \"acacia_music_downloader_pot\",
     \"image\": \"$POT_IMAGE\",
     \"restart\": \"unless-stopped\",
     \"cpu_shares\": 256,
@@ -203,7 +203,7 @@ yq -i "
 say "Starting the worker and recreating Acacia Radio"
 "${DC[@]}" up -d
 wait_ready
-docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php" || die "The plugin isn't visible inside the container; check the volume in $OV."
+docker exec "$C" test -f "/var/acacia/www/plugins/$PLUGIN/events.php" || die "The plugin isn't visible inside the container; check the volume in $OV."
 
 printf 'Waiting for the worker'
 for _ in $(seq 1 40); do

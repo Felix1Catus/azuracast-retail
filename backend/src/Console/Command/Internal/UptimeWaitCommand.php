@@ -23,7 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 #[AsCommand(
-    name: 'azuracast:internal:uptime-wait',
+    name: 'acacia:internal:uptime-wait',
     description: 'Wait for a service to become available, or exit if it times out.',
 )]
 final class UptimeWaitCommand extends CommandAbstract

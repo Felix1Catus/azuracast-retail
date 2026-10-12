@@ -41,5 +41,5 @@ First version.
 - Settings for administrators: Spotify app Client ID and Secret, audio sources, default format and quality,
   YouTube cookies and a proxy for servers that YouTube blocks.
 - Worker container (spotDL 4.5.2, yt-dlp 2026.08.19, Deno, ffmpeg): runs one job at a time at low priority,
-  writes files as the azuracast user, never leaves partial files in the library, and resumes after restarts.
+  writes files as the acacia user, never leaves partial files in the library, and resumes after restarts.
 - `install.sh` (install, update, uninstall) and `reload.sh`.

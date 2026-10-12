@@ -29,9 +29,9 @@ final class CustomUrls
     public static function getXAccelPath(string $path): ?string
     {
         $specialPaths = [
-            '/var/azuracast/stations' => '/internal/stations',
-            '/var/azuracast/storage' => '/internal/storage',
-            '/var/azuracast/backups' => '/internal/backups',
+            '/var/acacia/stations' => '/internal/stations',
+            '/var/acacia/storage' => '/internal/storage',
+            '/var/acacia/backups' => '/internal/backups',
         ];
 
         foreach ($specialPaths as $diskPath => $nginxPath) {

@@ -18,7 +18,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 #[AsCommand(
-    name: 'azuracast:dev:check-migrations',
+    name: 'acacia:dev:check-migrations',
     description: 'Check that DB migrations added since the given git ref sort after the latest stable release.',
 )]
 final class CheckMigrationsCommand extends CommandAbstract

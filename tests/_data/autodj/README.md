@@ -5,7 +5,7 @@ This directory contains Data-driven fixtures for the AutoDJ **scheduling** and *
 A fixture is a pair of files sharing a base name:
 
 - `<name>.dump.json`
-  - A playlist configuration snapshot (the format produced by `azuracast:playlist:export` / the "Export Config (JSON)" UI action)
+  - A playlist configuration snapshot (the format produced by `acacia:playlist:export` / the "Export Config (JSON)" UI action)
 - `<name>.scenario.json`
   - Contains the frozen "now", any runtime state and the expected outcome for one of multiple cases
 
@@ -378,7 +378,7 @@ Limitations:
 ## Adding a new case
 
 1. Capture the setup
-   - Use the CLI command `azuracast:playlist:export <station> -o tests/_data/autodj/<area>/<name>.dump.json`
+   - Use the CLI command `acacia:playlist:export <station> -o tests/_data/autodj/<area>/<name>.dump.json`
    - Or export it via the `Export` / `Export JSON` buttons in the UI
    - Or hand-write a minimal dump
 2. Create `<name>.scenario.json`
@@ -388,4 +388,4 @@ Limitations:
    - `codecept run Functional AutoDjIntegrationCest` (DB, integration)
 
 Console and `codecept` commands should be run inside the container, e.g.
-`docker exec azuracast codecept run Unit AutoDJ` in order to have the correct environment available.
+`docker exec acacia codecept run Unit AutoDJ` in order to have the correct environment available.

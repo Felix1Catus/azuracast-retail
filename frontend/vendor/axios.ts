@@ -10,7 +10,7 @@ import { App, InjectionKey } from "vue";
 import { useNotify } from "~/components/Common/Toasts/useNotify.ts";
 import { ApiError } from "~/entities/ApiInterfaces.ts";
 import injectRequired from "~/functions/injectRequired.ts";
-import { useAzuraCast } from "~/vendor/azuracast.ts";
+import { useAcaciaRadio } from "~/vendor/acacia.ts";
 import { useTranslate } from "~/vendor/gettext";
 import { useNProgress } from "~/vendor/nprogress.ts";
 
@@ -65,7 +65,7 @@ export const getErrorAsString = (error: any): string => {
 
 export default function installAxios(vueApp: App) {
     // Configure auto-CSRF on requests
-    const { apiCsrf } = useAzuraCast();
+    const { apiCsrf } = useAcaciaRadio();
 
     const config: AxiosRequestConfig = {
         headers: {

@@ -24,5 +24,5 @@ rm -rf /tmp/centrifugo
 
 chmod a+x /usr/local/bin/centrifugo
 
-mkdir -p /var/azuracast/centrifugo
-cp /bd_build/web/centrifugo/config.toml.tmpl /var/azuracast/centrifugo/config.toml.tmpl
+mkdir -p /var/acacia/centrifugo
+cp /bd_build/web/centrifugo/config.toml.tmpl /var/acacia/centrifugo/config.toml.tmpl

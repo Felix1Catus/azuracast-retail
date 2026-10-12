@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
-    name: 'azuracast:setup:migrate',
+    name: 'acacia:setup:migrate',
     description: 'Migrate the database to the latest revision.',
 )]
 final class MigrateDbCommand extends AbstractDatabaseCommand

@@ -19,6 +19,6 @@ $uptimeWaitCommand = new App\Console\Command\Internal\UptimeWaitCommand();
 $uptimeWaitCommand->setEnvironment($environment);
 $console->addCommand($uptimeWaitCommand);
 
-$console->setDefaultCommand('azuracast:internal:uptime-wait', true);
+$console->setDefaultCommand('acacia:internal:uptime-wait', true);
 
 $console->run();

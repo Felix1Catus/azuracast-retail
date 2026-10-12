@@ -8,7 +8,7 @@ use App\Container\EnvironmentAwareTrait;
 use App\Enums\SupportedLocales;
 use App\Environment;
 use App\Installer\EnvFiles\AbstractEnvFile;
-use App\Installer\EnvFiles\AzuraCastEnvFile;
+use App\Installer\EnvFiles\AcaciaRadioEnvFile;
 use App\Installer\EnvFiles\EnvFile;
 use App\Radio\Configuration;
 use App\Utilities\Strings;
@@ -57,7 +57,7 @@ final class InstallCommand extends Command
 
         // Initialize all the environment variables.
         $envPath = EnvFile::buildPathFromBase($baseDir);
-        $azuracastEnvPath = AzuraCastEnvFile::buildPathFromBase($baseDir);
+        $acaciaEnvPath = AcaciaRadioEnvFile::buildPathFromBase($baseDir);
 
         // Fail early if permissions aren't present.
         if (!is_writable($envPath)) {
@@ -77,96 +77,96 @@ final class InstallCommand extends Command
         }
 
         try {
-            $azuracastEnv = AzuraCastEnvFile::fromEnvFile($azuracastEnvPath);
+            $acaciaEnv = AcaciaRadioEnvFile::fromEnvFile($acaciaEnvPath);
         } catch (InvalidArgumentException $e) {
             $io->error($e->getMessage());
-            $azuracastEnv = new AzuraCastEnvFile($envPath);
+            $acaciaEnv = new AcaciaRadioEnvFile($envPath);
         }
 
         // Podman support
-        $isPodman = $env->getAsBool('AZURACAST_PODMAN_MODE', false);
+        $isPodman = $env->getAsBool('ACACIA_PODMAN_MODE', false);
         if ($isPodman) {
-            $azuracastEnv[Environment::ENABLE_WEB_UPDATER] = 'false';
+            $acaciaEnv[Environment::ENABLE_WEB_UPDATER] = 'false';
         }
 
         // Initialize locale for translated installer/updater.
-        if (!$defaults && ($isNewInstall || empty($azuracastEnv[Environment::LANG]))) {
+        if (!$defaults && ($isNewInstall || empty($acaciaEnv[Environment::LANG]))) {
             $langOptions = [];
             foreach (SupportedLocales::cases() as $supportedLocale) {
                 $langOptions[$supportedLocale->getLocaleWithoutEncoding()] = $supportedLocale->getLocalName();
             }
 
-            $azuracastEnv[Environment::LANG] = $io->choice(
+            $acaciaEnv[Environment::LANG] = $io->choice(
                 'Select Language',
                 $langOptions,
                 SupportedLocales::default()->getLocaleWithoutEncoding()
             );
         }
 
-        $locale = SupportedLocales::getValidLocale($azuracastEnv[Environment::LANG] ?? null);
+        $locale = SupportedLocales::getValidLocale($acaciaEnv[Environment::LANG] ?? null);
         $locale->register($this->environment);
 
         $envConfig = EnvFile::getConfiguration($this->environment);
         $env->setFromDefaults($this->environment);
 
-        $azuracastEnvConfig = AzuraCastEnvFile::getConfiguration($this->environment);
-        $azuracastEnv->setFromDefaults($this->environment);
+        $acaciaEnvConfig = AcaciaRadioEnvFile::getConfiguration($this->environment);
+        $acaciaEnv->setFromDefaults($this->environment);
 
         // Apply values passed via flags
         if (null !== $releaseChannel) {
-            $env['AZURACAST_VERSION'] = $releaseChannel;
+            $env['ACACIA_VERSION'] = $releaseChannel;
         }
         if (null !== $httpPort) {
-            $env['AZURACAST_HTTP_PORT'] = (string)$httpPort;
+            $env['ACACIA_HTTP_PORT'] = (string)$httpPort;
         }
         if (null !== $httpsPort) {
-            $env['AZURACAST_HTTPS_PORT'] = (string)$httpsPort;
+            $env['ACACIA_HTTPS_PORT'] = (string)$httpsPort;
         }
 
         // Migrate legacy config values.
-        if (isset($azuracastEnv['PREFER_RELEASE_BUILDS'])) {
-            $env['AZURACAST_VERSION'] = ('true' === $azuracastEnv['PREFER_RELEASE_BUILDS'])
+        if (isset($acaciaEnv['PREFER_RELEASE_BUILDS'])) {
+            $env['ACACIA_VERSION'] = ('true' === $acaciaEnv['PREFER_RELEASE_BUILDS'])
                 ? 'stable'
                 : 'latest';
 
-            unset($azuracastEnv['PREFER_RELEASE_BUILDS']);
+            unset($acaciaEnv['PREFER_RELEASE_BUILDS']);
         }
 
-        unset($azuracastEnv['ENABLE_ADVANCED_FEATURES']);
+        unset($acaciaEnv['ENABLE_ADVANCED_FEATURES']);
 
         // Randomize the MariaDB root password for new installs.
         if ($isNewInstall) {
             if ($devMode) {
-                if (empty($azuracastEnv['MYSQL_ROOT_PASSWORD'])) {
-                    $azuracastEnv['MYSQL_ROOT_PASSWORD'] = 'azur4c457_root';
+                if (empty($acaciaEnv['MYSQL_ROOT_PASSWORD'])) {
+                    $acaciaEnv['MYSQL_ROOT_PASSWORD'] = 'azur4c457_root';
                 }
             } else {
                 if (
-                    empty($azuracastEnv[Environment::DB_PASSWORD])
-                    || 'azur4c457' === $azuracastEnv[Environment::DB_PASSWORD]
+                    empty($acaciaEnv[Environment::DB_PASSWORD])
+                    || 'azur4c457' === $acaciaEnv[Environment::DB_PASSWORD]
                 ) {
-                    $azuracastEnv[Environment::DB_PASSWORD] = Strings::generatePassword(12);
+                    $acaciaEnv[Environment::DB_PASSWORD] = Strings::generatePassword(12);
                 }
 
-                if (empty($azuracastEnv['MYSQL_ROOT_PASSWORD'])) {
-                    $azuracastEnv['MYSQL_ROOT_PASSWORD'] = Strings::generatePassword(20);
+                if (empty($acaciaEnv['MYSQL_ROOT_PASSWORD'])) {
+                    $acaciaEnv['MYSQL_ROOT_PASSWORD'] = Strings::generatePassword(20);
                 }
             }
         }
 
-        if (!empty($azuracastEnv['MYSQL_ROOT_PASSWORD'])) {
-            unset($azuracastEnv['MYSQL_RANDOM_ROOT_PASSWORD']);
+        if (!empty($acaciaEnv['MYSQL_ROOT_PASSWORD'])) {
+            unset($acaciaEnv['MYSQL_RANDOM_ROOT_PASSWORD']);
         } else {
-            $azuracastEnv['MYSQL_RANDOM_ROOT_PASSWORD'] = 'yes';
+            $acaciaEnv['MYSQL_RANDOM_ROOT_PASSWORD'] = 'yes';
         }
 
         // Special fixes for transitioning to standalone installations.
         if ($this->environment->isDocker()) {
-            if ('mariadb' === $azuracastEnv['MYSQL_HOST']) {
-                unset($azuracastEnv['MYSQL_HOST']);
+            if ('mariadb' === $acaciaEnv['MYSQL_HOST']) {
+                unset($acaciaEnv['MYSQL_HOST']);
             }
-            if ('redis' === $azuracastEnv['REDIS_HOST']) {
-                unset($azuracastEnv['REDIS_HOST']);
+            if ('redis' === $acaciaEnv['REDIS_HOST']) {
+                unset($acaciaEnv['REDIS_HOST']);
             }
         }
 
@@ -202,10 +202,10 @@ final class InstallCommand extends Command
             );
             $io->listing(
                 [
-                    sprintf(__('HTTP Port: %d'), $env['AZURACAST_HTTP_PORT']),
-                    sprintf(__('HTTPS Port: %d'), $env['AZURACAST_HTTPS_PORT']),
-                    sprintf(__('SFTP Port: %d'), $env['AZURACAST_SFTP_PORT']),
-                    sprintf(__('Radio Ports: %s'), $env['AZURACAST_STATION_PORTS']),
+                    sprintf(__('HTTP Port: %d'), $env['ACACIA_HTTP_PORT']),
+                    sprintf(__('HTTPS Port: %d'), $env['ACACIA_HTTPS_PORT']),
+                    sprintf(__('SFTP Port: %d'), $env['ACACIA_SFTP_PORT']),
+                    sprintf(__('Radio Ports: %s'), $env['ACACIA_STATION_PORTS']),
                 ],
             );
 
@@ -216,9 +216,9 @@ final class InstallCommand extends Command
 
             if ($customizePorts) {
                 $simplePorts = [
-                    'AZURACAST_HTTP_PORT',
-                    'AZURACAST_HTTPS_PORT',
-                    'AZURACAST_SFTP_PORT',
+                    'ACACIA_HTTP_PORT',
+                    'ACACIA_HTTPS_PORT',
+                    'ACACIA_SFTP_PORT',
                 ];
 
                 foreach ($simplePorts as $port) {
@@ -232,40 +232,40 @@ final class InstallCommand extends Command
                     );
                 }
 
-                $azuracastEnv[Environment::AUTO_ASSIGN_PORT_MIN] = $io->ask(
-                    $azuracastEnvConfig[Environment::AUTO_ASSIGN_PORT_MIN]['name'],
-                    Types::stringOrNull($azuracastEnv[Environment::AUTO_ASSIGN_PORT_MIN])
+                $acaciaEnv[Environment::AUTO_ASSIGN_PORT_MIN] = $io->ask(
+                    $acaciaEnvConfig[Environment::AUTO_ASSIGN_PORT_MIN]['name'],
+                    Types::stringOrNull($acaciaEnv[Environment::AUTO_ASSIGN_PORT_MIN])
                 );
 
-                $azuracastEnv[Environment::AUTO_ASSIGN_PORT_MAX] = $io->ask(
-                    $azuracastEnvConfig[Environment::AUTO_ASSIGN_PORT_MAX]['name'],
-                    Types::stringOrNull($azuracastEnv[Environment::AUTO_ASSIGN_PORT_MAX])
+                $acaciaEnv[Environment::AUTO_ASSIGN_PORT_MAX] = $io->ask(
+                    $acaciaEnvConfig[Environment::AUTO_ASSIGN_PORT_MAX]['name'],
+                    Types::stringOrNull($acaciaEnv[Environment::AUTO_ASSIGN_PORT_MAX])
                 );
 
                 $stationPorts = Configuration::enumerateDefaultPorts(
-                    rangeMin: Types::int($azuracastEnv[Environment::AUTO_ASSIGN_PORT_MIN]),
-                    rangeMax: Types::int($azuracastEnv[Environment::AUTO_ASSIGN_PORT_MAX])
+                    rangeMin: Types::int($acaciaEnv[Environment::AUTO_ASSIGN_PORT_MIN]),
+                    rangeMax: Types::int($acaciaEnv[Environment::AUTO_ASSIGN_PORT_MAX])
                 );
-                $env['AZURACAST_STATION_PORTS'] = implode(',', $stationPorts);
+                $env['ACACIA_STATION_PORTS'] = implode(',', $stationPorts);
             }
 
             if (!$isNewInstall) {
-                $azuracastEnv['COMPOSER_PLUGIN_MODE'] = $io->confirm(
-                    $azuracastEnvConfig['COMPOSER_PLUGIN_MODE']['name'],
-                    $azuracastEnv->getAsBool('COMPOSER_PLUGIN_MODE', false)
+                $acaciaEnv['COMPOSER_PLUGIN_MODE'] = $io->confirm(
+                    $acaciaEnvConfig['COMPOSER_PLUGIN_MODE']['name'],
+                    $acaciaEnv->getAsBool('COMPOSER_PLUGIN_MODE', false)
                 ) ? 'true' : 'false';
             }
 
             if (!$isPodman) {
-                $azuracastEnv[Environment::ENABLE_WEB_UPDATER] = $io->confirm(
-                    $azuracastEnvConfig[Environment::ENABLE_WEB_UPDATER]['name'],
-                    $azuracastEnv->getAsBool(Environment::ENABLE_WEB_UPDATER, true)
+                $acaciaEnv[Environment::ENABLE_WEB_UPDATER] = $io->confirm(
+                    $acaciaEnvConfig[Environment::ENABLE_WEB_UPDATER]['name'],
+                    $acaciaEnv->getAsBool(Environment::ENABLE_WEB_UPDATER, true)
                 ) ? 'true' : 'false';
             }
 
-            $azuracastEnv['NGINX_BLOCK_BOTS'] = $io->confirm(
-                $azuracastEnvConfig['NGINX_BLOCK_BOTS']['name'],
-                $azuracastEnv->getAsBool('NGINX_BLOCK_BOTS', false)
+            $acaciaEnv['NGINX_BLOCK_BOTS'] = $io->confirm(
+                $acaciaEnvConfig['NGINX_BLOCK_BOTS']['name'],
+                $acaciaEnv->getAsBool('NGINX_BLOCK_BOTS', false)
             ) ? 'true' : 'false';
         }
 
@@ -274,20 +274,20 @@ final class InstallCommand extends Command
         );
 
         $envStr = $env->writeToFile($this->environment);
-        $azuracastEnvStr = $azuracastEnv->writeToFile($this->environment);
+        $acaciaEnvStr = $acaciaEnv->writeToFile($this->environment);
 
         if ($io->isVerbose()) {
             $io->section($env->getBasename());
             $io->block($envStr);
 
-            $io->section($azuracastEnv->getBasename());
-            $io->block($azuracastEnvStr);
+            $io->section($acaciaEnv->getBasename());
+            $io->block($acaciaEnvStr);
         }
 
         $dockerComposePath = ($devMode)
             ? $baseDir . '/docker-compose.yml'
             : $baseDir . '/docker-compose.new.yml';
-        $dockerComposeStr = $this->updateDockerCompose($dockerComposePath, $env, $azuracastEnv);
+        $dockerComposeStr = $this->updateDockerCompose($dockerComposePath, $env, $acaciaEnv);
 
         if ($io->isVerbose()) {
             $io->section(basename($dockerComposePath));
@@ -303,7 +303,7 @@ final class InstallCommand extends Command
     private function updateDockerCompose(
         string $dockerComposePath,
         AbstractEnvFile $env,
-        AbstractEnvFile $azuracastEnv
+        AbstractEnvFile $acaciaEnv
     ): string {
         // Attempt to parse Docker Compose YAML file
         $sampleFile = $this->environment->getBaseDirectory() . '/docker-compose.sample.yml';
@@ -312,10 +312,10 @@ final class InstallCommand extends Command
         $yaml = Yaml::parseFile($sampleFile);
 
         // Parse port listing and convert into YAML format.
-        $ports = $env['AZURACAST_STATION_PORTS'] ?? '';
+        $ports = $env['ACACIA_STATION_PORTS'] ?? '';
 
         $envConfig = $env::getConfiguration($this->environment);
-        $defaultPorts = $envConfig['AZURACAST_STATION_PORTS']['default'] ?? '';
+        $defaultPorts = $envConfig['ACACIA_STATION_PORTS']['default'] ?? '';
 
         if (!empty($ports) && 0 !== strcmp($ports, $defaultPorts)) {
             $yamlPorts = [];
@@ -362,7 +362,7 @@ final class InstallCommand extends Command
         }
 
         // Remove privileged-mode settings if not enabled.
-        if (!$env->getAsBool('AZURACAST_COMPOSE_PRIVILEGED', true)) {
+        if (!$env->getAsBool('ACACIA_COMPOSE_PRIVILEGED', true)) {
             foreach ($yaml['services'] as &$service) {
                 unset(
                     $service['ulimits'],
@@ -373,12 +373,12 @@ final class InstallCommand extends Command
         }
 
         // Remove web updater if disabled.
-        if (!$azuracastEnv->getAsBool(Environment::ENABLE_WEB_UPDATER, true)) {
+        if (!$acaciaEnv->getAsBool(Environment::ENABLE_WEB_UPDATER, true)) {
             unset($yaml['services']['updater']);
         }
 
         // Podman privileged mode explicit specification.
-        if ($env->getAsBool('AZURACAST_PODMAN_MODE', false)) {
+        if ($env->getAsBool('ACACIA_PODMAN_MODE', false)) {
             $yaml['services']['web']['privileged'] = 'true';
         }
 

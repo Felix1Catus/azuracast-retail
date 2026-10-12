@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:debug:optimize-tables',
+    name: 'acacia:debug:optimize-tables',
     description: 'Optimize all tables in the database.',
 )]
 final class OptimizeTablesCommand extends CommandAbstract

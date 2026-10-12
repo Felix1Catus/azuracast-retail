@@ -37,7 +37,7 @@ final class PodcastEpisodeFixture extends AbstractFixture implements DependentFi
             'Introducing: %s!',
             'Rants About %s',
             'The %s Where Everyone Yells',
-            '%s? It\'s AzuraCastastic!',
+            '%s? It\'s Acacia-tastic!',
         ];
 
         $podcastFillers = [

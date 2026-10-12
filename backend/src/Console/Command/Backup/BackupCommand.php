@@ -22,7 +22,7 @@ use Symfony\Component\Filesystem\Path;
 use const PATHINFO_EXTENSION;
 
 #[AsCommand(
-    name: 'azuracast:backup',
+    name: 'acacia:backup',
     description: 'Back up the Acacia Radio database and statistics (and optionally media).',
 )]
 final class BackupCommand extends AbstractDatabaseCommand

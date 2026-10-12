@@ -87,7 +87,7 @@ type SavedTemplate = {
     config: WidgetTemplate;
 };
 const savedTemplates = useLocalStorage<SavedTemplate[]>(
-    "azuracast_embed_templates",
+    "acacia_embed_templates",
     [],
 );
 
@@ -151,7 +151,7 @@ const exportTemplate = () => {
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `azuracast-widget-templates-${new Date().toISOString().split("T")[0]}.json`;
+    link.download = `acacia-widget-templates-${new Date().toISOString().split("T")[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
 };

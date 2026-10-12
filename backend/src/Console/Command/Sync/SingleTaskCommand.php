@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:sync:task',
+    name: 'acacia:sync:task',
     description: 'Task to run a specific scheduled task.',
 )]
 final class SingleTaskCommand extends AbstractSyncCommand

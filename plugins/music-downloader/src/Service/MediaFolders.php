@@ -16,7 +16,7 @@ use League\Flysystem\StorageAttributes;
  */
 final class MediaFolders
 {
-    public const string STATIONS_ROOT = '/var/azuracast/stations';
+    public const string STATIONS_ROOT = '/var/acacia/stations';
     private const int MAX_FOLDERS = 1000;
 
     public function __construct(
@@ -32,9 +32,12 @@ final class MediaFolders
             return null;
         }
 
+        // The stored path, not realpath(): on installs from before the rebrand /var/acacia/stations can be a link
+        // to the old mount point (util/docker/common/scripts/my_init). The worker checks the final folder itself.
         $path = rtrim($location->getFilteredPath(), '/');
-        $real = realpath($path);
-        $path = false !== $real ? $real : $path;
+        if (str_contains($path, '/../')) {
+            return null;
+        }
 
         return str_starts_with($path . '/', self::STATIONS_ROOT . '/') ? $path : null;
     }

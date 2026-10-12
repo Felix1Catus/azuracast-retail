@@ -9,24 +9,24 @@ bool() {
 
 # Determine the current uploads dir for the installation.
 if [ -z "$UPLOADS_DIR" ]; then
-  if [ -d "/var/azuracast/uploads" ]; then
-    export UPLOADS_DIR="/var/azuracast/uploads"
+  if [ -d "/var/acacia/uploads" ]; then
+    export UPLOADS_DIR="/var/acacia/uploads"
   else
-    export UPLOADS_DIR="/var/azuracast/storage/uploads"
+    export UPLOADS_DIR="/var/acacia/storage/uploads"
   fi
 fi
 
 if [ -z "$ACME_DIR" ]; then
-  if [ -d "/var/azuracast/acme" ]; then
-    export ACME_DIR="/var/azuracast/acme"
+  if [ -d "/var/acacia/acme" ]; then
+    export ACME_DIR="/var/acacia/acme"
   else
-    export ACME_DIR="/var/azuracast/storage/acme"
+    export ACME_DIR="/var/acacia/storage/acme"
   fi
 fi
 
 # Copy the nginx template to its destination.
 dockerize -template "/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf" \
-    -template "/etc/nginx/azuracast.conf.tmpl:/etc/nginx/sites-available/default.vhost"
+    -template "/etc/nginx/acacia.conf.tmpl:/etc/nginx/sites-available/default.vhost"
 
 ln -s /etc/nginx/sites-available/default.vhost /etc/nginx/sites-enabled/default.vhost
 

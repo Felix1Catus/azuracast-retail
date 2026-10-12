@@ -104,9 +104,9 @@ import { AnalyticsLevel } from "~/entities/ApiInterfaces.ts";
 import { useApiRouter } from "~/functions/useApiRouter.ts";
 import useStationDateTimeFormatter from "~/functions/useStationDateTimeFormatter.ts";
 import { useStationData } from "~/functions/useStationQuery.ts";
-import { useAzuraCastDashboardGlobals } from "~/vendor/azuracast.ts";
+import { useAcaciaRadioDashboardGlobals } from "~/vendor/acacia.ts";
 
-const { analyticsLevel } = useAzuraCastDashboardGlobals();
+const { analyticsLevel } = useAcaciaRadioDashboardGlobals();
 const showFullAnalytics = analyticsLevel === AnalyticsLevel.All;
 
 const { getStationApiUrl } = useApiRouter();

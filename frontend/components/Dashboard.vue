@@ -264,7 +264,7 @@ import { useApiRouter } from "~/functions/useApiRouter.ts";
 import useOptionalStorage from "~/functions/useOptionalStorage";
 import { useUserAllowed } from "~/functions/useUserAllowed.ts";
 import { useAxios } from "~/vendor/axios";
-import { useAzuraCastDashboardGlobals } from "~/vendor/azuracast.ts";
+import { useAcaciaRadioDashboardGlobals } from "~/vendor/acacia.ts";
 import { useTranslate } from "~/vendor/gettext";
 import IconIcAccountCircle from "~icons/ic/baseline-account-circle";
 import IconIcHeadphones from "~icons/ic/baseline-headphones";
@@ -272,7 +272,7 @@ import IconIcInfo from "~icons/ic/baseline-info";
 import IconIcSettings from "~icons/ic/baseline-settings";
 import IconIcWarning from "~icons/ic/baseline-warning";
 
-const { showCharts, showAlbumArt } = useAzuraCastDashboardGlobals();
+const { showCharts, showAlbumArt } = useAcaciaRadioDashboardGlobals();
 
 const { userAllowed } = useUserAllowed();
 const showAdmin = userAllowed(GlobalPermissions.View);

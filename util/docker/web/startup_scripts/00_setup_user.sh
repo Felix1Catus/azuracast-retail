@@ -1,13 +1,13 @@
 #!/bin/bash
 
-AZURACAST_PUID="${AZURACAST_PUID:-1000}"
-AZURACAST_PGID="${AZURACAST_PGID:-1000}"
+ACACIA_PUID="${ACACIA_PUID:-1000}"
+ACACIA_PGID="${ACACIA_PGID:-1000}"
 
-PUID="${PUID:-$AZURACAST_PUID}"
-PGID="${PGID:-$AZURACAST_PGID}"
+PUID="${PUID:-$ACACIA_PUID}"
+PGID="${PGID:-$ACACIA_PGID}"
 
-groupmod -o -g "$PGID" azuracast
-usermod -o -u "$PUID" azuracast
+groupmod -o -g "$PGID" acacia
+usermod -o -u "$PUID" acacia
 
-echo "Docker 'azuracast' User UID: $(id -u azuracast)"
-echo "Docker 'azuracast' User GID: $(id -g azuracast)"
+echo "Docker 'acacia' User UID: $(id -u acacia)"
+echo "Docker 'acacia' User GID: $(id -g acacia)"

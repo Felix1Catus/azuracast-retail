@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:settings:list',
+    name: 'acacia:settings:list',
     description: 'List all settings in the Acacia Radio settings database.',
 )]
 final class ListCommand extends CommandAbstract

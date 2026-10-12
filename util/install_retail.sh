@@ -9,13 +9,13 @@
 #   2. installs Docker Engine, the Compose and Buildx plugins and git (Docker's official apt repository)
 #   3. clones or updates the source checkout and checks out a release
 #   4. builds the image (util/build_image.sh)
-#   5. writes the install directory (docker-compose.yml, docker.sh, .env, azuracast.env, music-downloader.env)
+#   5. writes the install directory (docker-compose.yml, docker.sh, .env, acacia.env, music-downloader.env)
 #   6. starts Acacia Radio and waits until it answers
 #   7. with --domain: sets the site URL and gets a Let's Encrypt certificate
 #
 # Options:
-#   --dir PATH          install directory (default /var/azuracast)
-#   --src-dir PATH      source checkout (default /opt/azuracast-retail)
+#   --dir PATH          install directory (default /var/acacia)
+#   --src-dir PATH      source checkout (default /opt/acacia-radio)
 #   --source URL|PATH   git source (default https://github.com/Felix1Catus/azuracast-retail.git)
 #   --ref REF           release tag, tag or branch (default: newest v*-retail.* tag)
 #   --domain NAMES      public domain(s), comma-separated (first = site URL); enables HTTPS via Let's Encrypt
@@ -30,8 +30,8 @@
 #
 set -euo pipefail
 
-INSTALL_DIR=/var/azuracast
-SRC_DIR=/opt/azuracast-retail
+INSTALL_DIR=/var/acacia
+SRC_DIR=/opt/acacia-radio
 SOURCE=https://github.com/Felix1Catus/azuracast-retail.git
 REF=""
 DOMAIN=""
@@ -92,7 +92,7 @@ MEM_MB=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
 (( MEM_MB >= 1900 )) || warn "Only ${MEM_MB} MB RAM; 2 GB or more is recommended."
 ok "${MEM_MB} MB RAM"
 
-if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx azuracast; then
+if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx acacia; then
   for p in "$HTTP_PORT" "$HTTPS_PORT"; do
     if ss -Hltn "sport = :$p" 2>/dev/null | grep -q .; then
       fail "Port $p is already in use ($(ss -Hltnp "sport = :$p" | awk '{print $NF}' | head -1)). Stop that service or use --http-port/--https-port."
@@ -180,11 +180,11 @@ if [[ -z "$REF" ]]; then
   [[ -n "$REF" ]] || fail "No v*-retail.* release found; pass --ref."
 fi
 if git -C "$SRC_DIR" rev-parse --quiet --verify "refs/tags/$REF" >/dev/null; then
-  IMAGE="azuracast-retail:${REF#v}"
+  IMAGE="acacia-radio:${REF#v}"
   CHECKOUT="$REF"
 elif git -C "$SRC_DIR" rev-parse --quiet --verify "origin/$REF" >/dev/null; then
   CHECKOUT="origin/$REF"
-  IMAGE="azuracast-retail:$(git -C "$SRC_DIR" rev-parse --short "$CHECKOUT")"
+  IMAGE="acacia-radio:$(git -C "$SRC_DIR" rev-parse --short "$CHECKOUT")"
 else
   fail "Unknown release, tag or branch: $REF"
 fi
@@ -217,15 +217,15 @@ set_env() { # file key value: replace or append KEY=value
   if grep -q "^$2=" "$1"; then sed -i "s#^$2=.*#$2=$3#" "$1"; else echo "$2=$3" >> "$1"; fi
 }
 [[ -f .env ]] || cp "$SRC_DIR/sample.env" .env
-set_env .env AZURACAST_HTTP_PORT "$HTTP_PORT"
-set_env .env AZURACAST_HTTPS_PORT "$HTTPS_PORT"
-set_env .env AZURACAST_RETAIL_IMAGE "$IMAGE"
+set_env .env ACACIA_HTTP_PORT "$HTTP_PORT"
+set_env .env ACACIA_HTTPS_PORT "$HTTPS_PORT"
+set_env .env ACACIA_IMAGE "$IMAGE"
 set_env .env RETAIL_SOURCE_DIR "$SRC_DIR"
-if [[ ! -f azuracast.env ]]; then
-  cp "$SRC_DIR/azuracast.sample.env" azuracast.env
-  set_env azuracast.env MYSQL_PASSWORD "$(openssl rand -hex 16 2>/dev/null || head -c16 /dev/urandom | od -An -tx1 | tr -d ' \n')"
-  chmod 600 azuracast.env
-  ok "Created azuracast.env with a random database password"
+if [[ ! -f acacia.env ]]; then
+  cp "$SRC_DIR/acacia.sample.env" acacia.env
+  set_env acacia.env MYSQL_PASSWORD "$(openssl rand -hex 16 2>/dev/null || head -c16 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+  chmod 600 acacia.env
+  ok "Created acacia.env with a random database password"
 fi
 # Music Downloader: worker image and the secret shared by Acacia Radio and the worker (docker-compose.retail.yml).
 set_env .env MUSIC_DOWNLOADER_IMAGE "$WORKER_IMAGE"
@@ -235,7 +235,7 @@ if [[ ! -s music-downloader.env ]]; then
   ok "Created music-downloader.env"
 fi
 docker compose config -q
-ok "docker-compose.yml, docker.sh, .env, azuracast.env and music-downloader.env are in place"
+ok "docker-compose.yml, docker.sh, .env, acacia.env and music-downloader.env are in place"
 
 # ------------------------------------------------------------------------------------------------ 6. start
 step "Starting Acacia Radio"
@@ -250,21 +250,21 @@ done
 [[ "$STATUS" == 200 ]] || fail "Acacia Radio did not answer on port $HTTP_PORT (see: docker compose logs web)."
 ok "Acacia Radio is running"
 
-CLI=(docker compose exec -T --user=azuracast web azuracast_cli)
+CLI=(docker compose exec -T --user=acacia web acacia_cli)
 # Only HTTP/HTTPS are published, so players must use the /listen/ proxy.
-"${CLI[@]}" azuracast:settings:set use_radio_proxy true >/dev/null && ok "Radio proxy (/listen/) on"
+"${CLI[@]}" acacia:settings:set use_radio_proxy true >/dev/null && ok "Radio proxy (/listen/) on"
 
 # ------------------------------------------------------------------------------------------------ 7. domain
 step "Domain and HTTPS"
 if [[ -n "$DOMAIN" ]]; then
-  "${CLI[@]}" azuracast:settings:set base_url "https://$PRIMARY_DOMAIN" >/dev/null
-  "${CLI[@]}" azuracast:settings:set acme_domains "$DOMAIN" >/dev/null
-  "${CLI[@]}" azuracast:settings:set acme_email "$EMAIL" >/dev/null
-  if "${CLI[@]}" azuracast:acme:get-certificate; then
+  "${CLI[@]}" acacia:settings:set base_url "https://$PRIMARY_DOMAIN" >/dev/null
+  "${CLI[@]}" acacia:settings:set acme_domains "$DOMAIN" >/dev/null
+  "${CLI[@]}" acacia:settings:set acme_email "$EMAIL" >/dev/null
+  if "${CLI[@]}" acacia:acme:get-certificate; then
     ok "Certificate issued for $DOMAIN"
   else
     warn "No certificate yet. Check that $DOMAIN points to this server and port 80 is reachable, then run:"
-    warn "  cd $INSTALL_DIR && docker compose exec --user=azuracast web azuracast_cli azuracast:acme:get-certificate"
+    warn "  cd $INSTALL_DIR && docker compose exec --user=acacia web acacia_cli acacia:acme:get-certificate"
   fi
 else
   info "Skipped (no --domain). Set it later: Administration > System Settings > Services > LetsEncrypt."
@@ -279,6 +279,6 @@ else
   URL="http://$IP"
   [[ "$HTTP_PORT" != 80 ]] && URL="$URL:$HTTP_PORT"
 fi
-printf '\n\033[1;32mAzuraCast Retail %s is installed.\033[0m\n' "$REF"
+printf '\n\033[1;32mAcaciaRadio Retail %s is installed.\033[0m\n' "$REF"
 info "Open $URL (on a new install: create the admin account and the first station there)."
 info "Updates: cd $INSTALL_DIR && ./docker.sh backup && ./docker.sh update"

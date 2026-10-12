@@ -1,8 +1,8 @@
 import { GlobalPermissions } from "~/entities/ApiInterfaces.ts";
-import { useAzuraCastUser } from "~/vendor/azuracast.ts";
+import { useAcaciaRadioUser } from "~/vendor/acacia.ts";
 
 export function useUserAllowed() {
-    const { permissions } = useAzuraCastUser();
+    const { permissions } = useAcaciaRadioUser();
 
     return {
         userAllowed: (permission: GlobalPermissions): boolean => {

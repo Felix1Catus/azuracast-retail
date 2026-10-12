@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:locale:import',
+    name: 'acacia:locale:import',
     description: 'Convert translated locale files into PHP arrays.',
     aliases: ['locale:import']
 )]

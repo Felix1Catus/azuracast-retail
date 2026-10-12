@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 #[AsCommand(
-    name: 'azuracast:radio:restart',
+    name: 'acacia:radio:restart',
     description: 'Restart all radio stations, or a single one if specified.',
 )]
 final class RestartRadioCommand extends CommandAbstract

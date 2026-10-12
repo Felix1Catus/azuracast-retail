@@ -60,7 +60,7 @@ uninstalling and troubleshooting are all covered in **[INSTALL.md](INSTALL.md)**
 ## First steps
 
 ```bash
-CLI="docker exec -u azuracast azuracast azuracast_cli"      # "azuracast" = your container name
+CLI="docker exec -u acacia acacia acacia_cli"      # "acacia" = your container name
 
 $CLI branch-tracker:stream-auth <station> observe    # start tracking branch streams (stream stays open to everyone)
 $CLI branch-tracker:public-page <station> on         # the station's public page shows the PIN login + player
@@ -101,7 +101,7 @@ When every branch uses the new player, lock the stream:
 | `/branch-tracker/<station>` | The board: Live · Sessions · Report · Manage (Acacia Radio login required) |
 | `/branch-tracker/<station>/public/<key>` | Public read-only board, when switched on (link shown in Manage) |
 
-### CLI (`azuracast_cli …` inside the container)
+### CLI (`acacia_cli …` inside the container)
 
 | Command | Purpose |
 |---|---|

@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:setup:fixtures',
+    name: 'acacia:setup:fixtures',
     description: 'Install fixtures for demo / local development.',
 )]
 final class SetupFixturesCommand extends CommandAbstract

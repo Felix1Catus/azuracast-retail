@@ -141,13 +141,13 @@ version-number() {
 
 # Get the current release channel for Acacia Radio
 get-release-channel() {
-  local AZURACAST_VERSION="latest"
+  local ACACIA_VERSION="latest"
   if [[ -f .env ]]; then
-    .env --file .env get AZURACAST_VERSION
-    AZURACAST_VERSION="${REPLY:-latest}"
+    .env --file .env get ACACIA_VERSION
+    ACACIA_VERSION="${REPLY:-latest}"
   fi
 
-  echo "$AZURACAST_VERSION"
+  echo "$ACACIA_VERSION"
 }
 
 get-release-branch-name() {
@@ -218,9 +218,9 @@ envfile-set() {
 # Configure the ports used by Acacia Radio.
 #
 setup-ports() {
-  envfile-set "AZURACAST_HTTP_PORT" "80" "Port to use for HTTP connections"
-  envfile-set "AZURACAST_HTTPS_PORT" "443" "Port to use for HTTPS connections"
-  envfile-set "AZURACAST_SFTP_PORT" "2022" "Port to use for SFTP connections"
+  envfile-set "ACACIA_HTTP_PORT" "80" "Port to use for HTTP connections"
+  envfile-set "ACACIA_HTTPS_PORT" "443" "Port to use for HTTPS connections"
+  envfile-set "ACACIA_SFTP_PORT" "2022" "Port to use for SFTP connections"
 }
 
 #
@@ -232,31 +232,31 @@ setup-release() {
   fi
 
   local OLD_RELEASE_CHANNEL
-  .env --file .env get AZURACAST_VERSION
+  .env --file .env get ACACIA_VERSION
   OLD_RELEASE_CHANNEL="${REPLY:-latest}"
 
-  local AZURACAST_VERSION="${OLD_RELEASE_CHANNEL}"
+  local ACACIA_VERSION="${OLD_RELEASE_CHANNEL}"
 
   if [[ ! -z "${1}" ]]; then
     echo "Setting release channel to the specific value: ${1}"
-    AZURACAST_VERSION="${1}"
-  elif [[ $AZURACAST_VERSION == "latest" ]]; then
+    ACACIA_VERSION="${1}"
+  elif [[ $ACACIA_VERSION == "latest" ]]; then
     if ask "Your current release channel is 'Rolling Release'. Switch to 'Stable' release channel?" N; then
-      AZURACAST_VERSION="stable"
+      ACACIA_VERSION="stable"
     fi
-  elif [[ $AZURACAST_VERSION == "stable" ]]; then
+  elif [[ $ACACIA_VERSION == "stable" ]]; then
     if ask "Your current release channel is 'Stable'. Switch to 'Rolling Release' release channel?" N; then
-      AZURACAST_VERSION="latest"
+      ACACIA_VERSION="latest"
     fi
   else
     if ask "Your current release channel is locked to a stable release, version '${OLD_RELEASE_CHANNEL}'. Switch to the 'Stable' release channel?" N; then
-      AZURACAST_VERSION="stable"
+      ACACIA_VERSION="stable"
     fi
   fi
 
-  .env --file .env set AZURACAST_VERSION=${AZURACAST_VERSION}
+  .env --file .env set ACACIA_VERSION=${ACACIA_VERSION}
 
-  if [[ $AZURACAST_VERSION != $OLD_RELEASE_CHANNEL ]]; then
+  if [[ $ACACIA_VERSION != $OLD_RELEASE_CHANNEL ]]; then
     if ask "You should update the Docker Utility Script after changing release channels. Automatically update it now?" Y; then
       update-self
     fi
@@ -329,11 +329,11 @@ check-install-requirements() {
   fi
 
   SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-  if [[ $SCRIPT_DIR == "/var/azuracast" ]]; then
+  if [[ $SCRIPT_DIR == "/var/acacia" ]]; then
     echo -en "\e[32m[PASS]\e[0m Installation Directory\n"
   else
     echo -en "\e[93m[WARN]\e[0m Installation Directory\n"
-    echo "       Acacia Radio is not installed in /var/azuracast, as is recommended"
+    echo "       Acacia Radio is not installed in /var/acacia, as is recommended"
     echo "       for most installations. This will not prevent Acacia Radio from"
     echo "       working, but you will need to update any instructions in our"
     echo "       documentation to reflect your current directory:"
@@ -415,17 +415,17 @@ install-docker-compose() {
 }
 
 run-installer() {
-  local AZURACAST_RELEASE_BRANCH
-  AZURACAST_RELEASE_BRANCH=$(get-release-branch-name)
+  local ACACIA_RELEASE_BRANCH
+  ACACIA_RELEASE_BRANCH=$(get-release-branch-name)
 
   if [[ ! -f .env ]]; then
-    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/sample.env -o .env
+    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$ACACIA_RELEASE_BRANCH/sample.env -o .env
   fi
-  if [[ ! -f azuracast.env ]]; then
-    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/azuracast.sample.env -o azuracast.env
+  if [[ ! -f acacia.env ]]; then
+    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$ACACIA_RELEASE_BRANCH/acacia.sample.env -o acacia.env
   fi
   if [[ ! -f docker-compose.yml ]]; then
-    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker-compose.sample.yml -o docker-compose.yml
+    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$ACACIA_RELEASE_BRANCH/docker-compose.sample.yml -o docker-compose.yml
   fi
 
   touch docker-compose.new.yml
@@ -437,10 +437,10 @@ run-installer() {
     fi
   fi
 
-  curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker-compose.installer.yml -o docker-compose.installer.yml
+  curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$ACACIA_RELEASE_BRANCH/docker-compose.installer.yml -o docker-compose.installer.yml
 
-  dc -p azuracast_installer -f docker-compose.installer.yml pull
-  dc -p azuracast_installer -f docker-compose.installer.yml run --rm installer install "$@"
+  dc -p acacia_installer -f docker-compose.installer.yml pull
+  dc -p acacia_installer -f docker-compose.installer.yml run --rm installer install "$@"
 
   rm docker-compose.installer.yml
 }
@@ -500,17 +500,17 @@ install() {
 
   # If this script is running as a non-root user, set the PUID/PGID in the environment vars appropriately.
   if [[ $EUID -ne 0 ]]; then
-    .env --file .env set AZURACAST_PUID="$(id -u)"
-    .env --file .env set AZURACAST_PGID="$(id -g)"
+    .env --file .env set ACACIA_PUID="$(id -u)"
+    .env --file .env set ACACIA_PGID="$(id -g)"
   fi
 
   if [[ $PODMAN_MODE -ne 0 ]]; then
-    .env --file .env set AZURACAST_PODMAN_MODE=true
+    .env --file .env set ACACIA_PODMAN_MODE=true
   fi
 
   dc pull
 
-  dc run --rm web -- azuracast_install "$@"
+  dc run --rm web -- acacia_install "$@"
   dc up -d
   exit
 }
@@ -545,25 +545,25 @@ install-dev() {
   if [[ ! -f .env ]]; then
     cp dev.env .env
   fi
-  if [[ ! -f azuracast.env ]]; then
-    cp azuracast.dev.env azuracast.env
+  if [[ ! -f acacia.env ]]; then
+    cp acacia.dev.env acacia.env
 
-    echo "Customize azuracast.env file now before continuing. Re-run this command to continue installation."
+    echo "Customize acacia.env file now before continuing. Re-run this command to continue installation."
     exit
   fi
 
   # If this script is running as a non-root user, set the PUID/PGID in the environment vars appropriately.
   if [[ $EUID -ne 0 ]]; then
-    .env --file .env set AZURACAST_PUID="$(id -u)"
-    .env --file .env set AZURACAST_PGID="$(id -g)"
+    .env --file .env set ACACIA_PUID="$(id -u)"
+    .env --file .env set ACACIA_PGID="$(id -g)"
   fi
 
   if [[ $PODMAN_MODE -ne 0 ]]; then
-    .env --file .env set AZURACAST_PODMAN_MODE=true
+    .env --file .env set ACACIA_PODMAN_MODE=true
   fi
 
   dc build
-  dc run --rm web -- azuracast_dev_install "$@"
+  dc run --rm web -- acacia_dev_install "$@"
   dc up -d
   exit
 }
@@ -574,21 +574,62 @@ install-dev() {
 #
 #
 # Acacia Radio updates come from the fork's own repository, never from upstream.
-# A retail install keeps a checkout of the source (RETAIL_SOURCE_DIR in .env, default /opt/azuracast-retail);
+# A retail install keeps a checkout of the source (RETAIL_SOURCE_DIR in .env, default /opt/acacia-radio);
 # `update` checks out a release there, builds the image locally and restarts on it. See docs/retail/INSTALL.md.
 #
 is-retail() {
-  grep -qs "azuracast-retail" docker-compose.yml
+  grep -qs "acacia-radio" docker-compose.yml
 }
 
 retail-source-dir() {
   .env --file .env
   .env get RETAIL_SOURCE_DIR
-  echo "${REPLY:-/opt/azuracast-retail}"
+  echo "${REPLY:-/opt/acacia-radio}"
 }
 
 # Music Downloader (built-in module): point .env at the worker image built with IMAGE, create the shared
 # secret if missing, and bring docker-compose.yml up to the template that runs the worker containers.
+# Rebrand migration for installs from before it (idempotent; run by `update` before the new version starts):
+#  - env file and .env keys get the new names
+#  - the database keeps its old name and user, now written down instead of relying on the image default
+#  - COMPOSE_PROJECT_NAME stays as it is, so the Docker volumes (and all data) stay where they are
+# The old files are kept as *.bak-<date>; rolling back to a version from before the rebrand needs them
+# (docs/retail/REBRAND.md).
+retail-migrate-rebrand() {
+  local OLD=azuracast  # rebrand:keep
+  local STAMP
+  STAMP=$(date +%Y%m%d%H%M%S)
+
+  if [[ -f "${OLD}.env" && ! -f acacia.env ]]; then
+    cp "${OLD}.env" "${OLD}.env.bak-${STAMP}"
+    mv "${OLD}.env" acacia.env
+    chmod 600 acacia.env
+    echo "Renamed ${OLD}.env to acacia.env (backup: ${OLD}.env.bak-${STAMP})."
+    if ! grep -qE '^MYSQL_DATABASE=' acacia.env; then
+      printf '\n# Database from before the rebrand (kept by ./docker.sh update).\nMYSQL_USER=%s\nMYSQL_DATABASE=%s\n' "$OLD" "$OLD" >> acacia.env
+    fi
+  fi
+
+  local UPPER_OLD
+  UPPER_OLD=$(echo "$OLD" | tr '[:lower:]' '[:upper:]')
+  if grep -qE "^${UPPER_OLD}_" .env; then
+    cp .env ".env.bak-${STAMP}"
+    sed -i -E \
+      -e "s/^${UPPER_OLD}_RETAIL_PREVIOUS_IMAGE=/ACACIA_PREVIOUS_IMAGE=/" \
+      -e "s/^${UPPER_OLD}_RETAIL_IMAGE=/ACACIA_IMAGE=/" \
+      -e "s/^${UPPER_OLD}_/ACACIA_/" .env
+    echo "Renamed the ${UPPER_OLD}_* settings in .env to ACACIA_* (backup: .env.bak-${STAMP})."
+  fi
+}
+
+# Docker volume name prefix = compose project name. Installs from before the rebrand keep
+# COMPOSE_PROJECT_NAME=acacia in .env, so their volumes (and data) stay where they are.
+volume-prefix() {
+  .env --file .env
+  .env get COMPOSE_PROJECT_NAME
+  echo "${REPLY:-acacia}"
+}
+
 retail-music-downloader-setup() {
   local SRC="$1" IMAGE="$2" TOKEN
 
@@ -630,19 +671,22 @@ retail-update() {
   fi
 
   if git -C "$SRC" rev-parse --quiet --verify "refs/tags/$TARGET" > /dev/null; then
-    IMAGE="azuracast-retail:${TARGET#v}"
+    IMAGE="acacia-radio:${TARGET#v}"
   else
     git -C "$SRC" rev-parse --quiet --verify "origin/$TARGET" > /dev/null || {
       echo "Unknown release, tag or branch: $TARGET"
       exit 1
     }
     TARGET="origin/$TARGET"
-    IMAGE="azuracast-retail:$(git -C "$SRC" rev-parse --short "$TARGET")"
+    IMAGE="acacia-radio:$(git -C "$SRC" rev-parse --short "$TARGET")"
   fi
 
   .env --file .env
-  .env get AZURACAST_RETAIL_IMAGE
-  CURRENT="${REPLY:-azuracast-retail:latest}"
+  .env get ACACIA_IMAGE
+  if [[ -z "$REPLY" ]]; then
+    .env get AZURACAST_RETAIL_IMAGE  # rebrand:keep (installs from before the rebrand)
+  fi
+  CURRENT="${REPLY:-acacia-radio:latest}"
 
   echo "Installed: $CURRENT"
   echo "Update to: $TARGET (image $IMAGE)"
@@ -657,25 +701,29 @@ retail-update() {
     exit 1
   }
 
+  # Settings from before the rebrand get their new names first, so the keys below aren't written twice.
+  retail-migrate-rebrand
+
   # Re-running the installed version keeps the existing rollback target.
   if [[ "$CURRENT" != "$IMAGE" ]]; then
-    .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
+    .env --file .env set ACACIA_PREVIOUS_IMAGE="$CURRENT"
   fi
-  .env --file .env set AZURACAST_RETAIL_IMAGE="$IMAGE"
+  .env --file .env set ACACIA_IMAGE="$IMAGE"
   retail-music-downloader-setup "$SRC" "$IMAGE"
   dc up -d --remove-orphans
 
   # Keep only the running image and the rollback target; older builds pile up quickly (about 3 GB each).
   local KEEP_PREVIOUS
   .env --file .env
-  .env get AZURACAST_RETAIL_PREVIOUS_IMAGE
+  .env get ACACIA_PREVIOUS_IMAGE
   KEEP_PREVIOUS="$REPLY"
-  for OLD in $(d images --format '{{.Repository}}:{{.Tag}}' azuracast-retail); do
+  local LEGACY_REPO=azuracast-retail  # rebrand:keep (images built before the rebrand)
+  for OLD in $(d images --format '{{.Repository}}:{{.Tag}}' acacia-radio; d images --format '{{.Repository}}:{{.Tag}}' "$LEGACY_REPO"); do
     if [[ "$OLD" != "$IMAGE" && "$OLD" != "$KEEP_PREVIOUS" ]]; then
       d rmi "$OLD" > /dev/null 2>&1 && echo "Removed old image $OLD"
     fi
   done
-  for OLD in $(d images --format '{{.Repository}}:{{.Tag}}' azuracast-retail-music-downloader); do
+  for OLD in $(d images --format '{{.Repository}}:{{.Tag}}' acacia-radio-music-downloader); do
     if [[ "${OLD##*:}" != "${IMAGE##*:}" && "${OLD##*:}" != "${KEEP_PREVIOUS##*:}" ]]; then
       d rmi "$OLD" > /dev/null 2>&1 && echo "Removed old image $OLD"
     fi
@@ -691,10 +739,10 @@ retail-rollback() {
   local CURRENT PREVIOUS
 
   .env --file .env
-  .env get AZURACAST_RETAIL_PREVIOUS_IMAGE
+  .env get ACACIA_PREVIOUS_IMAGE
   PREVIOUS="$REPLY"
-  .env get AZURACAST_RETAIL_IMAGE
-  CURRENT="${REPLY:-azuracast-retail:latest}"
+  .env get ACACIA_IMAGE
+  CURRENT="${REPLY:-acacia-radio:latest}"
 
   if [[ -z "$PREVIOUS" ]]; then
     echo "No previous image recorded; nothing to roll back to."
@@ -702,11 +750,11 @@ retail-rollback() {
   fi
 
   if ask "Switch from $CURRENT back to $PREVIOUS?" Y; then
-    .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
-    .env --file .env set AZURACAST_RETAIL_IMAGE="$PREVIOUS"
+    .env --file .env set ACACIA_PREVIOUS_IMAGE="$CURRENT"
+    .env --file .env set ACACIA_IMAGE="$PREVIOUS"
     # The worker built with the previous version, when it exists (versions before it had none).
-    if d image inspect "azuracast-retail-music-downloader:${PREVIOUS##*:}" > /dev/null 2>&1; then
-      .env --file .env set MUSIC_DOWNLOADER_IMAGE="azuracast-retail-music-downloader:${PREVIOUS##*:}"
+    if d image inspect "acacia-radio-music-downloader:${PREVIOUS##*:}" > /dev/null 2>&1; then
+      .env --file .env set MUSIC_DOWNLOADER_IMAGE="acacia-radio-music-downloader:${PREVIOUS##*:}"
     fi
     dc up -d
     echo "Now running $PREVIOUS."
@@ -728,10 +776,10 @@ update() {
   if ask "Are you ready to continue with the update?" Y; then
 
     # Check for a new Docker Utility Script.
-    local AZURACAST_RELEASE_BRANCH
-    AZURACAST_RELEASE_BRANCH=$(get-release-branch-name)
+    local ACACIA_RELEASE_BRANCH
+    ACACIA_RELEASE_BRANCH=$(get-release-branch-name)
 
-    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker.sh -o docker.new.sh
+    curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$ACACIA_RELEASE_BRANCH/docker.sh -o docker.new.sh
 
     local UTILITY_FILES_MATCH
     UTILITY_FILES_MATCH="$(
@@ -778,7 +826,7 @@ update() {
     local COMPOSE_FILES_MATCH
 
     if [[ ! -s docker-compose.new.yml ]]; then
-      curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker-compose.sample.yml -o docker-compose.new.yml
+      curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$ACACIA_RELEASE_BRANCH/docker-compose.sample.yml -o docker-compose.new.yml
     fi
 
     COMPOSE_FILES_MATCH="$(
@@ -799,7 +847,7 @@ update() {
       dc down --timeout 60
     fi
 
-    dc run --rm web -- azuracast_update "$@"
+    dc run --rm web -- acacia_update "$@"
     dc up -d
 
     if ask "Clean up all stopped Docker containers and images to save space?" Y; then
@@ -817,11 +865,11 @@ update() {
 #
 update-self() {
   if is-retail; then retail-update-self; fi
-  local AZURACAST_RELEASE_BRANCH
-  AZURACAST_RELEASE_BRANCH=$(get-release-branch-name)
+  local ACACIA_RELEASE_BRANCH
+  ACACIA_RELEASE_BRANCH=$(get-release-branch-name)
 
   curl -H 'Cache-Control: no-cache, no-store' -fsSL \
-    https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker.sh?$(date +%s) \
+    https://raw.githubusercontent.com/AzuraCast/AzuraCast/$ACACIA_RELEASE_BRANCH/docker.sh?$(date +%s) \
     -o docker.sh
   chmod a+x docker.sh
 
@@ -835,7 +883,7 @@ update-self() {
 # Usage: ./docker.sh cli [command]
 #
 cli() {
-  dc exec --user="azuracast" web azuracast_cli "$@"
+  dc exec --user="acacia" web acacia_cli "$@"
   exit
 }
 
@@ -844,7 +892,7 @@ cli() {
 # Usage: ./docker.sh bash
 #
 bash() {
-  dc exec --user="azuracast" web bash
+  dc exec --user="acacia" web bash
   exit
 }
 
@@ -852,7 +900,7 @@ bash() {
 # Enter the MariaDB database management terminal with the correct credentials.
 #
 db() {
-  dc exec web azuracast_db
+  dc exec web acacia_db
   exit
 }
 
@@ -871,14 +919,14 @@ backup() {
 
   # Prepare permissions
   if [[ $EUID -ne 0 ]]; then
-    .env --file .env set AZURACAST_PUID="$(id -u)"
-    .env --file .env set AZURACAST_PGID="$(id -g)"
+    .env --file .env set ACACIA_PUID="$(id -u)"
+    .env --file .env set ACACIA_PGID="$(id -g)"
   fi
 
-  dc exec --user="azuracast" web azuracast_cli azuracast:backup "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
+  dc exec --user="acacia" web acacia_cli acacia:backup "/var/acacia/backups/${BACKUP_FILENAME}" "$@"
 
   # Move from Docker volume to local filesystem
-  d run --rm -v "azuracast_backups:/backup_src" \
+  d run --rm -v "acacia_backups:/backup_src" \
     -v "$BACKUP_DIR:/backup_dest" \
     busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
 
@@ -892,7 +940,7 @@ backup() {
 # ./docker.sh restore [/custom/backup/dir/custombackupname.zip]
 #
 restore() {
-  if [[ ! -f .env ]] || [[ ! -f azuracast.env ]]; then
+  if [[ ! -f .env ]] || [[ ! -f acacia.env ]]; then
     echo "Acacia Radio hasn't been installed yet on this server."
     echo "You should run './docker.sh install' first before restoring."
     exit 1
@@ -914,25 +962,28 @@ restore() {
 
       dc down
 
+      local VP
+      VP=$(volume-prefix)
+
       # Remove most Acacia Radio volumes but preserve some essential ones.
-      d volume rm -f $(d volume ls | grep 'azuracast' | grep -v 'station\|install' | awk 'NR>1 {print $2}')
-      d volume create azuracast_backups
+      d volume rm -f $(d volume ls -q | grep "^${VP}_" | grep -v 'station\|install')
+      d volume create "${VP}_backups"
 
       # Move from local filesystem to Docker volume
       d run --rm -v "$BACKUP_DIR:/backup_src" \
-        -v "azuracast_backups:/backup_dest" \
+        -v "${VP}_backups:/backup_dest" \
         busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
 
       # Prepare permissions
       if [[ $EUID -ne 0 ]]; then
-        .env --file .env set AZURACAST_PUID="$(id -u)"
-        .env --file .env set AZURACAST_PGID="$(id -g)"
+        .env --file .env set ACACIA_PUID="$(id -u)"
+        .env --file .env set ACACIA_PGID="$(id -g)"
       fi
 
-      dc run --rm web -- azuracast_restore "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
+      dc run --rm web -- acacia_restore "/var/acacia/backups/${BACKUP_FILENAME}" "$@"
 
       # Move file back from volume to local filesystem
-      d run --rm -v "azuracast_backups:/backup_src" \
+      d run --rm -v "${VP}_backups:/backup_src" \
         -v "$BACKUP_DIR:/backup_dest" \
         busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
 
@@ -942,9 +993,9 @@ restore() {
       dc down
 
       # Remove most Acacia Radio volumes but preserve some essential ones.
-      d volume rm -f $(d volume ls | grep 'azuracast' | grep -v 'station\|backups\|install' | awk 'NR>1 {print $2}')
+      d volume rm -f $(d volume ls -q | grep "^$(volume-prefix)_" | grep -v 'station\|backups\|install')
 
-      dc run --rm web -- azuracast_restore "$@"
+      dc run --rm web -- acacia_restore "$@"
 
       dc down --timeout 30
       dc up -d
@@ -972,13 +1023,17 @@ restore-legacy() {
   if [ -f "$BACKUP_PATH" ]; then
     dc down --timeout 30
 
-    d volume rm azuracast_db_data azuracast_station_data
-    d volume create azuracast_db_data
-    d volume create azuracast_station_data
+    local VP
+    VP=$(volume-prefix)
+    d volume rm "${VP}_db_data" "${VP}_station_data"
+    d volume create "${VP}_db_data"
+    d volume create "${VP}_station_data"
 
+    # Legacy archives hold the original project's top folder, so the mount points keep its name.
+    local LEGACY_ROOT=/azuracast  # rebrand:keep
     d run --rm -v "$BACKUP_DIR:/backup" \
-      -v azuracast_db_data:/azuracast/db \
-      -v azuracast_station_data:/azuracast/stations \
+      -v "${VP}_db_data:${LEGACY_ROOT}/db" \
+      -v "${VP}_station_data:${LEGACY_ROOT}/stations" \
       busybox tar zxvf "/backup/$BACKUP_FILENAME"
 
     dc up -d
@@ -1018,34 +1073,34 @@ uninstall() {
 rollback() {
   if is-retail; then retail-rollback; fi
 
-  local AZURACAST_ROLLBACK_VERSION
-  AZURACAST_ROLLBACK_VERSION="$1"
+  local ACACIA_ROLLBACK_VERSION
+  ACACIA_ROLLBACK_VERSION="$1"
 
-  if [[ -z "$AZURACAST_ROLLBACK_VERSION" ]]; then
+  if [[ -z "$ACACIA_ROLLBACK_VERSION" ]]; then
     echo "No version specified. Specify a version, like 0.19.0."
     exit 1
   fi
 
   echo "[NOTICE] Before you continue, please make sure you have a recent snapshot of your system and or backed it up."
   if ask "Are you ready to continue with the rollback?" Y; then
-    if ! dc exec --user="azuracast" web azuracast_cli azuracast:setup:rollback "${AZURACAST_ROLLBACK_VERSION}"; then
-      echo "The database rollback failed. Acacia Radio has not been switched to version '${AZURACAST_ROLLBACK_VERSION}'."
+    if ! dc exec --user="acacia" web acacia_cli acacia:setup:rollback "${ACACIA_ROLLBACK_VERSION}"; then
+      echo "The database rollback failed. Acacia Radio has not been switched to version '${ACACIA_ROLLBACK_VERSION}'."
       exit 1
     fi
 
     dc down --timeout 60
 
-    .env --file .env set AZURACAST_VERSION=${AZURACAST_ROLLBACK_VERSION}
+    .env --file .env set ACACIA_VERSION=${ACACIA_ROLLBACK_VERSION}
 
     dc pull
-    dc run --rm web -- azuracast_update
+    dc run --rm web -- acacia_update
     dc up -d
 
     if ask "Clean up all stopped Docker containers and images to save space?" Y; then
       d system prune -f
     fi
 
-    echo "Rollback complete. Your installation has been returned to stable version '${AZURACAST_ROLLBACK_VERSION}'."
+    echo "Rollback complete. Your installation has been returned to stable version '${ACACIA_ROLLBACK_VERSION}'."
     echo "To return to the regular update channels, run:"
     echo "  ./docker.sh setup-release"
     echo " "

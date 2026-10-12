@@ -36,7 +36,7 @@ tasks:
   - name: Backend
     init: |
       cp dev.env .env
-      cp azuracast.dev.env azuracast.env
+      cp acacia.dev.env acacia.env
       cp docker-compose.sample.yml docker-compose.yml
       cp docker-compose.dev.yml docker-compose.override.yml
       docker-compose build

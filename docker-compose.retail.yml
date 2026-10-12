@@ -1,7 +1,7 @@
 #
 # Acacia Radio: Docker Compose file for a deployment.
 #
-# Copy it to the install directory as docker-compose.yml, next to .env and azuracast.env
+# Copy it to the install directory as docker-compose.yml, next to .env and acacia.env
 # (see docs/retail/INSTALL.md). It follows docker-compose.sample.yml so docker.sh, backups and
 # plugin installers keep working, with these differences:
 #   - image: the fork image built with util/build_image.sh, never the upstream image
@@ -15,32 +15,32 @@
 # Other plugins are mounted from docker-compose.override.yml.
 #
 
-name: azuracast
+name: acacia
 
 services:
   web:
-    container_name: azuracast
-    image: "${AZURACAST_RETAIL_IMAGE:-azuracast-retail:latest}"
+    container_name: acacia
+    image: "${ACACIA_IMAGE:-acacia-radio:latest}"
     pull_policy: never
     ports:
-      - '${AZURACAST_HTTP_PORT:-80}:${AZURACAST_HTTP_PORT:-80}'
-      - '${AZURACAST_HTTPS_PORT:-443}:${AZURACAST_HTTPS_PORT:-443}'
+      - '${ACACIA_HTTP_PORT:-80}:${ACACIA_HTTP_PORT:-80}'
+      - '${ACACIA_HTTPS_PORT:-443}:${ACACIA_HTTPS_PORT:-443}'
     env_file:
-      - azuracast.env
+      - acacia.env
       - .env
       - path: music-downloader.env
         required: false
     volumes:
-      - station_data:/var/azuracast/stations
-      - backups:/var/azuracast/backups
+      - station_data:/var/acacia/stations
+      - backups:/var/acacia/backups
       - db_data:/var/lib/mysql
-      - www_uploads:/var/azuracast/storage/uploads
-      - shoutcast2_install:/var/azuracast/storage/shoutcast2
-      - stereo_tool_install:/var/azuracast/storage/stereo_tool
-      - rsas_install:/var/azuracast/storage/rsas
-      - geolite_install:/var/azuracast/storage/geoip
-      - sftpgo_data:/var/azuracast/storage/sftpgo
-      - acme:/var/azuracast/storage/acme
+      - www_uploads:/var/acacia/storage/uploads
+      - shoutcast2_install:/var/acacia/storage/shoutcast2
+      - stereo_tool_install:/var/acacia/storage/stereo_tool
+      - rsas_install:/var/acacia/storage/rsas
+      - geolite_install:/var/acacia/storage/geoip
+      - sftpgo_data:/var/acacia/storage/sftpgo
+      - acme:/var/acacia/storage/acme
     restart: unless-stopped
     ulimits:
       nofile:
@@ -52,14 +52,14 @@ services:
         max-file: "5"
 
   music-downloader:
-    container_name: azuracast_music_downloader
-    image: "${MUSIC_DOWNLOADER_IMAGE:-azuracast-retail-music-downloader:latest}"
+    container_name: acacia_music_downloader
+    image: "${MUSIC_DOWNLOADER_IMAGE:-acacia-radio-music-downloader:latest}"
     pull_policy: never
     env_file:
       - path: music-downloader.env
         required: false
     volumes:
-      - station_data:/var/azuracast/stations
+      - station_data:/var/acacia/stations
       - music_downloader_data:/data
     restart: unless-stopped
     cpu_shares: 256            # the radio comes first on small servers
@@ -70,7 +70,7 @@ services:
         max-file: "3"
 
   music-downloader-pot:
-    container_name: azuracast_music_downloader_pot
+    container_name: acacia_music_downloader_pot
     # Same version as bgutil-ytdlp-pot-provider in plugins/music-downloader/worker/requirements.txt.
     image: brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno
     restart: unless-stopped

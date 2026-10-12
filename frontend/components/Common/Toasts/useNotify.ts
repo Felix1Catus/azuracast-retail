@@ -2,7 +2,7 @@ import { remove } from "es-toolkit";
 import { defineStore } from "pinia";
 import { ref, VNode } from "vue";
 import { FlashLevels } from "~/entities/ApiInterfaces.ts";
-import { useAzuraCast } from "~/vendor/azuracast.ts";
+import { useAcaciaRadio } from "~/vendor/acacia.ts";
 import { useTranslate } from "~/vendor/gettext";
 
 type ToastMessage = string | VNode[];
@@ -20,7 +20,7 @@ export type ToastProps = ToastOptions & {
 
 /* Composition API BootstrapVue utilities */
 export const useNotify = defineStore("global-toasts", () => {
-    const { notifications } = useAzuraCast();
+    const { notifications } = useAcaciaRadio();
 
     const getRandomId = () => Math.random().toString(36);
 

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-echo "Acacia Radio Dev Install"
-
-azuracast_install "$@"
-
-gosu azuracast npm ci --include=dev

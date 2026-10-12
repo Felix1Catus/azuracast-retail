@@ -12,7 +12,7 @@ upstream, and synced here with `util/sync_tracker.sh`.
 | Upstream commit | **`5ca47e6701b953e5a679971aa67c4364498766ba`** (`main`, 2026-10-03, "Fix issue #8642"), i.e. upstream 0.23.8 + rolling updates |
 | Tag | `upstream-baseline-5ca47e6` |
 | Source of truth | This is the exact build running on tradelineradio.com (Docker image `8d536dd5f800`, label `org.opencontainers.image.revision`) |
-| Parity check | The live server's `/var/azuracast/www` was pulled on 2026-10-10 and compared file by file with this commit: **no differences** apart from build outputs (`web/static/vite_dist`, generated `translations/`, `.gitinfo`) and the separately mounted Tracker plugin. Production has no core modifications |
+| Parity check | The live server's `/var/acacia/www` was pulled on 2026-10-10 and compared file by file with this commit: **no differences** apart from build outputs (`web/static/vite_dist`, generated `translations/`, `.gitinfo`) and the separately mounted Tracker plugin. Production has no core modifications |
 
 ## Current base
 
@@ -53,8 +53,8 @@ Upstream builds the frontend, translations, API docs and `.gitinfo` in GitHub Ac
 `docker build`. This fork does those steps in the Dockerfile `assets` stage, so a clean checkout builds on its own:
 
 ```bash
-util/build_image.sh                          # -> azuracast-retail:dev, version info from git
-util/build_image.sh azuracast-retail:0.1.0   # any tag
+util/build_image.sh                          # -> acacia-radio:dev, version info from git
+util/build_image.sh acacia-radio:0.1.0   # any tag
 ```
 
 The script is `docker build --target final` plus the git commit, date and branch as build args (`.git` is not in
@@ -72,11 +72,11 @@ A server installed with `util/install_retail.sh` can run any branch of this repo
 
 ```bash
 git push origin my-branch                                   # from the development machine
-ssh dev-server 'cd /var/azuracast && ./docker.sh update my-branch'   # build it there and switch to it
-ssh dev-server 'cd /var/azuracast && ./docker.sh rollback'          # back to the previous image
+ssh dev-server 'cd /var/acacia && ./docker.sh update my-branch'   # build it there and switch to it
+ssh dev-server 'cd /var/acacia && ./docker.sh rollback'          # back to the previous image
 ```
 
-`update <branch>` fetches the branch, builds `azuracast-retail:<commit>` and restarts on it. A branch with nothing new
+`update <branch>` fetches the branch, builds `acacia-radio:<commit>` and restarts on it. A branch with nothing new
 rebuilds from cache in seconds; a full rebuild takes about 5–10 minutes on a small server. `./docker.sh update` with no
 argument returns to the newest release.
 

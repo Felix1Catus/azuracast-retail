@@ -1,4 +1,4 @@
-"""Spotify login (OAuth authorization code flow) for one AzuraCast user at a time.
+"""Spotify login (OAuth authorization code flow) for one Acacia Radio user at a time.
 
 The token is stored in spotipy's cache format, so a job runner can hand it to spotDL through a cache file
 and spotipy refreshes it on its own during long jobs.

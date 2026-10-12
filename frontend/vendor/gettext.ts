@@ -1,6 +1,6 @@
 import { App } from "vue";
 import { createGettext, Language } from "vue3-gettext";
-import { useAzuraCast } from "~/vendor/azuracast.ts";
+import { useAcaciaRadio } from "~/vendor/acacia.ts";
 
 let gettext: Language;
 
@@ -9,7 +9,7 @@ export function useTranslate(): Language {
 }
 
 export async function installTranslate(vueApp: App): Promise<void> {
-    const { locale } = useAzuraCast();
+    const { locale } = useAcaciaRadio();
 
     const translations = import.meta.glob(
         "../../translations/**/translations.json",

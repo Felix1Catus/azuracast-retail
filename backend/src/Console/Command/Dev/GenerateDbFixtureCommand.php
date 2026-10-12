@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:dev:generate-db-fixture',
+    name: 'acacia:dev:generate-db-fixture',
     description: 'Generate the Database Fixture that MariaDB loads on new installs.',
 )]
 final class GenerateDbFixtureCommand extends AbstractDatabaseCommand

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo "Acacia Radio Dev Install"
+
+acacia_install "$@"
+
+gosu acacia npm ci --include=dev

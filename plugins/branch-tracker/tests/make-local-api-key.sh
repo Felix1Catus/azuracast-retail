@@ -3,7 +3,7 @@
 # backups/local-api-key (gitignored). Same format as Acacia Radio's own keys: "identifier:verifier",
 # stored as (id=identifier, verifier=sha512(verifier)).
 set -euo pipefail
-CONTAINER=${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}
+CONTAINER=${TRACKER_CONTAINER:-$(docker ps --filter label=com.docker.compose.service=web --format '{{.Names}}' | head -n 1)}
 STATION=${STATION:-store}
 cd "$(dirname "$0")/../../.."
 OUT=backups/local-api-key

@@ -14,7 +14,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use RuntimeException;
 
-final class AzuraCastCentral
+final class AcaciaRadioCentral
 {
     use LoggerAwareTrait;
     use EnvironmentAwareTrait;

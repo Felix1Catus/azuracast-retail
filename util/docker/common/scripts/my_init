@@ -1,5 +1,31 @@
 #!/bin/bash
 
+# Installs from before the rebrand may start this image with their previous compose file and env until
+# ./docker.sh update has migrated them (docs/retail/REBRAND.md). Keep them working:
+#  - database and user still carry the original project's name (the image default is now "acacia")
+#  - volumes mounted under the original project's folder instead of /var/acacia
+#  - paths stored before the database migration ran resolve through a link to /var/acacia
+OLD_NAME=azuracast  # rebrand:keep
+OLD_ROOT="/var/${OLD_NAME}"
+if [ -d "/var/lib/mysql/${OLD_NAME}" ] && [ ! -d "/var/lib/mysql/${MYSQL_DATABASE:-acacia}" ]; then
+  export MYSQL_DATABASE="$OLD_NAME" MYSQL_USER="$OLD_NAME"
+  echo "** Using the database from before the rebrand."
+fi
+for sub in stations backups storage/uploads storage/acme storage/geoip storage/rsas storage/sftpgo storage/shoutcast2 storage/stereo_tool; do
+  if mountpoint -q "$OLD_ROOT/$sub" && ! mountpoint -q "/var/acacia/$sub"; then
+    if rmdir "/var/acacia/$sub" 2>/dev/null || [ ! -e "/var/acacia/$sub" ]; then
+      mkdir -p "$(dirname "/var/acacia/$sub")" && ln -s "$OLD_ROOT/$sub" "/var/acacia/$sub"
+      echo "** /var/acacia/$sub -> volume mounted the old way."
+    fi
+  fi
+done
+[ -e "$OLD_ROOT" ] || ln -s /var/acacia "$OLD_ROOT"
+OLD_PREFIX="$(echo "$OLD_NAME" | tr '[:lower:]' '[:upper:]')_"
+for var in $(compgen -e | grep "^${OLD_PREFIX}"); do
+  new="ACACIA_${var#"$OLD_PREFIX"}"
+  [ -n "${!new:-}" ] || export "$new=${!var}"
+done
+
 # Write environment variables to script
 declare -p | grep -Ev 'BASHOPTS|BASH_VERSINFO|EUID|PPID|SHELLOPTS|UID' > /container.env
 chmod 744 /container.env

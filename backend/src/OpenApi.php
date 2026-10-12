@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
     OA\OpenApi(
         openapi: '3.0.0',
         info: new OA\Info(
-            version: AZURACAST_VERSION,
+            version: ACACIA_VERSION,
             description: "Acacia Radio is a standalone, turnkey web radio management tool. Radio stations hosted by"
             . " Acacia Radio expose a public API for viewing now playing data, making requests and more.",
             title: 'Acacia Radio',
@@ -22,8 +22,8 @@ use OpenApi\Attributes as OA;
         ),
         servers: [
             new OA\Server(
-                url: AZURACAST_API_URL,
-                description: AZURACAST_API_NAME
+                url: ACACIA_API_URL,
+                description: ACACIA_API_NAME
             ),
         ],
         security: [

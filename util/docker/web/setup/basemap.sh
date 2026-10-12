@@ -17,16 +17,16 @@ tar -xzf pmtiles.tar.gz pmtiles
 
 BUILD_DATE=$(date -u -d "yesterday" +'%Y%m%d')
 
-mkdir -p /var/azuracast/maps
+mkdir -p /var/acacia/maps
 ./pmtiles extract "https://build.protomaps.com/${BUILD_DATE}.pmtiles" \
-    /var/azuracast/maps/basemap.pmtiles --maxzoom=6
+    /var/acacia/maps/basemap.pmtiles --maxzoom=6
 
 # Fonts & sprites for MapLibre text/icon rendering
 wget --quiet -O basemaps-assets.tar.gz "https://github.com/protomaps/basemaps-assets/archive/${BASEMAPS_ASSETS_COMMIT}.tar.gz"
-mkdir -p /var/azuracast/maps/assets
-tar -xzf basemaps-assets.tar.gz --strip-components=1 -C /var/azuracast/maps/assets \
+mkdir -p /var/acacia/maps/assets
+tar -xzf basemaps-assets.tar.gz --strip-components=1 -C /var/acacia/maps/assets \
     "basemaps-assets-${BASEMAPS_ASSETS_COMMIT}/fonts" \
     "basemaps-assets-${BASEMAPS_ASSETS_COMMIT}/sprites"
 
 rm -f pmtiles pmtiles.tar.gz basemaps-assets.tar.gz
-chown -R azuracast:azuracast /var/azuracast/maps
+chown -R acacia:acacia /var/acacia/maps

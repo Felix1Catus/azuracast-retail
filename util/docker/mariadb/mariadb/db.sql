@@ -1,7 +1,7 @@
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-11.4.4-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: azuracast
+-- Host: localhost    Database: acacia
 -- ------------------------------------------------------
 -- Server version	11.4.4-MariaDB-deb12-log
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
@@ -12,14 +12,14 @@
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
--- Current Database: `azuracast`
+-- Current Database: `acacia`
 --
 
-/*!40000 DROP DATABASE IF EXISTS `azuracast`*/;
+/*!40000 DROP DATABASE IF EXISTS `acacia`*/;
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `azuracast` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `acacia` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
 
-USE `azuracast`;
+USE `acacia`;
 
 --
 -- Table structure for table `analytics`
@@ -989,7 +989,7 @@ CREATE TABLE `users` (
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-11.4.4-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: azuracast
+-- Host: localhost    Database: acacia
 -- ------------------------------------------------------
 -- Server version	11.4.4-MariaDB-deb12-log
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;

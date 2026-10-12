@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use const JSON_THROW_ON_ERROR;
 
 #[AsCommand(
-    name: 'azuracast:playlist:import',
+    name: 'acacia:playlist:import',
     description: 'Import playlists into a station from a JSON configuration dump'
 )]
 final class ImportCommand extends CommandAbstract

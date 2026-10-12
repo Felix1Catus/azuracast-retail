@@ -23,7 +23,7 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
 #[AsCommand(
-    name: 'azuracast:playlist:export',
+    name: 'acacia:playlist:export',
     description: "Export a station's playlist/s as a portable JSON configuration dump"
 )]
 final class ExportCommand extends CommandAbstract

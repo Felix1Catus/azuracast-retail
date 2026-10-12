@@ -81,7 +81,7 @@ final class RunBackupTask extends AbstractTask
         }
 
         return $this->console->runCommandWithArgs(
-            'azuracast:backup',
+            'acacia:backup',
             $inputParams,
             $outputPath ?? 'php://temp'
         );

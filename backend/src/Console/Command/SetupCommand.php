@@ -7,7 +7,7 @@ namespace App\Console\Command;
 use App\Container\EnvironmentAwareTrait;
 use App\Container\SettingsAwareTrait;
 use App\Entity\Repository\StorageLocationRepository;
-use App\Service\AzuraCastCentral;
+use App\Service\AcaciaRadioCentral;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'azuracast:setup',
+    name: 'acacia:setup',
     description: 'Run all general Acacia Radio setup steps.',
 )]
 final class SetupCommand extends CommandAbstract
@@ -24,7 +24,7 @@ final class SetupCommand extends CommandAbstract
     use SettingsAwareTrait;
 
     public function __construct(
-        private readonly AzuraCastCentral $acCentral,
+        private readonly AcaciaRadioCentral $acCentral,
         private readonly StorageLocationRepository $storageLocationRepo
     ) {
         parent::__construct();
@@ -70,7 +70,7 @@ final class SetupCommand extends CommandAbstract
 
         $this->runCommand(
             $output,
-            'azuracast:setup:migrate'
+            'acacia:setup:migrate'
         );
 
         $io->newLine();
@@ -86,13 +86,13 @@ final class SetupCommand extends CommandAbstract
         if ($loadFixtures) {
             $io->section(__('Installing Data Fixtures'));
 
-            $this->runCommand($output, 'azuracast:setup:fixtures');
+            $this->runCommand($output, 'acacia:setup:fixtures');
             $io->newLine();
         }
 
         $io->section(__('Refreshing All Stations'));
 
-        $this->runCommand($output, 'azuracast:station-queues:clear');
+        $this->runCommand($output, 'acacia:station-queues:clear');
 
         $restartArgs = [];
         if ($this->environment->isDocker()) {
@@ -101,7 +101,7 @@ final class SetupCommand extends CommandAbstract
 
         $this->runCommand(
             $output,
-            'azuracast:radio:restart',
+            'acacia:radio:restart',
             $restartArgs
         );
 

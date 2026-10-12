@@ -5,7 +5,7 @@ generated 3-second tone, then checks the files land in the destination folder, a
 the counters add up. Run it inside the worker image:
 
   docker run --rm -e MD_DATA_DIR=/tmp/md -e MD_STATIONS_ROOT=/tmp/stations \
-    -v "$PWD/plugins/music-downloader/tests:/tests:ro" azuracast-music-downloader:dev python /tests/worker_selftest.py
+    -v "$PWD/plugins/music-downloader/tests:/tests:ro" acacia-music-downloader:dev python /tests/worker_selftest.py
 """
 
 import json

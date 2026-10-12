@@ -38,7 +38,7 @@ abstract class CestAbstract
     protected ReloadableEntityManagerInterface $em;
 
     protected string $login_username = 'admin@example.com';
-    protected string $login_password = 'AzuraCastFunctionalTests!';
+    protected string $login_password = 'AcaciaRadioFunctionalTests!';
 
     protected ?string $login_api_key = null;
 
@@ -159,7 +159,7 @@ abstract class CestAbstract
     {
         $testStation = $this->getTestStation();
 
-        $songSrc = '/var/azuracast/www/resources/error.mp3';
+        $songSrc = '/var/acacia/www/resources/error.mp3';
 
         $storageLocation = $testStation->media_storage_location;
 

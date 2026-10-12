@@ -1,10 +1,10 @@
 #!/bin/bash
 
 if [ -z "$ACME_DIR" ]; then
-  if [ -d "/var/azuracast/acme" ]; then
-    export ACME_DIR="/var/azuracast/acme"
+  if [ -d "/var/acacia/acme" ]; then
+    export ACME_DIR="/var/acacia/acme"
   else
-    export ACME_DIR="/var/azuracast/storage/acme"
+    export ACME_DIR="/var/acacia/storage/acme"
   fi
 fi
 
@@ -42,5 +42,5 @@ if [ ! -f "$ACME_DIR/ssl.crt" ]; then
     fi
 fi
 
-chown -R azuracast:azuracast "$ACME_DIR" || true
+chown -R acacia:acacia "$ACME_DIR" || true
 chmod -R u=rwX,go=rX "$ACME_DIR" || true
