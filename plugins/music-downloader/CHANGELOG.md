@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 (2026-10-12)
+
+- YouTube cookies: only the youtube.com cookies are kept, and cookies without a YouTube login are refused
+  with an explanation (Google-account cookies alone don't sign YouTube in). Settings show what's saved, and
+  a "Test with YouTube" button (run automatically after saving) checks the cookies for real.
+- install.sh: updates replace the plugin files in place, so a running AzuraCast picks them up.
+
 ## 0.1.0 (2026-10-11)
 
 First version.

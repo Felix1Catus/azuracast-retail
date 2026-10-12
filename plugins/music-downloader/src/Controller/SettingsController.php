@@ -63,6 +63,19 @@ final class SettingsController
             : $response->withJson($data);
     }
 
+    /** Asks YouTube for one video with the saved cookies (and proxy); takes up to 2 minutes. */
+    public function testCookiesAction(ServerRequest $request, Response $response, array $params): ResponseInterface
+    {
+        try {
+            [$status, $data] = $this->worker->call('POST', '/settings/cookies/test', timeout: 130.0);
+        } catch (WorkerUnavailable $e) {
+            return $response->withJson(['message' => $e->getMessage()], 503);
+        }
+        return $status >= 400
+            ? $response->withJson(['message' => self::workerMessage($data, $status)], 502)
+            : $response->withJson($data);
+    }
+
     public function deleteCookiesAction(ServerRequest $request, Response $response, array $params): ResponseInterface
     {
         return $this->relay($response, $this->worker, 'DELETE', '/settings/cookies');

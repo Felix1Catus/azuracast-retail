@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 final class PageAction implements SingleActionInterface
 {
-    public const string VERSION = '0.1.0';
+    public const string VERSION = '0.1.1';
 
     public function __construct(
         private readonly PageAssets $assets,

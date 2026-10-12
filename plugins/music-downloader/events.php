@@ -94,6 +94,7 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
                     $group->put('', $s . ':putAction');
                     $group->put('/cookies', $s . ':putCookiesAction');
                     $group->delete('/cookies', $s . ':deleteCookiesAction');
+                    $group->post('/cookies/test', $s . ':testCookiesAction');
                 }
             )->add(new Middleware\Permissions(GlobalPermissions::Settings))
                 ->add(Middleware\Module\Api::class)

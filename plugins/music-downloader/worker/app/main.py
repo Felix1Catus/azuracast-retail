@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel, Field
 
-from app import config, db, spotify_auth
+from app import config, cookies, db, spotify_auth
 
 log = logging.getLogger("music-downloader")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -29,7 +29,6 @@ SPOTIFY_URL = re.compile(
     r"^\s*(?:https?://open\.spotify\.com/(?:intl-[A-Za-z-]+/)?(?P<k1>playlist|album|track)/(?P<i1>[A-Za-z0-9]{22})"
     r"|spotify:(?P<k2>playlist|album|track):(?P<i2>[A-Za-z0-9]{22}))(?:[/?#].*)?\s*$"
 )
-COOKIE_LINE = re.compile(r"^[^\t#\s][^\t]*\t(TRUE|FALSE)\t[^\t]*\t(TRUE|FALSE)\t\d+\t[^\t]*\t", re.MULTILINE)
 
 app = FastAPI(title="Music Downloader worker", docs_url=None, redoc_url=None, openapi_url=None)
 
@@ -180,6 +179,7 @@ def public_settings(conn) -> Dict[str, Any]:
         "has_client_secret": bool(s["client_secret"]),
         "spotify_app_ready": bool(s["client_id"] and s["client_secret"]),
         "has_cookies": config.COOKIE_FILE.exists(),
+        "cookies": cookies.info(),
         "proxy": s["proxy"],
         "audio_providers": [p for p in s["audio_providers"].split(",") if p],
         "default_format": s["default_format"],
@@ -244,17 +244,19 @@ async def put_cookies(request: Request) -> Dict[str, Any]:
     text = (await request.body()).decode("utf-8", errors="replace")
     if len(text) > 1_000_000:
         raise HTTPException(413, "That cookie file is too large.")
-    if not COOKIE_LINE.search(text) or "youtube.com" not in text:
-        raise HTTPException(
-            422,
-            "That doesn't look like a Netscape-format cookies.txt containing youtube.com cookies.",
-        )
-    tmp = config.COOKIE_FILE.with_suffix(".tmp")
-    tmp.write_text(text if text.startswith("# ") else "# Netscape HTTP Cookie File\n" + text)
-    tmp.chmod(0o600)
-    os.replace(tmp, config.COOKIE_FILE)
+    try:
+        cookies.save(text)
+    except cookies.CookieError as exc:
+        raise HTTPException(422, str(exc)) from exc
     with db.session() as conn:
         return public_settings(conn)
+
+
+@app.post("/settings/cookies/test", dependencies=auth)
+def test_cookies() -> Dict[str, Any]:
+    with db.session() as conn:
+        proxy = db.get_settings(conn)["proxy"]
+    return cookies.test(proxy)
 
 
 @app.delete("/settings/cookies", dependencies=auth)

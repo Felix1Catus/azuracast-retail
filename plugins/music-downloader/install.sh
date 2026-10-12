@@ -139,10 +139,12 @@ NEWV=$(cat "$TMP/VERSION" 2>/dev/null || echo dev)
 
 mkdir -p "$DIR/plugins"
 DEST="$DIR/plugins/$PLUGIN"
-if [ -d "$DEST" ] && [ "$(cd "$DEST" && pwd -P)" != "$(cd "$TMP" && pwd -P)" ]; then
+if [ -d "$DEST" ]; then
   OLDV=$(cat "$DEST/VERSION" 2>/dev/null || echo "?")
-  mv "$DEST" "$DEST.bak-$(date +%Y%m%d%H%M%S)"
-  echo "Previous copy ($OLDV) moved aside."
+  cp -a "$DEST" "$DEST.bak-$(date +%Y%m%d%H%M%S)"
+  echo "Previous copy ($OLDV) backed up."
+  # Replace the contents but keep the folder itself: a running container's bind mount points at this folder.
+  find "$DEST" -mindepth 1 -delete
 fi
 mkdir -p "$DEST"
 (cd "$TMP" && tar -cf - .) | tar -xf - -C "$DEST"

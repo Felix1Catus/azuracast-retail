@@ -242,12 +242,15 @@
       <p class="small muted" style="margin-top:0">If YouTube blocks this server (“Sign in to confirm you're not a bot”),
         give it the cookies of a normal YouTube account: in a private browser window, sign in to youtube.com, export
         <span class="code">cookies.txt</span> (Netscape format) with a cookies extension, close the window, and paste or upload it here.
-        Use a separate account: YouTube may restrict accounts used this way.</p>
+        Use a separate account: YouTube may restrict accounts used this way.
+        Only the youtube.com cookies are kept.</p>
+      <div class="banner" id="cookie-info" hidden style="margin-bottom:10px"></div>
       <textarea id="cookies" placeholder="# Netscape HTTP Cookie File&#10;.youtube.com	TRUE	/	TRUE	..."></textarea>
       <div class="actions">
         <input type="file" id="cookie-file" accept=".txt,text/plain" hidden>
         <button class="btn" type="button" id="btn-cookie-file">Upload cookies.txt…</button>
         <button class="btn primary" type="button" id="btn-save-cookies">Save cookies</button>
+        <button class="btn" type="button" id="btn-test-cookies">Test with YouTube</button>
         <button class="btn danger" type="button" id="btn-del-cookies">Remove cookies</button>
       </div>
     </details>
@@ -581,8 +584,17 @@
     const fill = (sel, values, def, labels = {}) => { sel.replaceChildren(...values.map((v) => el('option', { value: v, text: labels[v] || v }))); sel.value = def; };
     fill($('#def-format'), s.choices.formats, s.default_format);
     fill($('#def-bitrate'), s.choices.bitrates, s.default_bitrate, BITRATE_LABEL);
-    $('#cookie-state').textContent = s.has_cookies ? '· saved' : '· none';
-    $('#btn-del-cookies').hidden = !s.has_cookies;
+    const c = s.cookies;
+    $('#cookie-state').textContent = c ? '· saved' : '· none';
+    $('#btn-del-cookies').hidden = !c;
+    $('#btn-test-cookies').hidden = !c;
+    const ci = $('#cookie-info');
+    ci.hidden = !c;
+    if (c) {
+      ci.className = `banner ${c.youtube_login ? 'ok' : 'warn'}`;
+      ci.textContent = `Saved ${when(c.saved_at)} · ${c.count} youtube.com cookies · `
+        + (c.youtube_login ? 'includes a YouTube login' : 'NO YouTube login: replace them');
+    }
   }
   $('#btn-copy').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText($('#redirect-uri').value); toast('Copied.'); } catch { $('#redirect-uri').select(); }
@@ -604,9 +616,22 @@
     $('#cookies').value = await f.text(); e.target.value = '';
   });
   $('#btn-save-cookies').addEventListener('click', async () => {
-    try { await api(`${SETTINGS_API}/cookies`, { method: 'PUT', body: { cookies: $('#cookies').value } }); $('#cookies').value = ''; toast('Cookies saved.'); loadSettings(); }
-    catch (e) { toast(e.message, true); }
+    try {
+      await api(`${SETTINGS_API}/cookies`, { method: 'PUT', body: { cookies: $('#cookies').value } });
+      $('#cookies').value = ''; toast('Cookies saved. Testing them with YouTube…');
+      await loadSettings(); testCookies();
+    } catch (e) { toast(e.message, true); }
   });
+  async function testCookies() {
+    const btn = $('#btn-test-cookies'); const ci = $('#cookie-info');
+    btn.disabled = true; btn.textContent = 'Testing… (up to 2 min)';
+    try {
+      const r = await api(`${SETTINGS_API}/cookies/test`, { method: 'POST', body: {} });
+      ci.hidden = false; ci.className = `banner ${r.ok ? 'ok' : 'error'}`;
+      ci.replaceChildren(el('b', { text: r.ok ? 'YouTube test passed' : 'YouTube test failed' }), el('span', { text: r.message }));
+    } catch (e) { toast(e.message, true); } finally { btn.disabled = false; btn.textContent = 'Test with YouTube'; }
+  }
+  $('#btn-test-cookies').addEventListener('click', testCookies);
   $('#btn-del-cookies').addEventListener('click', async () => {
     if (!confirm('Remove the saved YouTube cookies?')) return;
     try { await api(`${SETTINGS_API}/cookies`, { method: 'DELETE' }); toast('Cookies removed.'); loadSettings(); } catch (e) { toast(e.message, true); }

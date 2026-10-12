@@ -7,7 +7,7 @@ comes from YouTube Music (or the other sources listed in Settings).
 
 | | |
 |---|---|
-| **Version** | 0.1.0 (first version, not yet integrated into the AzuraCast Retail installer) |
+| **Version** | 0.1.1 (first version, not yet integrated into the AzuraCast Retail installer) |
 | **Developed on** | AzuraCast Retail 0.23.8-retail.6 · spotDL 4.5.2 · yt-dlp 2026.08.19 · Deno 2.4.5 · ffmpeg 7.1 |
 | **Works with** | AzuraCast 0.23.x on Docker, stations with **local** media storage |
 | **Not supported** | S3 / Dropbox / SFTP media storage; spotify.link short links; ongoing playlist sync (one-time downloads only) |
@@ -94,7 +94,9 @@ Datacenter IP addresses (Vultr, Hetzner, DigitalOcean, AWS…) are often blocked
 confirm you're not a bot"). The page then shows *YouTube refused the download*. Options, in Settings:
 
 - **YouTube cookies** from a normal (free) YouTube account: sign in to youtube.com in a private window, export
-  `cookies.txt` (Netscape format), close the window, and paste the file. Use a separate account, because
+  `cookies.txt` (Netscape format) **from the youtube.com tab** while your account picture shows at the top
+  right, close the window, and paste the file. Only youtube.com cookies are kept; a file without a YouTube
+  login (only Google-account cookies) is refused. **Test with YouTube** checks them. Use a separate account, because
   YouTube may restrict accounts used this way. Cookies expire, so refresh them when downloads start failing again.
 - **Proxy:** `http://user:pass@host:port` or `socks5://host:port`. A residential proxy avoids the block.
 
