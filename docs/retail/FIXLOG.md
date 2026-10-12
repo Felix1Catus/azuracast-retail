@@ -8,6 +8,17 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.13 (2026-10-12)
+
+Music Downloader 0.2.0: YouTube account. Update with `./docker.sh update` (it adds the
+`music-downloader-browser` container and its `music_downloader_browser` volume through the compose template).
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Connect YouTube account:** an administrator signs a separate Google account in once, in a Chromium on the server shown in Settings as a live, clickable picture. No password is stored; the browser profile keeps the session | `plugins/music-downloader/worker/app/browser.py`, `browser_api.py`, `templates/page.html`, `docker-compose.retail.yml`, `install.sh` | Dev server (real sign-in, cookie test passed) |
+| — | **Cookies kept fresh** from that browser: every 6 hours while idle, before a job when older than 30 minutes, and once mid-job when YouTube refuses them (then the failed tracks are retried) | `worker/app/youtube_session.py`, `main.py`, `runner.py` | Test containers, worker self-test |
+| — | **Alerts** when YouTube signs the account out: banner on the downloader page, dashboard notice for settings admins, one email to administrators when outgoing email is set up | `src/Notification/YouTubeNotice.php`, `src/Sync/YouTubeAlertTask.php` | Test containers (state + alert), task run on dev server |
+
 ## 0.23.8-retail.12 (2026-10-12)
 
 Dashboard and usability. Update with `./docker.sh update`.
