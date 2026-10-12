@@ -20,6 +20,16 @@ for sub in stations backups storage/uploads storage/acme storage/geoip storage/r
   fi
 done
 [ -e "$OLD_ROOT" ] || ln -s /var/acacia "$OLD_ROOT"
+# Station process configs are generated files in the station volume and still name the old user and paths;
+# supervisord refuses to start with an unknown user, so fix them before it reads them (the app rewrites them
+# completely on the next station restart).
+for conf in /var/acacia/stations/*/config/supervisord.conf; do
+  [ -f "$conf" ] || continue
+  if grep -q "$OLD_NAME" "$conf"; then
+    sed -i -e "s/^user=${OLD_NAME}\$/user=acacia/" -e "s#${OLD_ROOT}/#/var/acacia/#g" "$conf"
+    echo "** Updated $conf for the rebrand."
+  fi
+done
 OLD_PREFIX="$(echo "$OLD_NAME" | tr '[:lower:]' '[:upper:]')_"
 for var in $(compgen -e | grep "^${OLD_PREFIX}"); do
   new="ACACIA_${var#"$OLD_PREFIX"}"
