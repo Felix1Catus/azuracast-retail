@@ -24,7 +24,7 @@
             :to="{ name: 'dashboard' }"
         >
             <img
-                src="/static/icons/production/96.png"
+                :src="'/static/icons/production/96.png'"
                 alt=""
                 width="32"
                 height="32"

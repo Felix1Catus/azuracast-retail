@@ -6,7 +6,7 @@
                     <div class="col-sm">
                         <img
                             v-if="!hideProductName"
-                            src="/static/icons/production/192.png"
+                            :src="'/static/icons/production/192.png'"
                             alt=""
                             width="96"
                             height="96"
