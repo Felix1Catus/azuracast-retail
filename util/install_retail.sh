@@ -9,7 +9,7 @@
 #   2. installs Docker Engine, the Compose and Buildx plugins and git (Docker's official apt repository)
 #   3. clones or updates the source checkout and checks out a release
 #   4. builds the image (util/build_image.sh)
-#   5. writes the install directory (docker-compose.yml, docker.sh, .env, azuracast.env)
+#   5. writes the install directory (docker-compose.yml, docker.sh, .env, azuracast.env, music-downloader.env)
 #   6. starts AzuraCast and waits until it answers
 #   7. with --domain: sets the site URL and gets a Let's Encrypt certificate
 #
@@ -193,7 +193,8 @@ ok "Checked out $REF ($(git -C "$SRC_DIR" rev-parse --short HEAD))"
 
 # ------------------------------------------------------------------------------------------------ 4. image
 step "Building the image $IMAGE (first build: 15-40 min)"
-if docker image inspect "$IMAGE" >/dev/null 2>&1; then
+WORKER_IMAGE="$("$SRC_DIR/util/music_downloader_tag.sh" "$IMAGE")"
+if docker image inspect "$IMAGE" >/dev/null 2>&1 && docker image inspect "$WORKER_IMAGE" >/dev/null 2>&1; then
   ok "$IMAGE already exists"
 else
   BUILD_ATTEMPTS="${BUILD_ATTEMPTS:-3}" "$SRC_DIR/util/build_image.sh" "$IMAGE"
@@ -226,8 +227,15 @@ if [[ ! -f azuracast.env ]]; then
   chmod 600 azuracast.env
   ok "Created azuracast.env with a random database password"
 fi
+# Music Downloader: worker image and the secret shared by AzuraCast and the worker (docker-compose.retail.yml).
+set_env .env MUSIC_DOWNLOADER_IMAGE "$WORKER_IMAGE"
+if [[ ! -s music-downloader.env ]]; then
+  MD_TOKEN="$(openssl rand -hex 32 2>/dev/null || head -c32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+  (umask 077; printf '# Shared secret between AzuraCast and the Music Downloader worker.\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' "$MD_TOKEN" "$MD_TOKEN" > music-downloader.env)
+  ok "Created music-downloader.env"
+fi
 docker compose config -q
-ok "docker-compose.yml, docker.sh, .env and azuracast.env are in place"
+ok "docker-compose.yml, docker.sh, .env, azuracast.env and music-downloader.env are in place"
 
 # ------------------------------------------------------------------------------------------------ 6. start
 step "Starting AzuraCast"

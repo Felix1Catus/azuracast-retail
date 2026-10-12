@@ -50,6 +50,7 @@ const blankStationGlobals: VueStationGlobals = {
         customLiquidsoapConfig: false,
         autoDjQueue: false,
         branchBoard: false,
+        musicDownloader: false,
     },
     ipGeoAttribution: "N/A",
     backendType: BackendAdapters.None,

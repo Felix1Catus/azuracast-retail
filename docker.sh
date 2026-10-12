@@ -587,6 +587,27 @@ retail-source-dir() {
   echo "${REPLY:-/opt/azuracast-retail}"
 }
 
+# Music Downloader (built-in module): point .env at the worker image built with IMAGE, create the shared
+# secret if missing, and bring docker-compose.yml up to the template that runs the worker containers.
+retail-music-downloader-setup() {
+  local SRC="$1" IMAGE="$2" TOKEN
+
+  .env --file .env set MUSIC_DOWNLOADER_IMAGE="$("$SRC/util/music_downloader_tag.sh" "$IMAGE")"
+
+  if [[ ! -s music-downloader.env ]]; then
+    TOKEN="$(openssl rand -hex 32 2>/dev/null || head -c32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+    (umask 077; printf '# Shared secret between AzuraCast and the Music Downloader worker.\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' "$TOKEN" "$TOKEN" > music-downloader.env)
+    echo "Created music-downloader.env."
+  fi
+
+  if ! cmp -s docker-compose.yml "$SRC/docker-compose.retail.yml"; then
+    cp docker-compose.yml "docker-compose.yml.bak-$(date +%Y%m%d%H%M%S)"
+    cp "$SRC/docker-compose.retail.yml" docker-compose.yml
+    echo "docker-compose.yml updated to this version's template (previous copy kept as docker-compose.yml.bak-*;"
+    echo "put local changes in docker-compose.override.yml)."
+  fi
+}
+
 retail-update() {
   local SRC TARGET IMAGE CURRENT
 
@@ -641,7 +662,8 @@ retail-update() {
     .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
   fi
   .env --file .env set AZURACAST_RETAIL_IMAGE="$IMAGE"
-  dc up -d
+  retail-music-downloader-setup "$SRC" "$IMAGE"
+  dc up -d --remove-orphans
 
   # Keep only the running image and the rollback target; older builds pile up quickly (about 3 GB each).
   local KEEP_PREVIOUS
@@ -650,6 +672,11 @@ retail-update() {
   KEEP_PREVIOUS="$REPLY"
   for OLD in $(d images --format '{{.Repository}}:{{.Tag}}' azuracast-retail); do
     if [[ "$OLD" != "$IMAGE" && "$OLD" != "$KEEP_PREVIOUS" ]]; then
+      d rmi "$OLD" > /dev/null 2>&1 && echo "Removed old image $OLD"
+    fi
+  done
+  for OLD in $(d images --format '{{.Repository}}:{{.Tag}}' azuracast-retail-music-downloader); do
+    if [[ "${OLD##*:}" != "${IMAGE##*:}" && "${OLD##*:}" != "${KEEP_PREVIOUS##*:}" ]]; then
       d rmi "$OLD" > /dev/null 2>&1 && echo "Removed old image $OLD"
     fi
   done
@@ -677,6 +704,10 @@ retail-rollback() {
   if ask "Switch from $CURRENT back to $PREVIOUS?" Y; then
     .env --file .env set AZURACAST_RETAIL_PREVIOUS_IMAGE="$CURRENT"
     .env --file .env set AZURACAST_RETAIL_IMAGE="$PREVIOUS"
+    # The worker built with the previous version, when it exists (versions before it had none).
+    if d image inspect "azuracast-retail-music-downloader:${PREVIOUS##*:}" > /dev/null 2>&1; then
+      .env --file .env set MUSIC_DOWNLOADER_IMAGE="azuracast-retail-music-downloader:${PREVIOUS##*:}"
+    fi
     dc up -d
     echo "Now running $PREVIOUS."
   fi

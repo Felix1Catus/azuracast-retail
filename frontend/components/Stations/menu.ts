@@ -10,6 +10,7 @@ import { useUserAllowedForStation } from "~/functions/useUserallowedForStation.t
 import { useTranslate } from "~/vendor/gettext.ts";
 import IconBiBroadcast from "~icons/bi/broadcast";
 import IconIcAssignment from "~icons/ic/baseline-assignment";
+import IconIcCloudDownload from "~icons/ic/baseline-cloud-download";
 import IconIcImage from "~icons/ic/baseline-image";
 import IconIcInsertChart from "~icons/ic/baseline-insert-chart";
 import IconIcLibraryMusic from "~icons/ic/baseline-library-music";
@@ -154,6 +155,16 @@ export function useStationsMenu() {
             visible: () =>
                 station.value.features.branchBoard &&
                 userAllowedForStation("view branches" as StationPermissions),
+        },
+        {
+            // Built-in Music Downloader module (plugins/music-downloader): its own page, permission "download music".
+            key: "music_downloader",
+            label: $gettext("Music Downloader"),
+            icon: () => IconIcCloudDownload,
+            url: `/music-downloader/${station.value.id}`,
+            visible: () =>
+                station.value.features.musicDownloader &&
+                userAllowedForStation("download music" as StationPermissions),
         },
         {
             key: "reports",

@@ -8,8 +8,11 @@
 #   - ports: only HTTP/HTTPS. Players reach every station through nginx at /listen/{station}/{mount}
 #     (Administration > Settings > "Use Web Proxy for Radio" must stay on). No SFTP port.
 #   - no `updater` container: it would replace this image with upstream AzuraCast.
+#   - Music Downloader (built-in module, plugins/music-downloader): the `music-downloader` worker (spotDL,
+#     built by util/build_image.sh) and `music-downloader-pot` (YouTube PO tokens). Both are internal only
+#     and share a secret through music-downloader.env, which the installer and `./docker.sh update` create.
 #
-# Plugins (e.g. the Tracker plugin) are mounted from docker-compose.override.yml.
+# Other plugins are mounted from docker-compose.override.yml.
 #
 
 name: azuracast
@@ -25,6 +28,8 @@ services:
     env_file:
       - azuracast.env
       - .env
+      - path: music-downloader.env
+        required: false
     volumes:
       - station_data:/var/azuracast/stations
       - backups:/var/azuracast/backups
@@ -46,7 +51,38 @@ services:
         max-size: "1m"
         max-file: "5"
 
+  music-downloader:
+    container_name: azuracast_music_downloader
+    image: "${MUSIC_DOWNLOADER_IMAGE:-azuracast-retail-music-downloader:latest}"
+    pull_policy: never
+    env_file:
+      - path: music-downloader.env
+        required: false
+    volumes:
+      - station_data:/var/azuracast/stations
+      - music_downloader_data:/data
+    restart: unless-stopped
+    cpu_shares: 256            # the radio comes first on small servers
+    mem_limit: 1g
+    logging:
+      options:
+        max-size: "1m"
+        max-file: "3"
+
+  music-downloader-pot:
+    container_name: azuracast_music_downloader_pot
+    # Same version as bgutil-ytdlp-pot-provider in plugins/music-downloader/worker/requirements.txt.
+    image: brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno
+    restart: unless-stopped
+    cpu_shares: 256
+    mem_limit: 512m
+    logging:
+      options:
+        max-size: "1m"
+        max-file: "3"
+
 volumes:
+  music_downloader_data: { }
   db_data: { }
   acme: { }
   shoutcast2_install: { }

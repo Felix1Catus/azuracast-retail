@@ -22,6 +22,7 @@ enum StationFeatures
     case OnDemand;
     case Requests;
     case BranchBoard;
+    case MusicDownloader;
 
     public function supportedForStation(
         Station $station,
@@ -36,6 +37,11 @@ enum StationFeatures
             // Branch Board (built-in Tracker module, plugins/branch-tracker). Its presence also tells the module
             // to skip its injected button: the station menu has a native item instead.
             self::BranchBoard => class_exists('Plugin\BranchTracker\Permissions'),
+            // Music Downloader (built-in module, plugins/music-downloader): needs its worker container, which
+            // docker-compose.retail.yml runs and the installer gives a shared secret. Its presence also tells
+            // the module to skip its injected button.
+            self::MusicDownloader => class_exists('Plugin\MusicDownloader\Permissions')
+                && '' !== (string)getenv('MUSIC_DOWNLOADER_WORKER_TOKEN'),
             // Retail edition: these are not part of the product (docs/retail/REDESIGN.md). Their pages, API
             // routes and background tasks are gone or gated on this; the code is removed later (#13).
             self::Sftp,

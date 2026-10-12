@@ -78,6 +78,7 @@ final class GetDashboardAction implements SingleActionInterface
                 ),
                 autoDjQueue: $station->supportsAutoDjQueue(),
                 branchBoard: StationFeatures::BranchBoard->supportedForStation($station, $settings),
+                musicDownloader: StationFeatures::MusicDownloader->supportedForStation($station, $settings),
             ),
             ipGeoAttribution: $this->ipGeolocation->getAttribution(),
             backendType: $station->backend_type,

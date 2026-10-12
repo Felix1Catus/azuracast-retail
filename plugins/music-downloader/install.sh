@@ -63,6 +63,9 @@ DIR=$(cd "$DIR" && pwd)
 cd "$DIR"
 grep -qiE 'image:.*azuracast' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like AzuraCast's."
 grep -qE '^\s+station_data:' docker-compose.yml || die "docker-compose.yml has no station_data volume; this installer expects AzuraCast's standard layout."
+if [ "$ACTION" = install ] && grep -qE '^  music-downloader:' docker-compose.yml; then
+  die "Music Downloader is built into this installation (AzuraCast Retail): docker-compose.yml already runs it. Update with ./docker.sh update instead."
+fi
 
 container() {
   local id; id=$("${DC[@]}" ps -q web 2>/dev/null | head -1)

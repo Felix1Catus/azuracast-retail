@@ -1826,6 +1826,7 @@ export interface VueStationFeatures {
     customLiquidsoapConfig: boolean;
     autoDjQueue: boolean;
     branchBoard: boolean;
+    musicDownloader: boolean;
 }
 
 export interface VueStationGlobals {

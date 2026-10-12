@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Build the production image with version info taken from the local git checkout.
+# Build the production image with version info taken from the local git checkout, and the Music Downloader
+# worker image (plugins/music-downloader/worker) with the same version:
 #   util/build_image.sh [tag]        (default tag: azuracast-retail:dev)
+#   -> <tag>  and  <repository>-music-downloader:<version>, e.g. azuracast-retail-music-downloader:dev
 #
 # Environment:
 #   COMPOSER_MAX_PARALLEL_HTTP  parallel composer downloads (default 12; try 2 on a flaky network)
@@ -11,6 +13,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
 TAG="${1:-azuracast-retail:dev}"
 ATTEMPTS="${BUILD_ATTEMPTS:-1}"
+WORKER_TAG="$(util/music_downloader_tag.sh "$TAG")"
 
 for ((i = 1; i <= ATTEMPTS; i++)); do
     if docker buildx build --load --target final -t "$TAG" \
@@ -18,8 +21,9 @@ for ((i = 1; i <= ATTEMPTS; i++)); do
         --build-arg GIT_COMMIT_DATE="$(git log -n1 --pretty=%ci HEAD)" \
         --build-arg GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" \
         --build-arg COMPOSER_MAX_PARALLEL_HTTP="${COMPOSER_MAX_PARALLEL_HTTP:-12}" \
-        .; then
-        echo "Built $TAG"
+        . \
+        && docker build -t "$WORKER_TAG" plugins/music-downloader/worker; then
+        echo "Built $TAG and $WORKER_TAG"
         exit 0
     fi
     echo "Build attempt $i of $ATTEMPTS failed." >&2

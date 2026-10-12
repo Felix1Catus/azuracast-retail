@@ -112,6 +112,22 @@ Its database tables are created by migrations when the container starts.
 
 The module is synced from the [Tracker repository](https://github.com/Felix1Catus/azuracast-tracker-plugin) with `util/sync_tracker.sh <path to a Tracker checkout>`.
 
+## 3b. Music Downloader (built in)
+
+Staff paste a Spotify playlist, album or track link, choose a folder of the station's media, and the tracks are
+downloaded there (spotDL: track list from Spotify, audio from YouTube). It's **Music Downloader** in the station
+menu, for users with the station permission *Download Music*. Details, Spotify app setup and YouTube cookies:
+[plugins/music-downloader/README.md](../../plugins/music-downloader/README.md).
+
+It runs in two extra containers from `docker-compose.retail.yml`: `music-downloader` (the worker, built by
+`util/build_image.sh` as `azuracast-retail-music-downloader:<version>`) and `music-downloader-pot` (YouTube
+tokens). The installer and `./docker.sh update` create `music-downloader.env`, the secret they share with
+AzuraCast. Data (Spotify logins, cookies, download history) is in the `music_downloader_data` volume.
+
+**Moving an install that used the plugin:** run the plugin's `install.sh --uninstall` (or remove its parts from
+`docker-compose.override.yml`) before `./docker.sh update`. `music-downloader.env` and the data volume have the
+same names, so logins, cookies and history carry over.
+
 ## 4. Updating
 
 Updates come from this repository's releases (tags `v<AzuraCast version>-retail.<n>`), never from upstream AzuraCast. The install keeps a checkout of the source. By default it lives at `/opt/azuracast-retail`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is public, so no credentials are needed.

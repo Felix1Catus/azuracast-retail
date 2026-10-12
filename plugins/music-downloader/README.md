@@ -153,16 +153,14 @@ plugins/music-downloader/reload.sh        # after changing PHP or templates on a
 **When downloads start failing everywhere,** YouTube has usually changed something. Bump `yt-dlp` in
 `worker/requirements.txt` and re-run the installer.
 
-## Integrating into AzuraCast Retail (next steps)
+## Built into AzuraCast Retail
 
-The fork image already contains this folder (the Dockerfile copies the repository), so the PHP side loads on
-every fork install. Without the worker, the page says the downloader is offline and the nav button stays
-hidden. To make it a built-in module like the Tracker:
+In the fork this module is built in: `docker-compose.retail.yml` runs the worker and token containers, and
+`util/build_image.sh` builds the worker image as `azuracast-retail-music-downloader:<version>`. The installer and
+`./docker.sh update` create `music-downloader.env`, and the station menu has a native **Music Downloader**
+item (`StationFeatures::MusicDownloader`, which also switches off the injected button). There, use
+`./docker.sh update` and not this `install.sh`; the installer refuses such installs. See
+`docs/retail/INSTALL.md`, section 3b.
 
-1. Add the `music-downloader` service, the `music_downloader_data` volume and `env_file` to
-   `docker-compose.retail.yml`. Build and tag the worker image in `util/build_image.sh`. Generate the
-   secret in `util/install_retail.sh`.
-2. Add `StationFeatures::MusicDownloader` and a station menu item in `frontend/components/Stations/menu.ts`
-   (as for `BranchBoard`). `events.php` turns the injected button off by itself once that enum case exists.
-3. Optionally trigger AzuraCast's media scan when a job finishes, so files appear right away instead of
-   within 5 minutes.
+Still open: trigger AzuraCast's media scan when a job finishes, so files appear right away instead of within
+5 minutes.

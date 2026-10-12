@@ -37,7 +37,9 @@ final readonly class StationGlobalFeatures
         #[OA\Property]
         public bool $autoDjQueue = false,
         #[OA\Property]
-        public bool $branchBoard = false
+        public bool $branchBoard = false,
+        #[OA\Property]
+        public bool $musicDownloader = false
     ) {
     }
 }
