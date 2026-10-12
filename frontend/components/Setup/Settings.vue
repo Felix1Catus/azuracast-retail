@@ -9,7 +9,7 @@
                 <setup-step :step="3"/>
             </template>
             <template #cardTitle>
-                {{ $gettext('Customize AzuraCast Settings') }}
+                {{ $gettext('Customize Acacia Radio Settings') }}
             </template>
             <template #cardUpper>
                 <info-card>

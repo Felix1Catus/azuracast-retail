@@ -1,15 +1,15 @@
 openapi: 3.0.0
 info:
-  title: AzuraCast
-  description: 'AzuraCast is a standalone, turnkey web radio management tool. Radio stations hosted by AzuraCast expose a public API for viewing now playing data, making requests and more.'
+  title: Acacia Radio
+  description: 'Acacia Radio is a standalone, turnkey web radio management tool. Radio stations hosted by Acacia Radio expose a public API for viewing now playing data, making requests and more.'
   license:
     name: 'GNU Affero General Public License v3.0 or later'
     url: 'https://www.gnu.org/licenses/agpl-3.0.txt'
   version: 0.23.8
 servers:
   -
-    url: 'https://demo.azuracast.com/api'
-    description: 'AzuraCast Public Demo Server'
+    url: 'https://acaciaradio.tech/api'
+    description: 'Acacia Radio Public Demo Server'
 paths:
   '/admin/acme-log/{path}':
     get:
@@ -6789,12 +6789,12 @@ components:
         description:
           description: 'Station description'
           type: string
-          example: 'An AzuraCast station!'
+          example: 'An Acacia Radio station!'
           nullable: true
         url:
           description: 'Station homepage URL'
           type: string
-          example: 'https://www.azuracast.com/'
+          example: 'https://radio.example.com/'
           nullable: true
         genre:
           description: 'The genre of the station'
@@ -7814,7 +7814,7 @@ components:
         description:
           description: 'Station description'
           type: string
-          example: 'An AzuraCast station!'
+          example: 'An Acacia Radio station!'
         frontend:
           description: 'Which broadcasting software (frontend) the station uses'
           type: string
@@ -9686,9 +9686,9 @@ components:
           example: 'https://your.azuracast.site'
           nullable: true
         instance_name:
-          description: 'AzuraCast Instance Name'
+          description: 'Acacia Radio Instance Name'
           type: string
-          example: 'My AzuraCast Instance'
+          example: 'My Acacia Radio Instance'
           nullable: true
         prefer_browser_url:
           description: 'Prefer Browser URL (If Available)'
@@ -9782,7 +9782,7 @@ components:
           example: SAMPLE-API-KEY
           nullable: true
         hide_product_name:
-          description: 'Hide AzuraCast Branding on Public Pages'
+          description: 'Hide Acacia Radio Branding on Public Pages'
           type: boolean
           example: 'false'
         public_custom_css:
@@ -9869,7 +9869,7 @@ components:
         mail_sender_name:
           description: 'The name of the sender of system e-mails.'
           type: string
-          example: AzuraCast
+          example: Acacia Radio
           nullable: true
         mail_sender_email:
           description: 'The e-mail address of the sender of system e-mails.'
@@ -9974,7 +9974,7 @@ components:
               nullable: true
             url:
               type: string
-              example: 'https://demo.azuracast.com/'
+              example: 'https://radio.example.com/'
               nullable: true
             genre:
               type: string
@@ -10800,7 +10800,7 @@ components:
           properties:
             email:
               type: string
-              example: demo@azuracast.com
+              example: demo@example.com
             auth_password:
               type: string
               example: ''
@@ -11254,7 +11254,7 @@ tags:
   -
     name: Miscellaneous
 externalDocs:
-  description: 'AzuraCast on GitHub'
+  description: 'Acacia Radio on GitHub'
   url: 'https://github.com/AzuraCast/AzuraCast'
 x-tagGroups:
   -

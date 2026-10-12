@@ -10,8 +10,8 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Adds the "Branches" button to AzuraCast's own station pages. AzuraCast has no plugin hook for its
- * (precompiled Vue) menus, so this appends one <script> tag to the HTML of AzuraCast panel pages (it is a single-page app, so the user may enter via /dashboard and click into a station); the
+ * Adds the "Branches" button to Acacia Radio's own station pages. Acacia Radio has no plugin hook for its
+ * (precompiled Vue) menus, so this appends one <script> tag to the HTML of Acacia Radio panel pages (it is a single-page app, so the user may enter via /dashboard and click into a station); the
  * script (templates/nav.js) shows the button only if the logged-in user may view the branch board.
  * Any failure leaves the page untouched.
  */

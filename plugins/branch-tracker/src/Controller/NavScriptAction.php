@@ -9,7 +9,7 @@ use App\Http\Response;
 use App\Http\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 
-/** Serves templates/nav.js (the "Branches" button script injected into AzuraCast station pages). */
+/** Serves templates/nav.js (the "Branches" button script injected into Acacia Radio station pages). */
 final class NavScriptAction implements SingleActionInterface
 {
     public function __invoke(ServerRequest $request, Response $response, array $params): ResponseInterface

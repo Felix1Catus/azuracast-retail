@@ -14,8 +14,8 @@ use Plugin\MusicDownloader\Service\WorkerUnavailable;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * /api/station/{station_id}/music-downloader/... (AzuraCast login or API key, permission "download music").
- * The station and user come from AzuraCast's request; the browser never chooses them.
+ * /api/station/{station_id}/music-downloader/... (Acacia Radio login or API key, permission "download music").
+ * The station and user come from Acacia Radio's request; the browser never chooses them.
  */
 final class StationApiController
 {

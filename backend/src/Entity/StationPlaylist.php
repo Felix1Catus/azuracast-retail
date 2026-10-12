@@ -351,7 +351,7 @@ final class StationPlaylist implements
             return $this->media_items->count() > 0;
         }
 
-        // Remote stream playlists aren't supported by the AzuraCast AutoDJ.
+        // Remote stream playlists aren't supported by the Acacia Radio AutoDJ.
         return PlaylistRemoteTypes::Playlist === $this->remote_type;
     }
 

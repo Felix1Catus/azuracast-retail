@@ -60,7 +60,7 @@ final class PutTwoFactorAction implements SingleActionInterface
             $user = $request->getUser();
 
             $totp = TOTP::create($secret);
-            $totp->setLabel($user->email ?: 'AzuraCast');
+            $totp->setLabel($user->email ?: 'Acacia Radio');
 
             if (!empty($params['otp'])) {
                 if ($totp->verify($params['otp'], null, Auth::TOTP_WINDOW)) {
@@ -77,8 +77,7 @@ final class PutTwoFactorAction implements SingleActionInterface
             }
 
             // Further customize TOTP code (with metadata that won't be stored in the DB)
-            $totp->setIssuer('AzuraCast');
-            $totp->setParameter('image', 'https://www.azuracast.com/img/logo.png');
+            $totp->setIssuer('Acacia Radio');
 
             return $response->withJson([
                 'secret' => $secret,

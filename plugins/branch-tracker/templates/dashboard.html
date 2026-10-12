@@ -174,7 +174,7 @@
       <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer">
         <input type="checkbox" id="public-page-login" style="margin-top:3px">
         <span><b>Branch PIN login on the station's public page</b> (<a id="public-page-link" href="#" target="_blank"></a>)<br>
-          <span class="muted" id="public-page-note">When on, that page shows the PIN screen and branch player instead of AzuraCast's standard player.</span></span>
+          <span class="muted" id="public-page-note">When on, that page shows the PIN screen and branch player instead of Acacia Radio's standard player.</span></span>
       </label>
     </div>
     <div class="panel" style="padding:14px;margin-bottom:14px">
@@ -203,7 +203,7 @@
         <tbody id="manage-body"></tbody>
       </table>
     </div>
-    <p class="note">PINs are 4 digits and are shown only once, when created or changed. Changing a PIN or disabling a branch signs that branch out. AzuraCast admin accounts are managed in AzuraCast under Administration → Users.</p>
+    <p class="note">PINs are 4 digits and are shown only once, when created or changed. Changing a PIN or disabling a branch signs that branch out. Acacia Radio admin accounts are managed in Acacia Radio under Administration → Users.</p>
   </section>
   <footer class="src-foot">{{SOURCE_LINK}}</footer>
 </main>
@@ -414,7 +414,7 @@
     $('#public-board').disabled = !CFG.canManage;
     $('#public-board-tools').hidden = !s.public_board;
     $('#public-board-url').value = s.public_board_path ? location.origin + s.public_board_path : '';
-    $('#public-board-note').textContent = s.public_board ? 'On: share the link below. Turn off to stop it working.' : 'Off: the board needs an AzuraCast login.';
+    $('#public-board-note').textContent = s.public_board ? 'On: share the link below. Turn off to stop it working.' : 'Off: the board needs an Acacia Radio login.';
   }
   async function savePublicBoard(body) {
     try { const s = await api('/settings', { method: 'PUT', body }); renderSettings(s); }
@@ -429,7 +429,7 @@
     ppBox.disabled = !CFG.canManage || (s.stream_auth === 'enforce');
     $('#public-page-note').textContent = s.stream_auth === 'enforce'
       ? 'Always on while the stream is locked (stream-auth enforce): the standard player could not play anyway.'
-      : (s.public_page_login ? 'On: the page shows the PIN screen and branch player.' : "Off: the page shows AzuraCast's standard player.");
+      : (s.public_page_login ? 'On: the page shows the PIN screen and branch player.' : "Off: the page shows Acacia Radio's standard player.");
   }
   ppBox.addEventListener('change', async () => {
     try { renderSettings(await api('/settings', { method: 'PUT', body: { public_page_login: ppBox.checked } })); }

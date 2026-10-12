@@ -139,7 +139,7 @@ version-number() {
   echo "$@" | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'
 }
 
-# Get the current release channel for AzuraCast
+# Get the current release channel for Acacia Radio
 get-release-channel() {
   local AZURACAST_VERSION="latest"
   if [[ -f .env ]]; then
@@ -215,7 +215,7 @@ envfile-set() {
 }
 
 #
-# Configure the ports used by AzuraCast.
+# Configure the ports used by Acacia Radio.
 #
 setup-ports() {
   envfile-set "AZURACAST_HTTP_PORT" "80" "Port to use for HTTP connections"
@@ -268,7 +268,7 @@ check-install-requirements() {
 
   set -e
 
-  echo "Checking installation requirements for AzuraCast..."
+  echo "Checking installation requirements for Acacia Radio..."
 
   CURRENT_OS=$(uname -s)
   if [[ $CURRENT_OS == "Linux" ]]; then
@@ -279,7 +279,7 @@ check-install-requirements() {
     echo -en "\e[41m[FAIL]\e[0m Operating System: ${CURRENT_OS}\n"
 
     echo "       You are running an unsupported operating system."
-    echo "       Automated AzuraCast installation is not currently supported on this"
+    echo "       Automated Acacia Radio installation is not currently supported on this"
     echo "       operating system."
     exit 1
   fi
@@ -293,7 +293,7 @@ check-install-requirements() {
     echo -en "\e[41m[FAIL]\e[0m Architecture: ${CURRENT_ARCH}\n"
 
     echo "       You are running an unsupported processor architecture."
-    echo "       Automated AzuraCast installation is not currently supported on this "
+    echo "       Automated Acacia Radio installation is not currently supported on this "
     echo "       operating system."
     exit 1
   fi
@@ -333,8 +333,8 @@ check-install-requirements() {
     echo -en "\e[32m[PASS]\e[0m Installation Directory\n"
   else
     echo -en "\e[93m[WARN]\e[0m Installation Directory\n"
-    echo "       AzuraCast is not installed in /var/azuracast, as is recommended"
-    echo "       for most installations. This will not prevent AzuraCast from"
+    echo "       Acacia Radio is not installed in /var/azuracast, as is recommended"
+    echo "       for most installations. This will not prevent Acacia Radio from"
     echo "       working, but you will need to update any instructions in our"
     echo "       documentation to reflect your current directory:"
     echo "       $SCRIPT_DIR"
@@ -446,7 +446,7 @@ run-installer() {
 }
 
 #
-# Run the initial installer of Docker and AzuraCast.
+# Run the initial installer of Docker and Acacia Radio.
 # Usage: ./docker.sh install
 #
 install() {
@@ -573,7 +573,7 @@ install-dev() {
 # Usage: ./docker.sh update
 #
 #
-# AzuraCast Retail updates come from the fork's own repository, never from upstream AzuraCast.
+# Acacia Radio updates come from the fork's own repository, never from upstream.
 # A retail install keeps a checkout of the source (RETAIL_SOURCE_DIR in .env, default /opt/azuracast-retail);
 # `update` checks out a release there, builds the image locally and restarts on it. See docs/retail/INSTALL.md.
 #
@@ -596,7 +596,7 @@ retail-music-downloader-setup() {
 
   if [[ ! -s music-downloader.env ]]; then
     TOKEN="$(openssl rand -hex 32 2>/dev/null || head -c32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
-    (umask 077; printf '# Shared secret between AzuraCast and the Music Downloader worker.\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' "$TOKEN" "$TOKEN" > music-downloader.env)
+    (umask 077; printf '# Shared secret between Acacia Radio and the Music Downloader worker.\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' "$TOKEN" "$TOKEN" > music-downloader.env)
     echo "Created music-downloader.env."
   fi
 
@@ -613,7 +613,7 @@ retail-update() {
 
   SRC=$(retail-source-dir)
   if [[ ! -d "$SRC/.git" ]]; then
-    echo "AzuraCast Retail source not found at $SRC."
+    echo "Acacia Radio source not found at $SRC."
     echo "Clone the repository there, or set RETAIL_SOURCE_DIR in .env:"
     echo "  git clone https://github.com/Felix1Catus/azuracast-retail.git $SRC"
     exit 1
@@ -887,18 +887,18 @@ backup() {
 }
 
 #
-# Restore an AzuraCast backup into Docker.
+# Restore an Acacia Radio backup into Docker.
 # Usage:
 # ./docker.sh restore [/custom/backup/dir/custombackupname.zip]
 #
 restore() {
   if [[ ! -f .env ]] || [[ ! -f azuracast.env ]]; then
-    echo "AzuraCast hasn't been installed yet on this server."
+    echo "Acacia Radio hasn't been installed yet on this server."
     echo "You should run './docker.sh install' first before restoring."
     exit 1
   fi
 
-  if ask "Restoring will remove any existing AzuraCast installation data, replacing it with your backup. Continue?" Y; then
+  if ask "Restoring will remove any existing Acacia Radio installation data, replacing it with your backup. Continue?" Y; then
     if [[ $1 != "" ]]; then
       local BACKUP_PATH BACKUP_DIR BACKUP_FILENAME BACKUP_EXT
       BACKUP_PATH=$(readlink -f ${1:-"./backup.tar.gz"})
@@ -914,7 +914,7 @@ restore() {
 
       dc down
 
-      # Remove most AzuraCast volumes but preserve some essential ones.
+      # Remove most Acacia Radio volumes but preserve some essential ones.
       d volume rm -f $(d volume ls | grep 'azuracast' | grep -v 'station\|install' | awk 'NR>1 {print $2}')
       d volume create azuracast_backups
 
@@ -941,7 +941,7 @@ restore() {
     else
       dc down
 
-      # Remove most AzuraCast volumes but preserve some essential ones.
+      # Remove most Acacia Radio volumes but preserve some essential ones.
       d volume rm -f $(d volume ls | grep 'azuracast' | grep -v 'station\|backups\|install' | awk 'NR>1 {print $2}')
 
       dc run --rm web -- azuracast_restore "$@"
@@ -1001,7 +1001,7 @@ uninstall() {
     dc rm -f
     d volume prune -f
 
-    echo "All AzuraCast Docker containers and volumes were removed."
+    echo "All Acacia Radio Docker containers and volumes were removed."
     echo "To remove *all* Docker containers and volumes, run:"
     echo "  docker stop \$(docker ps -a -q)"
     echo "  docker rm \$(docker ps -a -q)"
@@ -1029,7 +1029,7 @@ rollback() {
   echo "[NOTICE] Before you continue, please make sure you have a recent snapshot of your system and or backed it up."
   if ask "Are you ready to continue with the rollback?" Y; then
     if ! dc exec --user="azuracast" web azuracast_cli azuracast:setup:rollback "${AZURACAST_ROLLBACK_VERSION}"; then
-      echo "The database rollback failed. AzuraCast has not been switched to version '${AZURACAST_ROLLBACK_VERSION}'."
+      echo "The database rollback failed. Acacia Radio has not been switched to version '${AZURACAST_ROLLBACK_VERSION}'."
       exit 1
     fi
 
@@ -1082,12 +1082,12 @@ change-ports() {
 # Helper scripts for basic Docker Compose functions
 #
 up() {
-  echo "Starting up AzuraCast services..."
+  echo "Starting up Acacia Radio services..."
   dc up -d
 }
 
 down() {
-  echo "Shutting down AzuraCast services..."
+  echo "Shutting down Acacia Radio services..."
   dc down --timeout 60
 }
 

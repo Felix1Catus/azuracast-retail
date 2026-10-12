@@ -165,25 +165,25 @@ final class LogsAction extends StationLogsAction
         $logPaths = [
             new LogType(
                 'azuracast_log',
-                __('AzuraCast Application Log'),
+                __('Acacia Radio Application Log'),
                 $tempDir . '/app-' . gmdate('Y-m-d') . '.log',
                 true,
             ),
             new LogType(
                 'azuracast_nowplaying_log',
-                __('AzuraCast Now Playing Log'),
+                __('Acacia Radio Now Playing Log'),
                 $tempDir . '/app_nowplaying-' . gmdate('Y-m-d') . '.log',
                 true,
             ),
             new LogType(
                 'azuracast_sync_log',
-                __('AzuraCast Synchronized Task Log'),
+                __('Acacia Radio Synchronized Task Log'),
                 $tempDir . '/app_sync-' . gmdate('Y-m-d') . '.log',
                 true
             ),
             new LogType(
                 'azuracast_worker_log',
-                __('AzuraCast Queue Worker Log'),
+                __('Acacia Radio Queue Worker Log'),
                 $tempDir . '/app_worker-' . gmdate('Y-m-d') . '.log',
                 true
             ),
@@ -235,7 +235,7 @@ final class LogsAction extends StationLogsAction
 
         $logPaths[] = new LogType(
             'azuracast_liq_functions',
-            __('AzuraCast Common Liquidsoap Functions'),
+            __('Acacia Radio Common Liquidsoap Functions'),
             $liquidsoapDir . '/azuracast.liq',
             false,
         );

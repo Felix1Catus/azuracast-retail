@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Turns branch stream auth on/off for every mount of a station, via AzuraCast's stock per-mount
+ * Turns branch stream auth on/off for every mount of a station, via Acacia Radio's stock per-mount
  * custom frontend config (merged into icecast.xml), then rewrites config and restarts the station.
  * Restarting briefly drops all listeners (players reconnect on their own).
  */
@@ -107,7 +107,7 @@ final class StreamAuthCommand extends CommandAbstract
 
     private function authUrl(Station $station, StreamAuthMode $mode): string
     {
-        // Icecast calls back into AzuraCast through its internal nginx (http://127.0.0.1:6010 in Docker).
+        // Icecast calls back into Acacia Radio through its internal nginx (http://127.0.0.1:6010 in Docker).
         return sprintf(
             '%s/api/branch-tracker/internal/%d/listener-auth/%s/%s',
             rtrim((string)$this->environment->getInternalUri(), '/'),

@@ -1,13 +1,13 @@
-# Installing Tracker (AzuraCast plugin)
+# Installing Tracker (Acacia Radio plugin)
 
-Tracker adds branch login, live presence, reports and an admin board to an AzuraCast station.
-It's a **plugin**: AzuraCast's own code isn't changed, and it runs on the official image.
+Tracker adds branch login, live presence, reports and an admin board to an Acacia Radio station.
+It's a **plugin**: Acacia Radio's own code isn't changed, and it runs on the official image.
 
 | | |
 |---|---|
-| Developed and tested on | **AzuraCast 0.23.8** (Docker, Oct 2026 build): PHP 8.5.11, MariaDB 11.8.3, Icecast-KH 2.4.0-kh22, Liquidsoap 2.4.5 |
-| Supported | AzuraCast **0.23.x** on Docker. Older versions are not supported (the plugin uses current AzuraCast APIs) |
-| Needs | An AzuraCast station using **Icecast** (the default). SHOUTcast and remote relays aren't supported |
+| Developed and tested on | **upstream 0.23.8** (Docker, Oct 2026 build): PHP 8.5.11, MariaDB 11.8.3, Icecast-KH 2.4.0-kh22, Liquidsoap 2.4.5 |
+| Supported | Acacia Radio **0.23.x** on Docker. Older versions are not supported (the plugin uses current Acacia Radio APIs) |
+| Needs | An Acacia Radio station using **Icecast** (the default). SHOUTcast and remote relays aren't supported |
 | Folder name | Must be **`branch-tracker`** (the PHP namespace `Plugin\BranchTracker\` is derived from it) |
 | Container name | `azuracast` on a standard install. Check yours with `docker ps` |
 
@@ -15,7 +15,7 @@ It's a **plugin**: AzuraCast's own code isn't changed, and it runs on the offici
 
 ## 0. Quick install with the installer (Docker), recommended
 
-On the AzuraCast server:
+On the Acacia Radio server:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Felix1Catus/azuracast-tracker-plugin/main/install.sh -o install-tracker.sh
@@ -24,16 +24,16 @@ sudo bash install-tracker.sh                # install, or update to the default 
 ```
 
 What it does, step by step (it asks before changing anything):
-1. Finds AzuraCast (the folder with `docker-compose.yml`: current dir, `/var/azuracast`, `/opt/azuracast`
+1. Finds Acacia Radio (the folder with `docker-compose.yml`: current dir, `/var/azuracast`, `/opt/azuracast`
    or `/root`; or use `--dir`). It also finds the running container and checks the version (0.23.x;
    `--force` to override).
 2. Downloads the plugin release into `<azuracast>/plugins/branch-tracker`. An existing copy is moved
    aside as `.bak-<date>`.
 3. Adds the mount to `docker-compose.override.yml`. It creates the file, or merges into yours with a
    backup, using the `mikefarah/yq` container. It handles SELinux and validates with `docker compose config`.
-4. Recreates the AzuraCast container and waits until it answers (about a minute of downtime).
+4. Recreates the Acacia Radio container and waits until it answers (about a minute of downtime).
 5. Runs `reload.sh`: lint, route cache, PHP restart, database migrations, health check.
-6. Sets AzuraCast analytics to `all` (`--analytics no_ip` to avoid storing listener IPs).
+6. Sets Acacia Radio analytics to `all` (`--analytics no_ip` to avoid storing listener IPs).
 
 Options: `--dir PATH`, `--ref vX.Y.Z|main`, `--analytics all|no_ip`, `--yes`, `--force`, `--uninstall`.
 Re-run it with a newer `--ref` to update. Use `--uninstall` to unlock all streams, turn off the
@@ -45,7 +45,7 @@ Then continue with **1.5 Verify** and **1.6 Add your branches** below.
 
 ## 1. Docker: standard install (`docker.sh`), manual
 
-This is the normal AzuraCast install. Its files are in the directory where you ran `docker.sh`, usually
+This is the normal Acacia Radio install. Its files are in the directory where you ran `docker.sh`, usually
 `/var/azuracast` (older installs: the directory holding `docker-compose.yml`).
 
 ### 1.1 Back up and pin the version
@@ -71,7 +71,7 @@ ls plugins/branch-tracker/events.php     # must exist
 
 ### 1.3 Mount it into the container
 
-Create **`docker-compose.override.yml`** next to `docker-compose.yml`. AzuraCast's updates replace
+Create **`docker-compose.override.yml`** next to `docker-compose.yml`. Acacia Radio's updates replace
 `docker-compose.yml` but **keep** the override file.
 
 ```yaml
@@ -97,12 +97,12 @@ docker compose up -d          # older Docker: docker-compose up -d
 plugins/branch-tracker/reload.sh azuracast
 ```
 
-`reload.sh` lints the plugin, clears AzuraCast's route cache, restarts PHP, runs the plugin's database
+`reload.sh` lints the plugin, clears Acacia Radio's route cache, restarts PHP, runs the plugin's database
 migrations and checks health. **It must end with `==> ok`.** Then turn on what Tracker needs:
 
 ```bash
 CLI="docker exec -u azuracast azuracast azuracast_cli"
-$CLI azuracast:settings:set analytics all        # presence uses AzuraCast's listener records ("no_ip" also works)
+$CLI azuracast:settings:set analytics all        # presence uses Acacia Radio's listener records ("no_ip" also works)
 $CLI branch-tracker:stream-auth <station> observe   # <station> = the station's short name, e.g. "store"
 $CLI branch-tracker:public-page <station> on        # the station's own public page shows the PIN login + player
 ```
@@ -117,7 +117,7 @@ $CLI list branch-tracker                                         # import, prese
 ```
 
 In the browser:
-1. Log in to AzuraCast and open the station. A green **Branches** button appears bottom-right.
+1. Log in to Acacia Radio and open the station. A green **Branches** button appears bottom-right.
 2. It opens the board at `/branch-tracker/<station>`.
 3. Under **Manage**, add a test branch. Note its PIN.
 4. Open the station's public page `/public/<station>` (with `public-page on`) or `/public/<station>/branch`, and enter that PIN. The board's **Live** tab shows the branch as
@@ -139,7 +139,7 @@ docker exec azuracast rm /tmp/branches.csv
 
 Branches use the station's normal public page, `https://<your-domain>/public/<station>`. With
 `public-page on` (or the checkbox in the board's **Manage** tab) it shows the PIN screen and branch player
-instead of AzuraCast's standard player. `/public/<station>/branch` always shows it, whatever the switch says.
+instead of Acacia Radio's standard player. `/public/<station>/branch` always shows it, whatever the switch says.
 Keep the switch **off** during a pilot if branches not yet migrated still use a custom player on that page.
 
 ### 1.7 Lock the stream (when every branch uses the new player)
@@ -166,9 +166,9 @@ Set `image: my-azuracast:0.23.8-tracker` for the `web` service, then run `docker
 migrations run when the container starts. After that, follow steps 1.4–1.7 (`reload.sh` also works against a
 container built this way).
 
-## 3. Docker: AzuraCast development checkout
+## 3. Docker: Acacia Radio development checkout
 
-With a git checkout of AzuraCast and `docker-compose.dev.yml`: clone the plugin into the checkout's
+With a git checkout of Acacia Radio and `docker-compose.dev.yml`: clone the plugin into the checkout's
 `plugins/branch-tracker/`. The dev compose mounts the whole source tree. Then run `reload.sh`, using your
 dev container's name.
 
@@ -176,12 +176,12 @@ dev container's name.
 
 ## 4. Without Docker (best effort, unsupported)
 
-AzuraCast itself only supports Docker. The old Ansible/"traditional" installer was retired in 0.17 and
-can't run 0.23.x. If you maintain your own non-Docker build of AzuraCast **0.23.8** (PHP 8.4+, MariaDB,
-Redis, nginx, Icecast-KH, supervisor), Tracker needs only what AzuraCast already uses:
+Acacia Radio itself only supports Docker. The old Ansible/"traditional" installer was retired in 0.17 and
+can't run 0.23.x. If you maintain your own non-Docker build of Acacia Radio **0.23.8** (PHP 8.4+, MariaDB,
+Redis, nginx, Icecast-KH, supervisor), Tracker needs only what Acacia Radio already uses:
 
 ```bash
-cd /var/azuracast/www                          # your AzuraCast code root (where composer.json is)
+cd /var/azuracast/www                          # your Acacia Radio code root (where composer.json is)
 git clone https://github.com/Felix1Catus/azuracast-tracker-plugin.git plugins/branch-tracker
 chown -R azuracast:azuracast plugins/branch-tracker          # the user PHP runs as
 sudo -u azuracast php backend/bin/console migrations:migrate --no-interaction
@@ -193,9 +193,9 @@ sudo -u azuracast php backend/bin/console branch-tracker:stream-auth <station> o
 
 Requirements:
 - **cron** runs `azuracast:sync:run` every minute (Tracker's presence job rides on it).
-- AzuraCast's **internal URL** (`http://127.0.0.1:6010` in Docker) must be reachable from Icecast.
-  `stream-auth` asks AzuraCast for it. If your internal nginx listens elsewhere, fix that in AzuraCast, not here.
-- **Icecast-KH** with URL authentication (`listener_add`), as AzuraCast ships it.
+- Acacia Radio's **internal URL** (`http://127.0.0.1:6010` in Docker) must be reachable from Icecast.
+  `stream-auth` asks Acacia Radio for it. If your internal nginx listens elsewhere, fix that in Acacia Radio, not here.
+- **Icecast-KH** with URL authentication (`listener_add`), as Acacia Radio ships it.
 
 `reload.sh` is Docker-only. Without Docker, use the commands above after every update.
 
@@ -218,12 +218,12 @@ cd /var/azuracast/plugins/branch-tracker && git pull
 /var/azuracast/plugins/branch-tracker/reload.sh azuracast       # must end with "==> ok"
 ```
 
-## Updating AzuraCast
+## Updating Acacia Radio
 
-1. Update AzuraCast as usual. The override file keeps the plugin mounted.
+1. Update Acacia Radio as usual. The override file keeps the plugin mounted.
 2. Run `reload.sh` (clears caches, runs any new migrations).
-3. Repeat the checks in 1.5. If something breaks, roll back AzuraCast with your backup and open an issue
-   with the AzuraCast version.
+3. Repeat the checks in 1.5. If something breaks, roll back Acacia Radio with your backup and open an issue
+   with the Acacia Radio version.
 
 ## Uninstalling
 
@@ -239,7 +239,7 @@ tables stay and do no harm. To drop them, run
 
 | Symptom | Cause and fix |
 |---|---|
-| `reload.sh` says "NOT RUNNING" or the site is blank after install | A PHP error stopped AzuraCast's startup. Check `docker exec azuracast sh -c 'tail -50 /var/azuracast/www_tmp/app-*.log'`, fix it, then `docker compose restart` |
+| `reload.sh` says "NOT RUNNING" or the site is blank after install | A PHP error stopped Acacia Radio's startup. Check `docker exec azuracast sh -c 'tail -50 /var/azuracast/www_tmp/app-*.log'`, fix it, then `docker compose restart` |
 | Station "offline", "Record not found" | `sync_disabled` was left on (it happens after restores): `$CLI azuracast:settings:set sync_disabled false` |
 | Plugin URLs return 405 / 404 | Stale route cache. Run `reload.sh` |
 | Changes to plugin files don't apply | PHP opcache re-reads files every 60 s. Run `reload.sh` |

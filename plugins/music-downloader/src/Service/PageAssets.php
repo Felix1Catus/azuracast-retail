@@ -7,8 +7,8 @@ namespace Plugin\MusicDownloader\Service;
 use App\Assets\BrowserIconCustomAsset;
 
 /**
- * Favicon tags (AzuraCast's own browser icon) and, on AzuraCast Retail, the "Source code" link that the
- * fork's AGPL notice requires on every page. On stock AzuraCast the /source route doesn't exist and no link
+ * Favicon tags (Acacia Radio's own browser icon) and, on Acacia Radio Retail, the "Source code" link that the
+ * fork's AGPL notice requires on every page. On stock Acacia Radio the /source route doesn't exist and no link
  * is shown.
  */
 final class PageAssets

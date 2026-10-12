@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Creates a LOCAL test API key for user #1 in the local dev container (never prod) and saves it to
-# backups/local-api-key (gitignored). Same format as AzuraCast's own keys: "identifier:verifier",
+# backups/local-api-key (gitignored). Same format as Acacia Radio's own keys: "identifier:verifier",
 # stored as (id=identifier, verifier=sha512(verifier)).
 set -euo pipefail
 CONTAINER=${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}

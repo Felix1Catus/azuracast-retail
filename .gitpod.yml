@@ -12,10 +12,10 @@ github:
     addBadge: true
 
 ports:
-  - name: AzuraCast HTTP
+  - name: Acacia Radio HTTP
     port: 80
     onOpen: ignore
-  - name: AzuraCast HTTPS
+  - name: Acacia Radio HTTPS
     port: 443
     onOpen: open-browser
     visibility: public

@@ -10,7 +10,7 @@ use Psr\Cache\CacheItemPoolInterface;
 /**
  * Station-wide cap on FAILED PIN logins, on top of core's per-IP rate limit.
  * Login is PIN-only (no branch code), so a wrong PIN can't be pinned on one branch; this caps how fast
- * the whole PIN space can be swept from many IPs. Fixed window, kept in AzuraCast's cache (Redis).
+ * the whole PIN space can be swept from many IPs. Fixed window, kept in Acacia Radio's cache (Redis).
  */
 final class LoginThrottle
 {

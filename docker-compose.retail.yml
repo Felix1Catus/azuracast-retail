@@ -1,5 +1,5 @@
 #
-# AzuraCast Retail: Docker Compose file for a deployment.
+# Acacia Radio: Docker Compose file for a deployment.
 #
 # Copy it to the install directory as docker-compose.yml, next to .env and azuracast.env
 # (see docs/retail/INSTALL.md). It follows docker-compose.sample.yml so docker.sh, backups and
@@ -7,7 +7,7 @@
 #   - image: the fork image built with util/build_image.sh, never the upstream image
 #   - ports: only HTTP/HTTPS. Players reach every station through nginx at /listen/{station}/{mount}
 #     (Administration > Settings > "Use Web Proxy for Radio" must stay on). No SFTP port.
-#   - no `updater` container: it would replace this image with upstream AzuraCast.
+#   - no `updater` container: it would replace this image with upstream.
 #   - Music Downloader (built-in module, plugins/music-downloader): the `music-downloader` worker (spotDL,
 #     built by util/build_image.sh) and `music-downloader-pot` (YouTube PO tokens). Both are internal only
 #     and share a secret through music-downloader.env, which the installer and `./docker.sh update` create.

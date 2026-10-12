@@ -1,15 +1,15 @@
-# Installing AzuraCast Retail
+# Installing Acacia Radio
 
-AzuraCast Retail runs exactly like a Docker install of AzuraCast: one container, the same data volumes and the same `docker.sh` helper. The differences:
+Acacia Radio runs exactly like a Docker install of Acacia Radio: one container, the same data volumes and the same `docker.sh` helper. The differences:
 - **Image:** you build the image from this repository, so you never pull `ghcr.io/azuracast/azuracast`.
 - **Ports:** only HTTP and HTTPS are published.
 - **Updates:** upstream updates are switched off.
 
-**Plugins:** plugins written for AzuraCast, such as the [Tracker plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin), install the same way.
+**Plugins:** plugins written for Acacia Radio, such as the [Tracker plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin), install the same way.
 
 | | |
 |---|---|
-| Based on | AzuraCast 0.23.8 rolling (upstream `ebf75a267`, Oct 2026); current release `v0.23.8-retail.2` |
+| Based on | upstream 0.23.8 rolling (upstream `ebf75a267`, Oct 2026); current release `v0.23.8-retail.2` |
 | Server | Linux with Docker Engine 24+ and the Compose plugin, 2 CPU / 4 GB RAM or more, ports 80 and 443 |
 | Build machine | The server itself or any Linux/WSL machine with Docker and git (about 10 GB free for the build) |
 
@@ -49,7 +49,7 @@ The installer:
 3. clones the source to `/opt/azuracast-retail` and checks out the newest release
 4. builds the image (15–40 min the first time)
 5. writes `/var/azuracast`: the retail compose file, `docker.sh`, `.env` with ports 80/443, and `azuracast.env` with a random database password
-6. starts AzuraCast and turns on the `/listen/` radio proxy
+6. starts Acacia Radio and turns on the `/listen/` radio proxy
 7. with `--domain`: sets the site URL and gets a Let's Encrypt certificate
 
 It is safe to run again: finished steps are skipped and existing settings are kept.
@@ -69,9 +69,9 @@ It is safe to run again: finished steps are skipped and existing settings are ke
 1. Open the site and complete the setup wizard (admin account, first station).
 2. Without `--domain`, set up HTTPS later in **Administration → System Settings → Services** (Let's Encrypt).
 
-## 2b. Switching an existing AzuraCast install to the fork
+## 2b. Switching an existing Acacia Radio install to the fork
 
-This applies to an install on AzuraCast 0.23.8 (for example tradelineradio.com). The fork adds **no database migrations**, so the database stays compatible both ways and a rollback is just a matter of switching the compose file back.
+This applies to an install on upstream 0.23.8 (for example tradelineradio.com). The fork adds **no database migrations**, so the database stays compatible both ways and a rollback is just a matter of switching the compose file back.
 
 ```bash
 cd /var/azuracast                                      # or wherever docker-compose.yml lives
@@ -100,7 +100,7 @@ cp docker-compose.yml.upstream docker-compose.yml && docker compose up -d --remo
 
 ## 3. Branch Board (Tracker, built in)
 
-AzuraCast Retail ships the Tracker module in the image (`plugins/branch-tracker`), so there is nothing to install. It includes:
+Acacia Radio ships the Tracker module in the image (`plugins/branch-tracker`), so there is nothing to install. It includes:
 - branch PIN login and the branch player
 - live presence
 - the Branch Board, as **Branch Board** in the station menu, for users with *View Branches*
@@ -122,7 +122,7 @@ menu, for users with the station permission *Download Music*. Details, Spotify a
 It runs in two extra containers from `docker-compose.retail.yml`: `music-downloader` (the worker, built by
 `util/build_image.sh` as `azuracast-retail-music-downloader:<version>`) and `music-downloader-pot` (YouTube
 tokens). The installer and `./docker.sh update` create `music-downloader.env`, the secret they share with
-AzuraCast. Data (Spotify logins, cookies, download history) is in the `music_downloader_data` volume.
+Acacia Radio. Data (Spotify logins, cookies, download history) is in the `music_downloader_data` volume.
 
 **Moving an install that used the plugin:** run the plugin's `install.sh --uninstall` (or remove its parts from
 `docker-compose.override.yml`) before `./docker.sh update`. `music-downloader.env` and the data volume have the
@@ -130,7 +130,7 @@ same names, so logins, cookies and history carry over.
 
 ## 4. Updating
 
-Updates come from this repository's releases (tags `v<AzuraCast version>-retail.<n>`), never from upstream AzuraCast. The install keeps a checkout of the source. By default it lives at `/opt/azuracast-retail`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is public, so no credentials are needed.
+Updates come from this repository's releases (tags `v<Acacia Radio version>-retail.<n>`), never from upstream. The install keeps a checkout of the source. By default it lives at `/opt/azuracast-retail`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is public, so no credentials are needed.
 
 ```bash
 git clone https://github.com/Felix1Catus/azuracast-retail.git /opt/azuracast-retail   # once
@@ -171,7 +171,7 @@ Database migrations run as the container starts. If the build fails, the running
 | Nothing updates after a restore (Now Playing frozen, AutoDJ silent) | `sync_disabled` left on by the restore (fixed in the fork) | `docker compose exec web azuracast_cli azuracast:settings:set sync_disabled false` |
 | Branch board shows every branch offline | Older images dropped listener rows when analytics was *none* or *no IP* (fixed). Or players use a direct port | Use the current image; keep **Use Web Proxy for Radio** on |
 | Players can't connect after the switch | Players used `:8000` direct ports, which the fork does not publish | Turn on **Use Web Proxy for Radio** and reload the players |
-| `./docker.sh update` says "AzuraCast Retail source not found" | No source checkout on the server | Clone the repository to `/opt/azuracast-retail` or set `RETAIL_SOURCE_DIR` in `.env` ([Updating](#4-updating)) |
+| `./docker.sh update` says "Acacia Radio source not found" | No source checkout on the server | Clone the repository to `/opt/azuracast-retail` or set `RETAIL_SOURCE_DIR` in `.env` ([Updating](#4-updating)) |
 | Webhooks don't fire | **Administration → System Settings → Enable all webhooks** is off (the fork makes that switch actually work) | Turn it on |
 
 ### Builder with its own DNS

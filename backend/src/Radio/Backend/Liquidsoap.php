@@ -43,7 +43,7 @@ final class Liquidsoap extends AbstractLocalAdapter
     }
 
     /**
-     * Returns the internal port used to relay requests and other changes from AzuraCast to LiquidSoap.
+     * Returns the internal port used to relay requests and other changes from Acacia Radio to LiquidSoap.
      *
      * @param Station $station
      *

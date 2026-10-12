@@ -40,7 +40,7 @@ final class SettingsFixture extends AbstractFixture
                     document.addEventListener('vue-ready', () => {
                         var form = document.getElementById('login-form');
                         if (form) {
-                            document.querySelector('input[name="username"]').value = 'demo@azuracast.com';
+                            document.querySelector('input[name="username"]').value = 'demo@example.com';
                             document.querySelector('input[name="password"]').value = 'demo';
                         }
                     });

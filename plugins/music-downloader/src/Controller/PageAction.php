@@ -14,7 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * GET /music-downloader/{station_id} (login + "download music"). A self-contained page (templates/page.html)
- * that calls the plugin's API with the user's session; write calls carry AzuraCast's API CSRF token, like the
+ * that calls the plugin's API with the user's session; write calls carry Acacia Radio's API CSRF token, like the
  * core Vue app.
  */
 final class PageAction implements SingleActionInterface

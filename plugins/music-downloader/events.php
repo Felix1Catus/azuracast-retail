@@ -11,7 +11,7 @@ use Plugin\MusicDownloader\Permissions;
 use Slim\Routing\RouteCollectorProxy;
 
 /*
- * Every listener is wrapped in guard(): an exception in plugin wiring must not take AzuraCast down
+ * Every listener is wrapped in guard(): an exception in plugin wiring must not take Acacia Radio down
  * (a plugin fatal at boot stops nginx, the stations and now-playing). A failure is logged and skipped.
  */
 $guard = static function (string $what, callable $fn): callable {
@@ -101,7 +101,7 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
                 ->add(Middleware\Auth\ApiAuth::class)
                 ->add(Middleware\InjectSession::class);
 
-            // "Music Downloader" button on AzuraCast's station pages, until AzuraCast Retail has a native menu item.
+            // "Music Downloader" button on Acacia Radio's station pages, until Acacia Radio Retail has a native menu item.
             if (!defined('App\Enums\StationFeatures::MusicDownloader')) {
                 $app->get(\Plugin\MusicDownloader\Middleware\InjectNavButton::SCRIPT_PATH, Controller\NavScriptAction::class)
                     ->setName('music-downloader:nav-js');

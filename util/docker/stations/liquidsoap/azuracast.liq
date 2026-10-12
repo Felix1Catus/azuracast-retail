@@ -1,8 +1,8 @@
 #<-----
-AzuraCast Common Runtime
+Acacia Radio Common Runtime
 ----->#
 
-# Default Settings for AzuraCast Instances
+# Default Settings for Acacia Radio Instances
 init.daemon := false
 
 log.stdout := true
@@ -25,7 +25,7 @@ let settings.azuracast.liquidsoap_api_port = settings.make(
 )
 
 let settings.azuracast.api_url = settings.make(
-    description="The API URL used by AzuraCast API calls.",
+    description="The API URL used by Acacia Radio API calls.",
     ""
 )
 
@@ -50,7 +50,7 @@ let settings.azuracast.temp_path = settings.make(
 )
 
 let settings.azuracast.compute_autocue = settings.make(
-    description="Whether to compute autocue metadata on-the-fly if AzuraCast does not have values specified.",
+    description="Whether to compute autocue metadata on-the-fly if Acacia Radio does not have values specified.",
     false
 )
 
@@ -197,7 +197,7 @@ def azuracast.api_call(~timeout=null, endpoint_url, payload) =
         response = http.post(full_url,
             headers=[
                 ("Content-Type", "application/json"),
-                ("User-Agent", "Liquidsoap AzuraCast"),
+                ("User-Agent", "Liquidsoap Acacia Radio"),
                 ("X-Liquidsoap-Api-Key", "#{settings.azuracast.api_key()}")
             ],
             timeout=timeout,
@@ -226,7 +226,7 @@ def azuracast.api_call(~timeout=null, endpoint_url, payload) =
     end
 end
 
-# AzuraCast protocol implementation.
+# Acacia Radio protocol implementation.
 def azuracast.media_protocol(~rlog:_,~maxtime,arg) =
     station_media_dir = settings.azuracast.media_path()
     if station_media_dir == "api" then
@@ -274,7 +274,7 @@ end
 protocol.add(
     "media",
     azuracast.media_protocol,
-    doc="Pull files from AzuraCast media directory.",
+    doc="Pull files from Acacia Radio media directory.",
     syntax="media:uri"
 )
 
@@ -319,7 +319,7 @@ def azuracast.autocue(
         log(
             level=3,
             label=label,
-            "AzuraCast AutoCue data: #{autocue_result}."
+            "Acacia Radio AutoCue data: #{autocue_result}."
         )
 
         autocue_result
@@ -336,13 +336,13 @@ def azuracast.autocue(
             filename
         )
 
-        # Save cache back to AzuraCast.
+        # Save cache back to Acacia Radio.
         if list.assoc(default="", "azuracast_cache_key", request_metadata) != "" then
             cache_key = list.assoc("azuracast_cache_key", request_metadata);
             log(
                 level=2,
                 label=label,
-                "Saving cache to AzuraCast (key #{cache_key})"
+                "Saving cache to Acacia Radio (key #{cache_key})"
             )
 
             def f() =
@@ -630,14 +630,14 @@ end
 Feedback API
 ----->#
 
-# Send metadata changes back to AzuraCast
+# Send metadata changes back to Acacia Radio
 def azuracast.send_feedback(m) =
     if (m["is_error_file"] != "true") then
         if (m["title"] != azuracast.last_title() or m["artist"] != azuracast.last_artist()) then
             azuracast.last_title := m["title"]
             azuracast.last_artist := m["artist"]
 
-            # Only send some metadata to AzuraCast
+            # Only send some metadata to Acacia Radio
             def fl(k, _) =
                 tags = ["song_id", "media_id", "playlist_id", "sq_id", "artist", "title"]
                 list.mem(k, tags)

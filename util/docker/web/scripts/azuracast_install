@@ -5,7 +5,7 @@ if [ $(whoami) != 'azuracast' ]; then
     exec gosu azuracast azuracast_install "$@"
 fi
 
-echo "AzuraCast Setup"
+echo "Acacia Radio Setup"
 
 APPLICATION_ENV="${APPLICATION_ENV:-production}"
 echo "(Environment: $APPLICATION_ENV)"

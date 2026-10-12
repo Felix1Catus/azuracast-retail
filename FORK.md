@@ -1,15 +1,15 @@
-# AzuraCast Retail fork
+# Acacia Radio: fork notes
 
-A retail / in-store-radio focused fork of [AzuraCast](https://github.com/AzuraCast/AzuraCast), used by TLRadio
+Acacia Radio is a hosted-radio and in-store-radio focused fork of the upstream project (see [docs/retail/ATTRIBUTION.md](docs/retail/ATTRIBUTION.md)), used by TLRadio
 (tradelineradio.com). Branch tracking (the Tracker module) ships built in under `plugins/branch-tracker`; it is
 developed in [azuracast-tracker-plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin), which still works on
-stock AzuraCast, and synced here with `util/sync_tracker.sh`.
+upstream, and synced here with `util/sync_tracker.sh`.
 
 ## Baseline
 
 | | |
 |---|---|
-| Upstream commit | **`5ca47e6701b953e5a679971aa67c4364498766ba`** (`main`, 2026-10-03, "Fix issue #8642"), i.e. AzuraCast 0.23.8 + rolling updates |
+| Upstream commit | **`5ca47e6701b953e5a679971aa67c4364498766ba`** (`main`, 2026-10-03, "Fix issue #8642"), i.e. upstream 0.23.8 + rolling updates |
 | Tag | `upstream-baseline-5ca47e6` |
 | Source of truth | This is the exact build running on tradelineradio.com (Docker image `8d536dd5f800`, label `org.opencontainers.image.revision`) |
 | Parity check | The live server's `/var/azuracast/www` was pulled on 2026-10-10 and compared file by file with this commit: **no differences** apart from build outputs (`web/static/vite_dist`, generated `translations/`, `.gitinfo`) and the separately mounted Tracker plugin. Production has no core modifications |
@@ -25,7 +25,7 @@ stock AzuraCast, and synced here with `util/sync_tracker.sh`.
 ## Branches and remotes
 
 ```
-upstream  https://github.com/AzuraCast/AzuraCast.git   (read-only, AzuraCast's history)
+upstream  https://github.com/AzuraCast/AzuraCast.git   (read-only, the upstream project's history)
 origin    https://github.com/Felix1Catus/azuracast-retail.git
 main      the fork: baseline + our changes, one commit per logical change
 ```
@@ -90,7 +90,7 @@ argument returns to the newest release.
 
 ## License: AGPL-3.0-or-later
 
-AzuraCast is licensed under the GNU AGPL v3 or later, and so is this fork (`LICENSE.md` is unchanged). In short, and
+The upstream project is licensed under the GNU AGPL v3 or later, and so is this fork (`LICENSE.md` is unchanged). In short, and
 not as legal advice: when a **modified** version is run for users over a network (branch players, the admin panel),
 those users must be offered the corresponding source code of that modified version, for example through a public
 repository or a "Source code" link on the site. This repository is public, and every install also serves its own source.

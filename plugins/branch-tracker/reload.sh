@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Apply plugin code changes to a running AzuraCast container (local dev, and the prod deploy runbook).
-#   ./reload.sh [container]   (default: $TRACKER_CONTAINER, else the running AzuraCast container)
+# Apply plugin code changes to a running Acacia Radio container (local dev, and the prod deploy runbook).
+#   ./reload.sh [container]   (default: $TRACKER_CONTAINER, else the running Acacia Radio container)
 # Why each step matters (all learned the hard way in phase 0/1):
 #   lint          - a PHP error in plugin wiring used to break container startup
 #   route cache   - production mode caches routes in www_tmp/app_routes.cache.php; new routes 405 until it's removed
 #   php restarts  - opcache only re-reads files every 60 s
 set -euo pipefail
 C=${1:-${TRACKER_CONTAINER:-$(docker ps --format '{{.Names}} {{.Image}}' | awk 'tolower($2) ~ /azuracast\/azuracast|\/azuracast:|^azuracast/ {print $1; exit}')}}
-[ -n "$C" ] || { echo "AzuraCast container not found; pass its name: ./reload.sh <container>"; exit 1; }
+[ -n "$C" ] || { echo "Acacia Radio container not found; pass its name: ./reload.sh <container>"; exit 1; }
 P=/var/azuracast/www/plugins/branch-tracker
 
 echo "==> lint"

@@ -56,7 +56,7 @@ final class RemoteAlbumArt
             [
                 RequestOptions::TIMEOUT => 10,
                 RequestOptions::HEADERS => [
-                    'User-Agent' => 'AzuraCast ' . Version::STABLE_VERSION,
+                    'User-Agent' => 'AcaciaRadio ' . Version::STABLE_VERSION,
                 ],
             ]
         );
@@ -72,7 +72,7 @@ final class RemoteAlbumArt
         }
 
         // Catch the default error track and derivatives.
-        if (false !== mb_stripos($song->text ?? '', 'AzuraCast')) {
+        if (false !== mb_stripos($song->text ?? '', 'Acacia Radio')) {
             return null;
         }
 

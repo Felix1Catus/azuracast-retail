@@ -37,7 +37,7 @@ abstract class CestAbstract
 
     protected ReloadableEntityManagerInterface $em;
 
-    protected string $login_username = 'azuracast@azuracast.com';
+    protected string $login_username = 'admin@example.com';
     protected string $login_password = 'AzuraCastFunctionalTests!';
 
     protected ?string $login_api_key = null;
@@ -100,7 +100,7 @@ abstract class CestAbstract
 
         // Create user account.
         $user = new User();
-        $user->name = 'AzuraCast Test User';
+        $user->name = 'Acacia Radio Test User';
         $user->email = $this->login_username;
         $user->setNewPassword($this->login_password);
         $user->roles->add($role);

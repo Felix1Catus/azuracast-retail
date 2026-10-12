@@ -59,7 +59,7 @@ final class PublicPageCommand extends CommandAbstract
         $io->writeln(sprintf(
             '/public/%s: %s%s',
             $station->short_name,
-            $s['public_page_login_effective'] ? 'branch PIN login (Tracker player)' : 'stock AzuraCast page',
+            $s['public_page_login_effective'] ? 'branch PIN login (Tracker player)' : 'stock Acacia Radio page',
             (!$s['public_page_login'] && $s['public_page_login_effective']) ? ' [forced by stream-auth enforce]' : ''
         ));
         return 0;

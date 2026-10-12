@@ -23,7 +23,7 @@ final class PlayerRenderer
         $config = [
             'station' => $station->short_name,
             'stationName' => $station->name,
-            // Wordmark at the top: the AzuraCast instance name (Administration > Settings), else the station name.
+            // Wordmark at the top: the Acacia Radio instance name (Administration > Settings), else the station name.
             'brand' => trim((string)($this->readSettings()->instance_name ?? '')) ?: $station->name,
             'heartbeat' => SessionService::HEARTBEAT_SECONDS,
             'pinLength' => PinHasher::length(),

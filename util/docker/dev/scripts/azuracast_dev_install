@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "AzuraCast Dev Install"
+echo "Acacia Radio Dev Install"
 
 azuracast_install "$@"
 

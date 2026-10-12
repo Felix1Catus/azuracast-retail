@@ -1,4 +1,4 @@
-# AzuraCast Retail: redesign plan
+# Acacia Radio: redesign plan
 
 ## What the product is
 
@@ -6,10 +6,10 @@ In-store music for a chain of branches, run from one server.
 
 | Today (TLRadio) | Target |
 |---|---|
-| One AzuraCast station ("Store") plays to every branch | One or more channels (stations), each with its own music, schedule and announcements |
+| One Acacia Radio station ("Store") plays to every branch | One or more channels (stations), each with its own music, schedule and announcements |
 | Each branch device opens the public player and logs in with a 4-digit PIN (Tracker plugin) | Same, native in the panel |
 | Admins see a Branch Board: online, offline, volume, last seen | Branch Board is a first-class page, with history and alerts |
-| AzuraCast panel exposes radio-station features nobody uses | Panel shows only what a retail operator needs |
+| Acacia Radio panel exposes radio-station features nobody uses | Panel shows only what a retail operator needs |
 
 **Users:**
 - **Operator / admin:** manages music, schedules, announcements and branches.

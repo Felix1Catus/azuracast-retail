@@ -23,7 +23,7 @@ use const PATHINFO_EXTENSION;
 
 #[AsCommand(
     name: 'azuracast:backup',
-    description: 'Back up the AzuraCast database and statistics (and optionally media).',
+    description: 'Back up the Acacia Radio database and statistics (and optionally media).',
 )]
 final class BackupCommand extends AbstractDatabaseCommand
 {
@@ -104,7 +104,7 @@ final class BackupCommand extends AbstractDatabaseCommand
 
         $filesToBackup = [];
 
-        $io->title(__('AzuraCast Backup'));
+        $io->title(__('Acacia Radio Backup'));
         $io->writeln(__('Please wait while a backup is generated...'));
 
         // Backup uploaded custom assets

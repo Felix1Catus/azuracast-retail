@@ -11,9 +11,9 @@ use OpenApi\Attributes as OA;
         openapi: '3.0.0',
         info: new OA\Info(
             version: AZURACAST_VERSION,
-            description: "AzuraCast is a standalone, turnkey web radio management tool. Radio stations hosted by"
-            . " AzuraCast expose a public API for viewing now playing data, making requests and more.",
-            title: 'AzuraCast',
+            description: "Acacia Radio is a standalone, turnkey web radio management tool. Radio stations hosted by"
+            . " Acacia Radio expose a public API for viewing now playing data, making requests and more.",
+            title: 'Acacia Radio',
             license: new OA\License(
                 name: 'GNU Affero General Public License v3.0 or later',
                 identifier: 'AGPL-3.0-or-later',
@@ -66,7 +66,7 @@ use OpenApi\Attributes as OA;
             new OA\Tag(name: OpenApi::TAG_MISC),
         ],
         externalDocs: new OA\ExternalDocumentation(
-            description: "AzuraCast on GitHub",
+            description: "Acacia Radio on GitHub",
             url: "https://github.com/AzuraCast/AzuraCast"
         ),
         x: [

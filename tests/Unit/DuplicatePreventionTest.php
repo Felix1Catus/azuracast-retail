@@ -26,7 +26,7 @@ class DuplicatePreventionTest extends Unit
     public function testDistinctTracks(): void
     {
         $eligibleTrack = new StationPlaylistQueue();
-        $eligibleTrack->artist = 'Foo Fighters feat. AzuraCast Testers';
+        $eligibleTrack->artist = 'Foo Fighters feat. Acacia Radio Testers';
         $eligibleTrack->title = 'Best of You';
         $eligibleTracks = [$eligibleTrack];
 
@@ -88,7 +88,7 @@ class DuplicatePreventionTest extends Unit
 
     public function testArtistOutsideArtistTimeRangeIsDistinct(): void
     {
-        $eligibleTracks = [$this->eligibleTrack(1, 'Foo Fighters feat. AzuraCast Testers', 'Best of You')];
+        $eligibleTracks = [$this->eligibleTrack(1, 'Foo Fighters feat. Acacia Radio Testers', 'Best of You')];
         $playedTracks = [$this->playedTrack('Foo Fighters', 'Everlong')];
 
         $this->assertNotNull($this->duplicatePrevention->getDistinctTrack($eligibleTracks, $playedTracks, []));
@@ -105,7 +105,7 @@ class DuplicatePreventionTest extends Unit
 
     public function testMissingArtistPlayedTracksUsesPlayedTracks(): void
     {
-        $eligibleTracks = [$this->eligibleTrack(1, 'Foo Fighters feat. AzuraCast Testers', 'Best of You')];
+        $eligibleTracks = [$this->eligibleTrack(1, 'Foo Fighters feat. Acacia Radio Testers', 'Best of You')];
 
         $playedTrackLists = [
             [$this->playedTrack('Foo Fighters', 'Best of You')],

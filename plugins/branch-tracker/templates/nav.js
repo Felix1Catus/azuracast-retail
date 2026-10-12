@@ -1,5 +1,5 @@
-/* Tracker plugin: "Branches" button on AzuraCast station pages.
- * AzuraCast's admin UI is a single-page app, so this watches the URL. On /station/<id>/... it asks the API
+/* Tracker plugin: "Branches" button on Acacia Radio station pages.
+ * Acacia Radio's admin UI is a single-page app, so this watches the URL. On /station/<id>/... it asks the API
  * whether the current user may view branches (cached per station) and, if so, shows a button that opens
  * /branch-tracker/<id>. Nothing is shown to users without the "View Branches" permission. */
 (() => {

@@ -81,13 +81,6 @@ server {
         try_files $uri =404;
     }
 
-    # Built-in docs
-    location /docs {
-        alias /var/azuracast/docs;
-        expires 1d;
-        index index.html;
-    }
-
     # Serve a static version of the nowplaying data for non-PHP-blocking delivery.
     location /api/nowplaying_static {
         expires 10s;

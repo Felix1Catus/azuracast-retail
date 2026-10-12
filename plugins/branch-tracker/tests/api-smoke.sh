@@ -69,7 +69,7 @@ req PUT "$API/$ID" '{"name":"Smoke Renamed","is_enabled":false}'
 check "update name + disable" 200 '.name == "Smoke Renamed" and .is_enabled == false'
 
 # A fresh request reads from the DB: catches updates that were returned but never saved
-# (AzuraCast's explicit change tracking drops un-persist()ed changes silently).
+# (Acacia Radio's explicit change tracking drops un-persist()ed changes silently).
 req GET "$API/$ID"
 check "update was persisted (fresh GET)" 200 '.name == "Smoke Renamed" and .is_enabled == false'
 

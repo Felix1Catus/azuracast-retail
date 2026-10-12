@@ -16,7 +16,7 @@ final class Avatar
 
     public const int DEFAULT_SIZE = 64;
 
-    public const string DEFAULT_AVATAR = 'https://www.azuracast.com/img/avatar.png';
+    public const string DEFAULT_AVATAR = 'mp';
 
     public const string SERVICE_LIBRAVATAR = 'libravatar';
     public const string SERVICE_GRAVATAR = 'gravatar';

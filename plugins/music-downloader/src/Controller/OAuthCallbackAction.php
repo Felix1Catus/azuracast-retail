@@ -12,9 +12,9 @@ use Plugin\MusicDownloader\Service\WorkerUnavailable;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * GET /music-downloader/oauth/callback?code=...&state=... (AzuraCast login required).
+ * GET /music-downloader/oauth/callback?code=...&state=... (Acacia Radio login required).
  * Spotify sends the browser here after the user approves (HTTPS sites only; see SpotifyRedirect). The worker
- * checks that the state belongs to this AzuraCast user, swaps the code for a token and stores it.
+ * checks that the state belongs to this Acacia Radio user, swaps the code for a token and stores it.
  */
 final class OAuthCallbackAction implements SingleActionInterface
 {

@@ -173,16 +173,16 @@ final class InstallCommand extends Command
         // Display header messages
         if ($isNewInstall) {
             $io->title(
-                __('AzuraCast Installer')
+                __('Acacia Radio Installer')
             );
             $io->block(
-                __('Welcome to AzuraCast! Complete the initial server setup by answering a few questions.')
+                __('Welcome to Acacia Radio! Complete the initial server setup by answering a few questions.')
             );
 
             $customize = !$defaults;
         } else {
             $io->title(
-                __('AzuraCast Updater')
+                __('Acacia Radio Updater')
             );
 
             if ($defaults) {
@@ -198,7 +198,7 @@ final class InstallCommand extends Command
         if ($customize) {
             // Port customization
             $io->writeln(
-                __('AzuraCast is currently configured to listen on the following ports:'),
+                __('Acacia Radio is currently configured to listen on the following ports:'),
             );
             $io->listing(
                 [
@@ -210,7 +210,7 @@ final class InstallCommand extends Command
             );
 
             $customizePorts = $io->confirm(
-                __('Customize ports used for AzuraCast?'),
+                __('Customize ports used for Acacia Radio?'),
                 false
             );
 

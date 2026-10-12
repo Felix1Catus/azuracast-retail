@@ -1,5 +1,5 @@
-/* Music Downloader plugin: "Music Downloader" button on AzuraCast station pages.
- * AzuraCast's admin UI is a single-page app, so this watches the URL. On /station/<id>/... it asks the API
+/* Music Downloader plugin: "Music Downloader" button on Acacia Radio station pages.
+ * Acacia Radio's admin UI is a single-page app, so this watches the URL. On /station/<id>/... it asks the API
  * whether the current user may download music (cached per station) and, if so, shows a button that opens
  * /music-downloader/<id>. If the Tracker plugin's button is on the page too, this one sits above it. */
 (() => {

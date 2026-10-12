@@ -11,7 +11,7 @@ use Plugin\BranchTracker\Permissions;
 use Slim\Routing\RouteCollectorProxy;
 
 /*
- * Every listener is wrapped in guard(): an exception in plugin wiring must not take AzuraCast down.
+ * Every listener is wrapped in guard(): an exception in plugin wiring must not take Acacia Radio down.
  * (Phase 0 showed a plugin fatal at boot leaves nginx, the stations and now-playing stopped,
  * and sync_disabled=1.) A failure is logged and the plugin's part is skipped.
  */
@@ -110,7 +110,7 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
                 ->add(Middleware\Module\Api::class)
                 ->add(Middleware\Auth\PublicAuth::class);
 
-            // Admin dashboard (logged-in AzuraCast users with "view branches"). Not under /station/{id}/...:
+            // Admin dashboard (logged-in Acacia Radio users with "view branches"). Not under /station/{id}/...:
             // core's dashboard.php has a catch-all /station/{station_id}/{routes:.+} for its Vue app.
             $app->get('/branch-tracker/{station_id}', Controller\DashboardPageAction::class)
                 ->setName('branch-tracker:dashboard')
@@ -121,8 +121,8 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
                 ->add(Middleware\Auth\StandardAuth::class)
                 ->add(Middleware\InjectSession::class);
 
-            // "Branches" button on AzuraCast's own station pages (no menu hook exists; see InjectNavButton).
-            // AzuraCast Retail has a native "Branch Board" station menu item instead (StationFeatures::BranchBoard).
+            // "Branches" button on Acacia Radio's own station pages (no menu hook exists; see InjectNavButton).
+            // Acacia Radio Retail has a native "Branch Board" station menu item instead (StationFeatures::BranchBoard).
             if (!defined('App\Enums\StationFeatures::BranchBoard')) {
                 $app->get(\Plugin\BranchTracker\Middleware\InjectNavButton::SCRIPT_PATH, Controller\NavScriptAction::class)
                     ->setName('branch-tracker:nav-js');

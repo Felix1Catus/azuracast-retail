@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Admin dashboard: GET /branch-tracker/{station_id} (login + "view branches").
  * Self-contained page (templates/dashboard.html) that calls the branch admin/report APIs with the admin's
- * session; write calls carry AzuraCast's API CSRF token, like the core Vue app does.
+ * session; write calls carry Acacia Radio's API CSRF token, like the core Vue app does.
  */
 final class DashboardPageAction implements SingleActionInterface
 {

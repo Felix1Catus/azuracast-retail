@@ -14,7 +14,7 @@ use Plugin\BranchTracker\Entity\Enums\SessionEndReason;
 
 /**
  * Branch login sessions. Tokens are 32 random bytes (hex) handed to the player once; only their
- * sha256 is stored. Remember: persist() before flush() (AzuraCast uses explicit change tracking).
+ * sha256 is stored. Remember: persist() before flush() (Acacia Radio uses explicit change tracking).
  */
 final class SessionService
 {

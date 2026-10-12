@@ -1,17 +1,17 @@
-# Tracker: branch tracking for AzuraCast
+# Tracker: branch tracking for Acacia Radio
 
-**Tracker** turns an [AzuraCast](https://www.azuracast.com/) station into an in-store radio for a chain of
+**Tracker** turns an Acacia Radio station into an in-store radio for a chain of
 branches (shops, restaurants, offices). Each branch signs in to the station's player with a PIN. You see
-live who is playing, how long each branch listened, and full history, all inside AzuraCast.
+live who is playing, how long each branch listened, and full history, all inside Acacia Radio.
 
-It's an AzuraCast **plugin**: no fork, no changes to AzuraCast's code, and it runs on the official Docker image.
+It's an Acacia Radio **plugin**: no fork, no changes to Acacia Radio's code, and it runs on the official Docker image.
 
 | | |
 |---|---|
-| **Developed and tested on** | **AzuraCast 0.23.8** (Docker, Oct 2026 build) · PHP 8.5 · MariaDB 11.8 · Icecast-KH 2.4.0-kh22 · Liquidsoap 2.4.5 |
-| **Works with** | AzuraCast **0.23.x** on Docker. Older versions are not supported |
-| **Also runs on** | [AzuraCast Retail](https://github.com/Felix1Catus/azuracast-retail), our AzuraCast fork for in-store radio. There, the player and board also link the server's source code (`/source`) |
-| **Station requirements** | Icecast frontend (AzuraCast's default) |
+| **Developed and tested on** | **upstream 0.23.8** (Docker, Oct 2026 build) · PHP 8.5 · MariaDB 11.8 · Icecast-KH 2.4.0-kh22 · Liquidsoap 2.4.5 |
+| **Works with** | Acacia Radio **0.23.x** on Docker. Older versions are not supported |
+| **Also runs on** | [Acacia Radio](https://github.com/Felix1Catus/azuracast-retail), our Acacia Radio fork for in-store radio. There, the player and board also link the server's source code (`/source`) |
+| **Station requirements** | Icecast frontend (Acacia Radio's default) |
 | **License** | Apache-2.0 |
 
 ## Features
@@ -19,7 +19,7 @@ It's an AzuraCast **plugin**: no fork, no changes to AzuraCast's code, and it ru
 - **PIN login for branches** on the station's own public page, with the same URL and a clean player:
   album art, progress ring, volume, keyboard shortcuts, automatic reconnect.
 - **One device per branch:** a login on another device signs the first one out.
-- **Live board inside AzuraCast:** a green **Branch Board** button on every station page (on AzuraCast Retail: a
+- **Live board inside Acacia Radio:** a green **Branch Board** button on every station page (on Acacia Radio: a
   **Branch Board** item in the station menu), showing each
   branch as *Playing*, *Signed in · not playing* or *Offline*, with listening time today, volume, last seen
   and IP. It refreshes itself every 10 s.
@@ -38,7 +38,7 @@ It's an AzuraCast **plugin**: no fork, no changes to AzuraCast's code, and it ru
 
 ## Install (Docker, about 2 minutes)
 
-On the AzuraCast server:
+On the Acacia Radio server:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Felix1Catus/azuracast-tracker-plugin/main/install.sh -o install-tracker.sh
@@ -46,10 +46,10 @@ sudo bash install-tracker.sh
 ```
 
 The installer:
-- finds your AzuraCast install and checks its version
+- finds your Acacia Radio install and checks its version
 - downloads the plugin and mounts it into the container through `docker-compose.override.yml` (merging with
   an existing file if you have one)
-- restarts AzuraCast and runs the plugin's migrations
+- restarts Acacia Radio and runs the plugin's migrations
 - verifies everything
 
 Streams and public pages stay as they are until you switch them on.
@@ -66,7 +66,7 @@ $CLI branch-tracker:stream-auth <station> observe    # start tracking branch str
 $CLI branch-tracker:public-page <station> on         # the station's public page shows the PIN login + player
 ```
 
-1. In AzuraCast, open the station and click **Branch Board**, then **Manage → Add branch**. Note the PIN.
+1. In Acacia Radio, open the station and click **Branch Board**, then **Manage → Add branch**. Note the PIN.
 2. Open `https://<your-server>/public/<station>` on the branch's device and enter the PIN.
 3. Within about 30 s the board shows the branch as **Playing**.
 
@@ -77,18 +77,18 @@ When every branch uses the new player, lock the stream:
 
 | Rule | Value |
 |---|---|
-| Who signs in | A **branch** (not a person, not an AzuraCast account), with its own PIN |
+| Who signs in | A **branch** (not a person, not an Acacia Radio account), with its own PIN |
 | Devices | **One device per branch.** A new login elsewhere signs the first device out within 60 s ("signed in on another device") |
 | PINs | **4 digits** by default (`BRANCH_TRACKER_PIN_LENGTH`, 4–8), unique per station, no repeated or sequential digits. Shown once when created or changed |
 | Wrong PINs | 5 attempts per IP per minute; 20 failures per station per 5 min, then logins pause (HTTP 429) |
 | Player check-in | Every **60 s**, plus right after play / pause / volume changes |
-| Presence | AzuraCast scans Icecast's listeners every **~10–15 s**; Tracker's job runs **every minute** |
+| Presence | Acacia Radio scans Icecast's listeners every **~10–15 s**; Tracker's job runs **every minute** |
 | Inactivity sign-out | No stream and no check-in for **5 min**, or no check-in at all for **15 min** |
 | Daily sign-out | **00:30 station time**, every day |
 | Closing the tab | Does **not** sign out (presence comes from the stream) |
 | Stream access | `off` = open (stock) · `observe` = open, branch streams recorded · `enforce` = signed-in branches only |
 | Public page | `branch-tracker:public-page <station> on`, or the board's Manage tab: `/public/<station>` shows the PIN login + player. Always on with `enforce`. `/public/<station>/branch` always works |
-| Board | AzuraCast users with **View Branches** (and **Manage Branches** to change things); "administer all" has both |
+| Board | Acacia Radio users with **View Branches** (and **Manage Branches** to change things); "administer all" has both |
 
 ## Reference
 
@@ -98,7 +98,7 @@ When every branch uses the new player, lock the stream:
 |---|---|
 | `/public/<station>` | The station's public page: PIN login + branch player when switched on |
 | `/public/<station>/branch` | The branch player, always |
-| `/branch-tracker/<station>` | The board: Live · Sessions · Report · Manage (AzuraCast login required) |
+| `/branch-tracker/<station>` | The board: Live · Sessions · Report · Manage (Acacia Radio login required) |
 | `/branch-tracker/<station>/public/<key>` | Public read-only board, when switched on (link shown in Manage) |
 
 ### CLI (`azuracast_cli …` inside the container)
@@ -112,7 +112,7 @@ When every branch uses the new player, lock the stream:
 
 ### API
 
-Board/admin endpoints need an AzuraCast session or an `X-API-Key`. Player endpoints are public and rate-limited.
+Board/admin endpoints need an Acacia Radio session or an `X-API-Key`. Player endpoints are public and rate-limited.
 
 ```
 GET    /api/station/{station}/branches                    list branches (PINs are never returned)
@@ -138,10 +138,10 @@ GET    /api/branch-tracker/ping                           health check
 
 - **Stream links:** when a branch's player connects, Icecast asks Tracker (URL authentication) whether the
   token is valid, and Tracker records which Icecast connection belongs to which branch.
-- **Listening time:** every minute Tracker matches those connections to AzuraCast's own listener records.
+- **Listening time:** every minute Tracker matches those connections to Acacia Radio's own listener records.
   Listening time is connect to disconnect, capped by the player's last check-in, so a stalled worker or a
   closed page can't inflate it.
-- **Requirements:** presence needs AzuraCast **analytics** set to `all` or `no_ip` (the installer does this)
+- **Requirements:** presence needs Acacia Radio **analytics** set to `all` or `no_ip` (the installer does this)
   and stream auth `observe` or `enforce`.
 
 ## Development
@@ -161,5 +161,5 @@ station.
 ## License
 
 Copyright 2026 Felix1Catus. Licensed under the [Apache License 2.0](LICENSE).
-Tracker is an independent plugin (Apache-2.0). AzuraCast itself is AGPL-3.0-or-later; see NOTICE. It is not affiliated with or endorsed by the AzuraCast project.
-"AzuraCast" is used only to describe compatibility.
+Tracker is an independent plugin (Apache-2.0). Acacia Radio itself is AGPL-3.0-or-later; see NOTICE. It is not affiliated with or endorsed by the Acacia Radio project.
+"Acacia Radio" is used only to describe compatibility.

@@ -34,7 +34,7 @@ final class Station
 
     #[OA\Property(
         description: 'Station description',
-        example: 'An AzuraCast station!'
+        example: 'An Acacia Radio station!'
     )]
     public string $description = '';
 

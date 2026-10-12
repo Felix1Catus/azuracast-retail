@@ -16,7 +16,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 /**
  * Hooks the branch PIN login + player into a station's existing public page, /public/{station}:
  * when the station's "public page login" is on (or its stream is locked with "enforce"), that URL serves
- * the Tracker player instead of AzuraCast's stock page. Same URL, so branches keep their bookmarks.
+ * the Tracker player instead of Acacia Radio's stock page. Same URL, so branches keep their bookmarks.
  * Embeds and other /public/{station}/... pages are untouched. Any failure falls through to the stock page.
  */
 final class PublicPageTakeover implements MiddlewareInterface

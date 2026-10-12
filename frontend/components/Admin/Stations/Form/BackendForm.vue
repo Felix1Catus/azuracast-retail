@@ -85,10 +85,6 @@
                     {{
                         $gettext('Apply audio processors (like compressors, limiters, or equalizers) to your stream to create a more uniform sound or enhance the listening experience. Processing requires extra CPU resources, so it may slow down your server.')
                     }}
-                    <a
-                        href="/docs/help/optimizing/#disable-audio-post-processing"
-                        target="_blank"
-                    >{{ $gettext('Learn More about Post-processing CPU Impact') }}</a>
                 </template>
 
                 <div class="row g-3 mb-3">
@@ -268,7 +264,7 @@
                     >
                         <template #description>
                             {{
-                                $gettext('This mode disables AzuraCast\'s AutoDJ management, using Liquidsoap itself to manage song playback. "next song" and some other features will not be available.')
+                                $gettext('This mode disables Acacia Radio\'s AutoDJ management, using Liquidsoap itself to manage song playback. "next song" and some other features will not be available.')
                             }}
                         </template>
                     </form-group-checkbox>

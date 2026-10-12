@@ -238,7 +238,7 @@ final class Station implements Stringable, IdentifiableEntityInterface
     public ?string $description = null;
 
     #[
-        OA\Property(example: "https://demo.azuracast.com/"),
+        OA\Property(example: "https://radio.example.com/"),
         ORM\Column(length: 255, nullable: true),
         Serializer\Groups([EntityGroupsInterface::GROUP_GENERAL, EntityGroupsInterface::GROUP_ALL])
     ]

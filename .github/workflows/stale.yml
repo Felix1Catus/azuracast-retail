@@ -28,7 +28,7 @@ jobs:
           stale-issue-message: |
             Hello and thank you for your contribution!
             
-            AzuraCast is a big project maintained by a very small team, so we occasionally depend on automated tools to help us manage the high volume of issues we get.
+            Acacia Radio is a big project maintained by a very small team, so we occasionally depend on automated tools to help us manage the high volume of issues we get.
             
             Our automated system has marked this issue as "stale" because it hasn't had any recent activity. If this issue is still happening, all you have to do to keep the issue open is to comment.
             

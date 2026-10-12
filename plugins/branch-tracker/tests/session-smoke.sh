@@ -87,7 +87,7 @@ PP=$(curl -s "$BASE/public/$STATION" | grep -c 'azuracast-tracker-plugin'); CODE
 check "enforce: /public/$STATION always shows the branch PIN login" 200 '.n == 1'
 stream "$STREAM";          check "enforce: no token -> 401" 401
 stream "$STREAM?bt=$T1";   check "enforce: replaced device's token -> 401" 401
-# Icecast's own port, from inside the container: deployments may not publish 8000 at all (AzuraCast Retail doesn't).
+# Icecast's own port, from inside the container: deployments may not publish 8000 at all (Acacia Radio doesn't).
 r=$(docker exec "$CONTAINER" curl -s -m 3 -o /dev/null -w '%{http_code} %{size_download}' "http://localhost:8000/radio.mp3")
 CODE=${r% *}; BYTES=${r#* }; BODY='{}'
 check "enforce: direct :8000 without token -> 401" 401

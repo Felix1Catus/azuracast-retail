@@ -18,7 +18,7 @@ use Symfony\Component\Process\Process;
 /**
  * GET /source: the complete source code of the version running on this server, as a .tar.gz.
  *
- * AzuraCast is licensed under the GNU AGPL v3 (or later). Section 13 requires that users interacting
+ * Acacia Radio is licensed under the GNU AGPL v3 (or later). Section 13 requires that users interacting
  * with a modified version over a network can get its Corresponding Source. Serving it from the running
  * install guarantees the download always matches what is deployed, even if the repository is private.
  *

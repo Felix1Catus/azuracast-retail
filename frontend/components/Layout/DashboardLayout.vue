@@ -23,7 +23,7 @@
             class="navbar-brand ms-0 me-auto"
             :to="{ name: 'dashboard' }"
         >
-            azura<strong>cast</strong>
+            acacia<strong>radio</strong>
             <small v-if="instanceName">{{ instanceName }}</small>
         </router-link>
 
@@ -93,27 +93,6 @@
                 <li class="dropdown-divider">
                     &nbsp;
                 </li>
-                <li>
-                    <a
-                        class="dropdown-item"
-                        href="/docs/"
-                        target="_blank"
-                    >
-                        <icon-ic-support/>
-                        {{ $gettext('Documentation') }}
-                    </a>
-                </li>
-                <li>
-                    <a
-                        class="dropdown-item"
-                        href="/docs/help/troubleshooting/"
-                        target="_blank"
-                    >
-                        <icon-ic-help/>
-
-                        {{ $gettext('Help') }}
-                    </a>
-                </li>
                 <li class="dropdown-divider">
 &nbsp;
                 </li>
@@ -150,13 +129,11 @@ import {
 import { useProvideLightbox } from "~/vendor/lightbox.ts";
 import IconIcAccountCircle from "~icons/ic/baseline-account-circle";
 import IconIcExitToApp from "~icons/ic/baseline-exit-to-app";
-import IconIcHelp from "~icons/ic/baseline-help";
 import IconIcHome from "~icons/ic/baseline-home";
 import IconIcInvertColors from "~icons/ic/baseline-invert-colors";
 import IconIcMenu from "~icons/ic/baseline-menu";
 import IconIcMenuOpen from "~icons/ic/baseline-menu-open";
 import IconIcSettings from "~icons/ic/baseline-settings";
-import IconIcSupport from "~icons/ic/baseline-support";
 
 const { instanceName, logoutUrl } = useAzuraCastDashboardGlobals();
 

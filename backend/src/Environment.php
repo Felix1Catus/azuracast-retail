@@ -176,7 +176,7 @@ final class Environment
     {
         return Types::string(
             $this->data[self::APP_NAME] ?? null,
-            'AzuraCast',
+            'Acacia Radio',
             true
         );
     }
@@ -451,7 +451,7 @@ final class Environment
 
     public function enableWebUpdater(): bool
     {
-        // Retail fork: the web updater replaces the container with the upstream AzuraCast image,
+        // Retail fork: the web updater replaces the container with the upstream image,
         // which would remove every fork change. Updates ship as fork image builds instead.
         return false;
     }

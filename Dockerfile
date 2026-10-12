@@ -6,12 +6,9 @@
 FROM mariadb:lts-noble AS mariadb
 
 #
-# Built-in docs build step
-#
-FROM ghcr.io/azuracast/azuracast.com:builtin@sha256:583c41a0229d19ebf13ba0fee1057b3e6e6b58a6b080093c531b74dd6a72fab5 AS docs
 
 #
-# Icecast-KH with AzuraCast customizations build step
+# Icecast-KH with Acacia Radio customizations build step
 #
 FROM ghcr.io/azuracast/icecast-ac:2025-12-29 AS icecast
 
@@ -83,8 +80,6 @@ RUN --mount=type=bind,source=./util/docker/common,target=/bd_build,rw \
 RUN --mount=type=bind,source=./util/docker/common,target=/bd_build,rw \
     bash /bd_build/chown_dirs.sh
 
-# Add built-in docs
-COPY --from=docs --chown=azuracast:azuracast /dist /var/azuracast/docs
 
 USER azuracast
 
@@ -230,6 +225,10 @@ COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/translations .
 COPY --from=assets --chown=azuracast:azuracast /var/azuracast/www/.gitinfo ./.gitinfo
 
 USER root
+
+# Acacia Radio fallback jingle in place of the upstream one, in every format/bitrate Icecast falls back to.
+RUN sh /var/azuracast/www/util/branding/build_fallback_audio.sh \
+        /var/azuracast/www/resources/error.mp3 /usr/local/share/icecast/web
 
 # Entrypoint and default command
 ENTRYPOINT ["tini", "--", "/usr/local/bin/my_init"]

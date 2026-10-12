@@ -20,7 +20,8 @@ final class AzuraCastCentral
     use EnvironmentAwareTrait;
     use SettingsAwareTrait;
 
-    private const string BASE_URL = 'https://central.azuracast.com';
+    // Same response shape as the upstream service: {"ip": "..."}.
+    private const string IP_URL = 'https://api.ipify.org?format=json';
 
     public function __construct(
         private readonly Version $version,
@@ -29,55 +30,12 @@ final class AzuraCastCentral
     }
 
     /**
-     * Ping the AzuraCast Central server for updates and return them if there are any.
+     * Ping the the upstream update service server for updates and return them if there are any.
      */
     public function checkForUpdates(): UpdateDetails
     {
-        $requestBody = [
-            'id' => $this->getUniqueIdentifier(),
-            'is_docker' => $this->environment->isDocker(),
-            'environment' => $this->environment->getAppEnvironmentEnum()->value,
-            'release_channel' => $this->version->getReleaseChannelEnum()->value,
-        ];
-
-        $commitHash = $this->version->getCommitHash();
-        if ($commitHash) {
-            $requestBody['version'] = $commitHash;
-        } else {
-            $requestBody['release'] = Version::STABLE_VERSION;
-        }
-
-        $this->logger->debug(
-            'Update request body',
-            [
-                'body' => $requestBody,
-            ]
-        );
-
-        $response = $this->httpClient->request(
-            'POST',
-            self::BASE_URL . '/api/update',
-            [
-                RequestOptions::HTTP_ERRORS => true,
-                RequestOptions::JSON => $requestBody,
-                RequestOptions::TIMEOUT => 15,
-            ]
-        );
-
-        $updateDataRaw = $response->getBody()->getContents();
-
-        $this->logger->debug('Update response body.', [
-            'response' => $updateDataRaw,
-        ]);
-
-        $updateData = json_decode($updateDataRaw, true, 512, JSON_THROW_ON_ERROR);
-        $updates = $updateData['updates'] ?? null;
-
-        if (empty($updates)) {
-            throw new RuntimeException('Central server did not send update information.');
-        }
-
-        return UpdateDetails::fromArray($updates);
+        // Acacia Radio is updated with ./docker.sh update; it doesn't report to or ask the upstream project's server.
+        throw new RuntimeException('Update checks are disabled in this edition.');
     }
 
     public function getUniqueIdentifier(): string
@@ -86,7 +44,7 @@ final class AzuraCastCentral
     }
 
     /**
-     * Ping the AzuraCast Central server to retrieve this installation's likely public-facing IP.
+     * Ping the the upstream update service server to retrieve this installation's likely public-facing IP.
      *
      * @param bool $cached
      */
@@ -101,7 +59,7 @@ final class AzuraCastCentral
             try {
                 $response = $this->httpClient->request(
                     'GET',
-                    self::BASE_URL . '/ip'
+                    self::IP_URL
                 );
 
                 $bodyRaw = $response->getBody()->getContents();

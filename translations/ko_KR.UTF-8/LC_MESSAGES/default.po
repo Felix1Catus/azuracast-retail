@@ -341,8 +341,8 @@ msgid "All Days"
 msgstr "종일"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:57
-msgid "All listed domain names should point to this AzuraCast installation. Separate multiple domain names with commas."
-msgstr "나열된 모든 도메인 이름은 이 AzuraCast 설치를 가리켜야 합니다. 여러 도메인 이름을 쉼표로 구분하세요."
+msgid "All listed domain names should point to this Acacia Radio installation. Separate multiple domain names with commas."
+msgstr "나열된 모든 도메인 이름은 이 Acacia Radio 설치를 가리켜야 합니다. 여러 도메인 이름을 쉼표로 구분하세요."
 
 #: frontend/components/Stations/Playlists.vue:30
 msgid "All Playlists"
@@ -665,40 +665,40 @@ msgid "Avoid Duplicate Artists/Titles"
 msgstr "아티스트/제목 중복 방지"
 
 #: frontend/components/Setup/Register.vue:15
-msgid "AzuraCast First-Time Setup"
-msgstr "AzuraCast 최초 설정"
+msgid "Acacia Radio First-Time Setup"
+msgstr "Acacia Radio 최초 설정"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:21
-msgid "AzuraCast Instance Name"
-msgstr "AzuraCast 인스턴스 이름"
+msgid "Acacia Radio Instance Name"
+msgstr "Acacia Radio 인스턴스 이름"
 
 #: frontend/components/Admin/GeoLite.vue:21
-msgid "AzuraCast ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
+msgid "Acacia Radio ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
 msgstr "AzuraCast에는 무료 IP 지리 위치 데이터베이스가 내장되어 있습니다. 보다 정확한 결과를 얻으려면 대신 MaxMind GeoLite 서비스를 사용하는 것이 좋습니다. MaxMind GeoLite를 사용하려면 라이센스 키가 필요하지만 키가 제공되면 자동으로 데이터베이스가 업데이트됩니다."
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:8
-msgid "AzuraCast Update Checks"
-msgstr "AzuraCast 업데이트 확인"
+msgid "Acacia Radio Update Checks"
+msgstr "Acacia Radio 업데이트 확인"
 
 #: frontend/components/Account/UserInfoPanel.vue:22
-msgid "AzuraCast User"
-msgstr "AzuraCast 사용자"
+msgid "Acacia Radio User"
+msgstr "Acacia Radio 사용자"
 
 #: frontend/components/Admin/Permissions.vue:6
-msgid "AzuraCast uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
+msgid "Acacia Radio uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
 msgstr "AzuraCast는 역할 기반 액세스 제어 시스템을 사용합니다. 역할에는 사이트의 특정 섹션에 대한 권한이 부여되고 사용자는 해당 역할에 할당됩니다."
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:85
-msgid "AzuraCast Wiki"
-msgstr "AzuraCast 위키"
+msgid "Acacia Radio Wiki"
+msgstr "Acacia Radio 위키"
 
 #: frontend/components/Stations/Playlists/ImportModal.vue:67
-msgid "AzuraCast will scan the uploaded file for matches in this station's music library. Media should already be uploaded before running this step. You can re-run this tool as many times as needed."
+msgid "Acacia Radio will scan the uploaded file for matches in this station's music library. Media should already be uploaded before running this step. You can re-run this tool as many times as needed."
 msgstr "AzuraCast는 이 스테이션의 음악 라이브러리에서 업로드된 파일의 일치하는 내용을 검색합니다. 이 단계를 실행하기 전에 미디어를 미리 업로드해야 합니다. 필요한 횟수만큼 이 도구를 다시 실행할 수 있습니다."
 
 #: frontend/components/Admin/Relays.vue:6
-msgid "AzuraRelay is a standalone service that connects to your AzuraCast instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
-msgstr "AzuraRelay는 AzuraCast 인스턴스에 연결하고 자체 서버를 통해 스테이션을 자동으로 릴레이한 다음 수신기 세부 정보를 기본 인스턴스에 다시 보고하는 독립 실행형 서비스입니다. 이 페이지에는 현재 연결된 모든 인스턴스가 표시됩니다."
+msgid "AzuraRelay is a standalone service that connects to your Acacia Radio instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
+msgstr "AzuraRelay는 Acacia Radio 인스턴스에 연결하고 자체 서버를 통해 스테이션을 자동으로 릴레이한 다음 수신기 세부 정보를 기본 인스턴스에 다시 보고하는 독립 실행형 서비스입니다. 이 페이지에는 현재 연결된 모든 인스턴스가 표시됩니다."
 
 #: frontend/components/Stations/Media/MoveFilesModal.vue:20
 msgid "Back"
@@ -1220,8 +1220,8 @@ msgid "CPU Stats Help"
 msgstr "CPU 통계 도움말"
 
 #: frontend/components/Admin/StorageLocations/Form/Dropbox.vue:22
-msgid "Create a new application. Choose \"Scoped Access\", select your preferred level of access, then name your app. Do not name it \"AzuraCast\", but rather use a name specific to your installation."
-msgstr "새 애플리케이션을 만듭니다. \"범위 지정 액세스\"를 선택하고 원하는 액세스 수준을 선택한 다음 앱 이름을 지정하세요. 이름을 \"AzuraCast\"로 지정하지 말고 설치에 맞는 이름을 사용하세요."
+msgid "Create a new application. Choose \"Scoped Access\", select your preferred level of access, then name your app. Do not name it \"Acacia Radio\", but rather use a name specific to your installation."
+msgstr "새 애플리케이션을 만듭니다. \"범위 지정 액세스\"를 선택하고 원하는 액세스 수준을 선택한 다음 앱 이름을 지정하세요. 이름을 \"Acacia Radio\"로 지정하지 말고 설치에 맞는 이름을 사용하세요."
 
 #: frontend/components/Setup/Station.vue:14
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:141
@@ -1391,8 +1391,8 @@ msgid "Customize Administrator Password"
 msgstr "관리자 암호 사용자 지정"
 
 #: frontend/components/Setup/Settings.vue:10
-msgid "Customize AzuraCast Settings"
-msgstr "AzuraCast 설정 사용자 지정"
+msgid "Customize Acacia Radio Settings"
+msgstr "Acacia Radio 설정 사용자 지정"
 
 #: frontend/components/Admin/Stations/Form/FrontendForm.vue:72
 msgid "Customize Broadcasting Port"
@@ -1751,7 +1751,7 @@ msgid "Domain Name(s)"
 msgstr "도메인 이름"
 
 #: frontend/components/PanelLayout.vue:170
-msgid "Donate to support AzuraCast!"
+msgid "Donate to support Acacia Radio!"
 msgstr "AzuraCast를 지원하기 위해 기부하세요!"
 
 #: frontend/components/Admin/Backups.vue:118
@@ -2057,7 +2057,7 @@ msgid "Enable to allow this account to log in and stream."
 msgstr "이 계정이 로그인하고 스트리밍할 수 있도록 활성화합니다."
 
 #: frontend/components/Admin/Backups/ConfigureModal.vue:18
-msgid "Enable to have AzuraCast automatically run nightly backups at the time specified."
+msgid "Enable to have Acacia Radio automatically run nightly backups at the time specified."
 msgstr "AzuraCast가 지정된 시간에 나이틀리 백업을 자동으로 실행하도록 활성화합니다."
 
 #: frontend/components/Account/SecurityPanel.vue:61
@@ -2109,8 +2109,8 @@ msgid "Ensure the library matches your system architecture"
 msgstr "라이브러리가 시스템 아키텍처와 일치하는지 확인하세요."
 
 #: frontend/components/Stations/Webhooks/Form/Mastodon.vue:26
-msgid "Enter \"AzuraCast\" as the application name. You can leave the URL fields unchanged. For \"Scopes\", only \"write:media\" and \"write:statuses\" are required."
-msgstr "애플리케이션 이름으로 \"AzuraCast\"를 입력합니다. URL 필드를 변경하지 않고 그대로 둘 수 있습니다. \"범위\"의 경우 \"write:media\" 및 \"write:statuses\"만 필요합니다."
+msgid "Enter \"Acacia Radio\" as the application name. You can leave the URL fields unchanged. For \"Scopes\", only \"write:media\" and \"write:statuses\" are required."
+msgstr "애플리케이션 이름으로 \"Acacia Radio\"를 입력합니다. URL 필드를 변경하지 않고 그대로 둘 수 있습니다. \"범위\"의 경우 \"write:media\" 및 \"write:statuses\"만 필요합니다."
 
 #: frontend/components/Admin/StorageLocations/Form/Dropbox.vue:57
 msgid "Enter the access code you receive below."
@@ -2441,8 +2441,8 @@ msgid "Hide Album Art on Public Pages"
 msgstr "공개 페이지에서 앨범 아트 숨기기"
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:49
-msgid "Hide AzuraCast Branding on Public Pages"
-msgstr "공개 페이지에서 AzuraCast 브랜딩 숨기기"
+msgid "Hide Acacia Radio Branding on Public Pages"
+msgstr "공개 페이지에서 Acacia Radio 브랜딩 숨기기"
 
 #: frontend/components/Dashboard.vue:303
 msgid "Hide Charts"
@@ -2534,8 +2534,8 @@ msgid "If a song has no album art, this URL will be listed instead. Leave blank 
 msgstr "노래에 앨범 아트가 없으면 이 URL이 대신 나열됩니다. 표준 자리 표시자 아트를 사용하려면 비워 두세요."
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:59
-msgid "If a visitor is not signed in and visits the AzuraCast homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
-msgstr "방문자가 로그인하지 않고 AzuraCast 홈페이지를 방문하는 경우 여기에 지정된 URL로 자동 리디렉션할 수 있습니다. 기본적으로 로그인 화면으로 리디렉션하려면 비워 두세요."
+msgid "If a visitor is not signed in and visits the Acacia Radio homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
+msgstr "방문자가 로그인하지 않고 Acacia Radio 홈페이지를 방문하는 경우 여기에 지정된 URL로 자동 리디렉션할 수 있습니다. 기본적으로 로그인 화면으로 리디렉션하려면 비워 두세요."
 
 #: frontend/components/Stations/Playlists/Form/BasicInfo.vue:19
 msgid "If disabled, the playlist will not be included in radio playback, but can still be managed."
@@ -2554,11 +2554,11 @@ msgid "If enabled, a download button will also be present on the public \"On-Dem
 msgstr "활성화되면 공개 \"온디맨드\" 페이지에도 다운로드 버튼이 표시됩니다."
 
 #: frontend/components/Admin/Stations/Form/StreamersForm.vue:28
-msgid "If enabled, AzuraCast will automatically record any live broadcasts made to this station to per-broadcast recordings."
+msgid "If enabled, Acacia Radio will automatically record any live broadcasts made to this station to per-broadcast recordings."
 msgstr "활성화되면 AzuraCast는 이 스테이션에 대한 모든 실시간 방송을 방송별 녹음으로 자동으로 녹음합니다."
 
 #: frontend/components/Stations/Reports/SoundExchange.vue:92
-msgid "If enabled, AzuraCast will connect to the MusicBrainz database to attempt to find an ISRC for any files where one is missing. Disabling this may improve performance."
+msgid "If enabled, Acacia Radio will connect to the MusicBrainz database to attempt to find an ISRC for any files where one is missing. Disabling this may improve performance."
 msgstr "활성화되면 AzuraCast는 MusicBrainz 데이터베이스에 연결하여 누락된 파일에 대한 ISRC를 찾으려고 시도합니다. 이 기능을 비활성화하면 성능이 향상될 수 있습니다."
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:106
@@ -2594,8 +2594,8 @@ msgid "If selected, album art will not display on public-facing radio pages."
 msgstr "선택하면 앨범 아트가 공개 라디오 페이지에 표시되지 않습니다."
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:50
-msgid "If selected, this will remove the AzuraCast branding from public-facing pages."
-msgstr "선택하면 공개 페이지에서 AzuraCast 브랜딩이 제거됩니다."
+msgid "If selected, this will remove the Acacia Radio branding from public-facing pages."
+msgstr "선택하면 공개 페이지에서 Acacia Radio 브랜딩이 제거됩니다."
 
 #: frontend/components/Stations/Playlists/Form/ScheduleRow.vue:45
 msgid "If the end time is before the start time, the playlist will play overnight."
@@ -2873,8 +2873,8 @@ msgid "Learn More about Post-processing CPU Impact"
 msgstr "후처리 CPU 영향에 대해 자세히 알아보기"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:22
-msgid "Learn more about release channels in the AzuraCast docs."
-msgstr "AzuraCast 문서에서 릴리스 채널에 대해 자세히 알아보세요."
+msgid "Learn more about release channels in the Acacia Radio docs."
+msgstr "Acacia Radio 문서에서 릴리스 채널에 대해 자세히 알아보세요."
 
 #: frontend/components/Admin/Settings/SecurityPrivacyTab.vue:72
 msgid "Learn more about this header."
@@ -3639,8 +3639,8 @@ msgid "Note: the port after this one will automatically be used for legacy conne
 msgstr "참고: 이 포트 이후의 포트는 레거시 연결에 자동으로 사용됩니다."
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:35
-msgid "Note: This should be the public-facing homepage of the radio station, not the AzuraCast URL. It will be included in broadcast details."
-msgstr "참고: 이는 AzuraCast URL이 아닌 라디오 스테이션의 공개 홈페이지여야 합니다. 방송내역에 포함됩니다."
+msgid "Note: This should be the public-facing homepage of the radio station, not the Acacia Radio URL. It will be included in broadcast details."
+msgstr "참고: 이는 Acacia Radio URL이 아닌 라디오 스테이션의 공개 홈페이지여야 합니다. 방송내역에 포함됩니다."
 
 #: frontend/components/Stations/Streamers.vue:152
 msgid "Notes"
@@ -4042,8 +4042,8 @@ msgid "Powered by"
 msgstr "제공:"
 
 #: frontend/components/Stations/Webhooks/Form/Discord.vue:128
-msgid "Powered by AzuraCast"
-msgstr "AzuraCast 제공"
+msgid "Powered by Acacia Radio"
+msgstr "Acacia Radio 제공"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:29
 msgid "Prefer Browser URL (If Available)"
@@ -4795,8 +4795,8 @@ msgid "Settings"
 msgstr "설정"
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:79
-msgid "Setup instructions for broadcasting software are available on the AzuraCast wiki."
-msgstr "방송 소프트웨어에 대한 설정 지침은 AzuraCast wiki에서 확인할 수 있습니다."
+msgid "Setup instructions for broadcasting software are available on the Acacia Radio wiki."
+msgstr "방송 소프트웨어에 대한 설정 지침은 Acacia Radio wiki에서 확인할 수 있습니다."
 
 #: frontend/components/Admin/StorageLocations/Form/Sftp.vue:11
 msgid "SFTP Host"
@@ -4845,7 +4845,7 @@ msgid "Shoutcast 2 DNAS is not currently installed on this installation."
 msgstr "현재 이 설치에는 Shoutcast 2 DNAS가 설치되어 있지 않습니다."
 
 #: frontend/components/Admin/Shoutcast.vue:17
-msgid "Shoutcast 2 DNAS is not free software, and its restrictive license does not allow AzuraCast to distribute the Shoutcast binary."
+msgid "Shoutcast 2 DNAS is not free software, and its restrictive license does not allow Acacia Radio to distribute the Shoutcast binary."
 msgstr "Shoutcast 2 DNAS는 무료 소프트웨어가 아니며 제한적인 라이선스로 인해 AzuraCast가 Shoutcast 바이너리를 배포하는 것을 허용하지 않습니다."
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:44
@@ -4882,8 +4882,8 @@ msgid "Show HLS Stream on Public Player"
 msgstr "공개 플레이어에 HLS 스트림 표시"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:36
-msgid "Show new releases within your update channel on the AzuraCast homepage."
-msgstr "AzuraCast 홈페이지의 업데이트 채널 내에 새 릴리스를 표시합니다."
+msgid "Show new releases within your update channel on the Acacia Radio homepage."
+msgstr "Acacia Radio 홈페이지의 업데이트 채널 내에 새 릴리스를 표시합니다."
 
 #: frontend/components/Stations/Mounts/Form/BasicInfo.vue:27
 #: frontend/components/Stations/Remotes/Form/BasicInfo.vue:63
@@ -5255,7 +5255,7 @@ msgid "Stereo Tool is not currently installed on this installation."
 msgstr "현재 이 설치에는 Stereo Tool가 설치되어 있지 않습니다."
 
 #: frontend/components/Admin/StereoTool.vue:31
-msgid "Stereo Tool is not free software, and its restrictive license does not allow AzuraCast to distribute the Stereo Tool binary."
+msgid "Stereo Tool is not free software, and its restrictive license does not allow Acacia Radio to distribute the Stereo Tool binary."
 msgstr "Stereo Tool은 무료 소프트웨어가 아니며 제한적인 라이선스로 인해 AzuraCast가 Stereo Tool 바이너리를 배포하는 것을 허용하지 않습니다."
 
 #: frontend/components/Admin/Stations/Form/BackendForm.vue:189
@@ -5469,7 +5469,7 @@ msgid "The display name assigned to this relay when viewing it on administrative
 msgstr "관리 또는 공용 페이지에서 이 마운트 지점을 볼 때 이 릴레이에 할당된 표시 이름입니다. 자동으로 생성하려면 비워두세요."
 
 #: frontend/components/Stations/LiquidsoapConfig.vue:28
-msgid "The editable text boxes are areas where you can insert custom configuration code. The non-editable sections are automatically generated by AzuraCast."
+msgid "The editable text boxes are areas where you can insert custom configuration code. The non-editable sections are automatically generated by Acacia Radio."
 msgstr "편집 가능한 텍스트 상자는 사용자 지정 구성 코드를 삽입할 수 있는 영역입니다. 편집할 수 없는 섹션은 AzuraCast에 의해 자동으로 생성됩니다."
 
 #: frontend/components/Stations/Podcasts/PodcastForm/BasicInfo.vue:54
@@ -5689,7 +5689,7 @@ msgid "This is a 3-5 digit number."
 msgstr "3~5자리 숫자입니다."
 
 #: frontend/components/Stations/LiquidsoapConfig.vue:33
-msgid "This is an advanced feature and custom code is not officially supported by AzuraCast. You may break your station by adding custom code, but removing it should fix any issues."
+msgid "This is an advanced feature and custom code is not officially supported by Acacia Radio. You may break your station by adding custom code, but removing it should fix any issues."
 msgstr "이는 고급 기능이며 사용자 지정 코드는 AzuraCast에서 공식적으로 지원되지 않습니다. 사용자 지정 코드를 추가하면 스테이션이 중단될 수 있지만 코드를 제거하면 문제가 해결됩니다."
 
 #: frontend/components/Stations/Streamers/Form/BasicInfo.vue:30
@@ -5709,7 +5709,7 @@ msgid "This javascript code will be applied to the station public pages."
 msgstr "이 자바스크립트 코드는 스테이션 공개 페이지에 적용됩니다."
 
 #: frontend/components/Admin/Stations/Form/BackendForm.vue:228
-msgid "This mode disables AzuraCast's AutoDJ management, using Liquidsoap itself to manage song playback. \"next song\" and some other features will not be available."
+msgid "This mode disables Acacia Radio's AutoDJ management, using Liquidsoap itself to manage song playback. \"next song\" and some other features will not be available."
 msgstr "이 모드는 Liquidsoap 자체를 사용하여 노래 재생을 관리하는 AzuraCast의 AutoDJ 관리를 비활성화합니다. \"다음 노래\" 및 기타 일부 기능을 사용할 수 없습니다."
 
 #: frontend/components/Common/DateRangeDropdown.vue:146
@@ -5721,8 +5721,8 @@ msgid "This name should always begin with a slash (/), and must be a valid URL, 
 msgstr "이 이름은 항상 슬래시(/)로 시작해야 하며 /autodj.mp3 와 같은 유효한 URL이어야 합니다."
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:22
-msgid "This name will appear as a sub-header next to the AzuraCast logo, to help identify this server."
-msgstr "이 이름은 이 서버를 식별하는 데 도움이 되도록 AzuraCast 로고 옆에 하위 헤더로 표시됩니다."
+msgid "This name will appear as a sub-header next to the Acacia Radio logo, to help identify this server."
+msgstr "이 이름은 이 서버를 식별하는 데 도움이 되도록 Acacia Radio 로고 옆에 하위 헤더로 표시됩니다."
 
 #: frontend/components/Admin/ApiKeys.vue:6
 msgid "This page lists all API keys assigned to all users across the system. To manage your own API keys, visit your account profile."
@@ -5753,8 +5753,8 @@ msgid "This port is not used by any external process. Only modify this port if t
 msgstr "이 포트는 외부 프로세스에서 사용되지 않습니다. 할당된 포트가 사용 중인 경우에만 이 포트를 수정하세오. 포트를 자동으로 할당하려면 비워두세요."
 
 #: frontend/components/Stations/Playlists/QueueModal.vue:12
-msgid "This queue contains the remaining tracks in the order they will be queued by the AzuraCast AutoDJ (if the tracks are eligible to be played)."
-msgstr "이 대기열에는 AzuraCast AutoDJ에서 대기열에 추가하는 순서대로 나머지 트랙이 포함되어 있습니다(트랙을 재생할 수 있는 경우)."
+msgid "This queue contains the remaining tracks in the order they will be queued by the Acacia Radio AutoDJ (if the tracks are eligible to be played)."
+msgstr "이 대기열에는 Acacia Radio AutoDJ에서 대기열에 추가하는 순서대로 나머지 트랙이 포함되어 있습니다(트랙을 재생할 수 있는 경우)."
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:236
 msgid "This service can provide album art for tracks where none is available locally."
@@ -6081,15 +6081,15 @@ msgstr "업데이트"
 #: frontend/components/Admin/menu.ts:66
 #: frontend/components/Admin/Updates.vue:3
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:44
-msgid "Update AzuraCast"
-msgstr "AzuraCast 업데이트"
+msgid "Update Acacia Radio"
+msgstr "Acacia Radio 업데이트"
 
 #: frontend/components/Admin/Updates.vue:74
-msgid "Update AzuraCast via Web"
-msgstr "웹을 통해 AzuraCast 업데이트"
+msgid "Update Acacia Radio via Web"
+msgstr "웹을 통해 Acacia Radio 업데이트"
 
 #: frontend/components/Admin/Updates.vue:215
-msgid "Update AzuraCast? Your installation will restart."
+msgid "Update Acacia Radio? Your installation will restart."
 msgstr "AzuraCast를 업데이트하시겠습니까? 설치가 다시 시작됩니다."
 
 #: frontend/components/Admin/Updates.vue:10
@@ -6168,8 +6168,8 @@ msgid "Use (Us)"
 msgstr "사용 (Us)"
 
 #: frontend/components/Account/ApiKeysPanel.vue:8
-msgid "Use API keys to authenticate with the AzuraCast API using the same permissions as your user account."
-msgstr "API 키를 사용하여 사용자 계정과 동일한 권한을 사용하여 AzuraCast API로 인증합니다."
+msgid "Use API keys to authenticate with the Acacia Radio API using the same permissions as your user account."
+msgstr "API 키를 사용하여 사용자 계정과 동일한 권한을 사용하여 Acacia Radio API로 인증합니다."
 
 #: frontend/components/Account/EditForm.vue:68
 msgid "Use Browser Default"
@@ -6429,7 +6429,7 @@ msgstr "가중치"
 
 #: frontend/components/Login.vue:17
 #: frontend/components/Setup/Register.vue:19
-msgid "Welcome to AzuraCast!"
+msgid "Welcome to Acacia Radio!"
 msgstr "AzuraCast에 오신 것을 환영합니다!"
 
 #: frontend/components/Login.vue:11
@@ -6504,7 +6504,7 @@ msgid "You can only perform the actions your user account is allowed to perform.
 msgstr "귀하의 사용자 계정이 수행할 수 있는 작업만 수행할 수 있습니다."
 
 #: frontend/components/Stations/Mounts/Form/Advanced.vue:13
-msgid "You can set a custom URL for this stream that AzuraCast will use when referring to it on the web interface and in the Now Playing API return data. Leave empty to use the default value."
+msgid "You can set a custom URL for this stream that Acacia Radio will use when referring to it on the web interface and in the Now Playing API return data. Leave empty to use the default value."
 msgstr "웹 인터페이스 및 \"지금 재생 중\" API 반환 데이터에서 AzuraCast가 참조할 때 사용할 이 스트림에 대한 사용자 지정 URL을 설정할 수 있습니다. 기본값을 사용하려면 비워두세요."
 
 #: frontend/components/Stations/SftpUsers.vue:56
@@ -6637,8 +6637,8 @@ msgid "Your password has been updated."
 msgstr "귀하의 암호가 업데이트되었습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:113
-msgid "Set Up AzuraCast"
-msgstr "AzuraCast 설정"
+msgid "Set Up Acacia Radio"
+msgstr "Acacia Radio 설정"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:192
 msgid "Setup has already been completed!"
@@ -6649,20 +6649,20 @@ msgid "All Stations"
 msgstr "모든 스테이션"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:80
-msgid "AzuraCast Application Log"
-msgstr "AzuraCast 응용 프로그램 로그"
+msgid "Acacia Radio Application Log"
+msgstr "Acacia Radio 응용 프로그램 로그"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:86
-msgid "AzuraCast Now Playing Log"
-msgstr "AzuraCast \"지금 재생 중\" 로그"
+msgid "Acacia Radio Now Playing Log"
+msgstr "Acacia Radio \"지금 재생 중\" 로그"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:92
-msgid "AzuraCast Synchronized Task Log"
-msgstr "AzuraCast 동기화 작업 로그"
+msgid "Acacia Radio Synchronized Task Log"
+msgstr "Acacia Radio 동기화 작업 로그"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:98
-msgid "AzuraCast Queue Worker Log"
-msgstr "AzuraCast 대기열 작업자 로그"
+msgid "Acacia Radio Queue Worker Log"
+msgstr "Acacia Radio 대기열 작업자 로그"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:104
 #, php-format
@@ -6702,7 +6702,7 @@ msgid "Test Message"
 msgstr "테스트 메시지"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:54
-msgid "This is a test message from AzuraCast. If you are receiving this message, it means your e-mail settings are configured correctly."
+msgid "This is a test message from Acacia Radio. If you are receiving this message, it means your e-mail settings are configured correctly."
 msgstr "이것은 AzuraCast의 테스트 메시지입니다. 이 메시지를 받았다면 이메일 설정이 올바르게 구성되었음을 의미합니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:68
@@ -7028,8 +7028,8 @@ msgid "Database rolled back to stable release version \"%s\"."
 msgstr "데이터베이스가 안정판 릴리스 버전 \"%s\"로 롤백되었습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:26
-msgid "AzuraCast Settings"
-msgstr "AzuraCast 설정"
+msgid "Acacia Radio Settings"
+msgstr "Acacia Radio 설정"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:29
 msgid "Setting Key"
@@ -7073,8 +7073,8 @@ msgid "Restore failed: %s"
 msgstr "복원 실패: %s"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:95
-msgid "AzuraCast Backup"
-msgstr "AzuraCast 백업"
+msgid "Acacia Radio Backup"
+msgstr "Acacia Radio 백업"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:96
 msgid "Please wait while a backup is generated..."
@@ -7124,15 +7124,15 @@ msgid "Database migration completed!"
 msgstr "데이터베이스 마이그레이션이 완료되었습니다!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:60
-msgid "AzuraCast Initializing..."
-msgstr "AzuraCast 초기화 중..."
+msgid "Acacia Radio Initializing..."
+msgstr "Acacia Radio 초기화 중..."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:62
-msgid "AzuraCast Setup"
-msgstr "AzuraCast 설치"
+msgid "Acacia Radio Setup"
+msgstr "Acacia Radio 설치"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:64
-msgid "Welcome to AzuraCast. Please wait while some key dependencies of AzuraCast are set up..."
+msgid "Welcome to Acacia Radio. Please wait while some key dependencies of Acacia Radio are set up..."
 msgstr "AzuraCast에 오신 것을 환영합니다. AzuraCast의 일부 주요 종속성을 설정하는 동안 잠시 기다려 주십시오..."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:69
@@ -7156,12 +7156,12 @@ msgid "Refreshing All Stations"
 msgstr "모든 스테이션 새로 고침"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:125
-msgid "AzuraCast is now updated to the latest version!"
+msgid "Acacia Radio is now updated to the latest version!"
 msgstr "AzuraCast가 최신 버전으로 업데이트되었습니다!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:134
-msgid "AzuraCast installation complete!"
-msgstr "AzuraCast 설치 완료!"
+msgid "Acacia Radio installation complete!"
+msgstr "Acacia Radio 설치 완료!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:136
 #, php-format
@@ -7420,8 +7420,8 @@ msgid "One of the essential services on this installation is not currently runni
 msgstr "이 설치의 필수 서비스 중 하나가 현재 실행되고 있지 않습니다. 이 문제의 원인을 찾으려면 시스템 관리를 방문하고 시스템 로그를 확인하세요."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:54
-msgid "New AzuraCast Stable Release Available"
-msgstr "새로운 AzuraCast 안정판 릴리스 사용 가능"
+msgid "New Acacia Radio Stable Release Available"
+msgstr "새로운 Acacia Radio 안정판 릴리스 사용 가능"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:58
 #, php-format
@@ -7429,8 +7429,8 @@ msgid "Version %s is now available. You are currently running version %s. Updati
 msgstr "이제 %s 버전을 사용할 수 있습니다. 현재 %s 버전을 실행하고 있습니다. 업데이트하는 것이 좋습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:75
-msgid "New AzuraCast Rolling Release Available"
-msgstr "새로운 AzuraCast 롤링 릴리스 사용 가능"
+msgid "New Acacia Radio Rolling Release Available"
+msgstr "새로운 Acacia Radio 롤링 릴리스 사용 가능"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:79
 #, php-format
@@ -7466,8 +7466,8 @@ msgid "The performance profiling extension is currently enabled on this installa
 msgstr "성능 프로파일링 확장이 현재 이 설치에서 실행되어 있습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
-msgid "You can track the execution time and memory usage of any AzuraCast page or application from the profiler page."
-msgstr "프로파일러 페이지에서 AzuraCast 페이지 또는 애플리케이션의 실행 시간과 메모리 사용량을 추적할 수 있습니다."
+msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
+msgstr "프로파일러 페이지에서 Acacia Radio 페이지 또는 애플리케이션의 실행 시간과 메모리 사용량을 추적할 수 있습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
 msgid "Profiler Control Panel"
@@ -7486,7 +7486,7 @@ msgid "You may want to update your base URL to ensure it is correct."
 msgstr "기본 URL이 올바른지 확인하기 위해 업데이트할 수 있습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:45
-msgid "If you regularly use different URLs to access AzuraCast, you should enable the \"Prefer Browser URL\" setting."
+msgid "If you regularly use different URLs to access Acacia Radio, you should enable the \"Prefer Browser URL\" setting."
 msgstr "AzuraCast에 액세스하기 위해 정기적으로 다른 URL을 사용하는 경우 \"브라우저 URL 선호\" 설정을 활성화해야 합니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:52
@@ -7495,35 +7495,35 @@ msgid "Your \"Base URL\" setting (%s) does not match the URL you are currently u
 msgstr "\"기본 URL\" 설정(%s)이 현재 사용 중인 URL(%s)과 일치하지 않습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:33
-msgid "AzuraCast is free and open-source software."
+msgid "Acacia Radio is free and open-source software."
 msgstr "AzuraCast는 무료 오픈 소스 소프트웨어입니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:34
-msgid "If you are enjoying AzuraCast, please consider donating to support our work. We depend on donations to build new features, fix bugs, and keep AzuraCast modern, accessible and free."
+msgid "If you are enjoying Acacia Radio, please consider donating to support our work. We depend on donations to build new features, fix bugs, and keep Acacia Radio modern, accessible and free."
 msgstr "AzuraCast를 즐기고 계시다면 저희 작업을 지원하기 위해 기부해 보시기 바랍니다. 우리는 새로운 기능을 구축하고, 버그를 수정하고, AzuraCast를 현대적이고 액세스 가능하며 무료로 유지하기 위해 기부에 의존하고 있습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:40
-msgid "Donate to AzuraCast"
+msgid "Donate to Acacia Radio"
 msgstr "AzuraCast에 기부하기"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:176
-msgid "AzuraCast Installer"
-msgstr "AzuraCast 설치 프로그램"
+msgid "Acacia Radio Installer"
+msgstr "Acacia Radio 설치 프로그램"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:179
-msgid "Welcome to AzuraCast! Complete the initial server setup by answering a few questions."
+msgid "Welcome to Acacia Radio! Complete the initial server setup by answering a few questions."
 msgstr "AzuraCast에 오신 것을 환영합니다! 몇 가지 질문에 답하여 초기 서버 설정을 완료하세요."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:185
-msgid "AzuraCast Updater"
-msgstr "AzuraCast 업데이터"
+msgid "Acacia Radio Updater"
+msgstr "Acacia Radio 업데이터"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:192
 msgid "Change installation settings?"
 msgstr "설치 설정을 변경하시겠습니까?"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:201
-msgid "AzuraCast is currently configured to listen on the following ports:"
+msgid "Acacia Radio is currently configured to listen on the following ports:"
 msgstr "AzuraCast는 현재 다음 포트에서 수신 대기하도록 구성되어 있습니다:"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:205
@@ -7547,7 +7547,7 @@ msgid "Radio Ports: %s"
 msgstr "라디오 포트: %s"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:213
-msgid "Customize ports used for AzuraCast?"
+msgid "Customize ports used for Acacia Radio?"
 msgstr "AzuraCast에 사용되는 포트를 사용자 지정하시겠습니까?"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:266
@@ -7559,7 +7559,7 @@ msgid "Server configuration complete!"
 msgstr "서버 구성이 완료되었습니다!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AbstractEnvFile.php:90
-msgid "This file was automatically generated by AzuraCast."
+msgid "This file was automatically generated by Acacia Radio."
 msgstr "이 파일은 AzuraCast에 의해 자동으로 생성되었습니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AbstractEnvFile.php:91
@@ -7597,7 +7597,7 @@ msgid "HTTP Port"
 msgstr "HTTP 포트"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:43
-msgid "The main port AzuraCast listens to for insecure HTTP connections."
+msgid "The main port Acacia Radio listens to for insecure HTTP connections."
 msgstr "AzuraCast가 안전하지 않은 HTTP 연결을 수신 대기하는 기본 포트입니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:49
@@ -7605,11 +7605,11 @@ msgid "HTTPS Port"
 msgstr "HTTPS 포트"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:50
-msgid "The main port AzuraCast listens to for secure HTTPS connections."
+msgid "The main port Acacia Radio listens to for secure HTTPS connections."
 msgstr "AzuraCast가 안전한 HTTPS 연결을 수신 대기하는 기본 포트입니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:57
-msgid "The port AzuraCast listens to for SFTP file management connections."
+msgid "The port Acacia Radio listens to for SFTP file management connections."
 msgstr "AzuraCast가 SFTP 파일 관리 연결을 수신 대기하는 포트입니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:63
@@ -7617,8 +7617,8 @@ msgid "Station Ports"
 msgstr "스테이션 포트"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:64
-msgid "The ports AzuraCast should listen to for station broadcasts and incoming DJ connections."
-msgstr "AzuraCast 포트는 스테이션 방송 및 들어오는 DJ 연결을 수신해야 합니다."
+msgid "The ports Acacia Radio should listen to for station broadcasts and incoming DJ connections."
+msgstr "Acacia Radio 포트는 스테이션 방송 및 들어오는 DJ 연결을 수신해야 합니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:70
 msgid "Docker User UID"
@@ -7857,7 +7857,7 @@ msgid "Nginx Max Client Body Size"
 msgstr "Nginx 최대 클라이언트 본체 크기"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AzuraCastEnvFile.php:251
-msgid "This is the total size any single request body can be. AzuraCast chunks its uploads into smaller file sizes, so this only applies when doing custom uploads via the API. Sizes should be listed in a format like \"100K\", \"128M\", \"1G\" for kilobytes, megabytes, and gigabytes respectively."
+msgid "This is the total size any single request body can be. Acacia Radio chunks its uploads into smaller file sizes, so this only applies when doing custom uploads via the API. Sizes should be listed in a format like \"100K\", \"128M\", \"1G\" for kilobytes, megabytes, and gigabytes respectively."
 msgstr "이것은 단일 요청 본체가 될 수 있는 전체 크기입니다. AzuraCast는 업로드를 더 작은 파일 크기로 청크하므로 이는 API를 통해 사용자 지정 업로드를 수행하는 경우에만 적용됩니다. 크기는 각각 킬로바이트, 메가바이트, 기가바이트에 대해 \"100K\", \"128M\", \"1G\"와 같은 형식으로 나열되어야 합니다."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AzuraCastEnvFile.php:257

@@ -20,7 +20,7 @@
                     class="col-md-6"
                     :field="r$.acme_domains"
                     :label="$gettext('Domain Name(s)')"
-                    :description="$gettext('All listed domain names should point to this AzuraCast installation. Separate multiple domain names with commas.')"
+                    :description="$gettext('All listed domain names should point to this Acacia Radio installation. Separate multiple domain names with commas.')"
                 />
 
                 <form-group-field

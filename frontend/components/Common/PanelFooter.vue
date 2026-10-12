@@ -1,10 +1,7 @@
 <template>
     <footer id="footer">
         {{ $gettext('Powered by') }}
-        <a
-            href="https://www.azuracast.com/"
-            target="_blank"
-        >AzuraCast</a>
+        Acacia Radio
         &bull;
         <span v-html="version"/>
         &bull;

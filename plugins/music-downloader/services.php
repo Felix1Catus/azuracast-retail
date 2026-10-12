@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Loaded by App\Plugins::registerServices() before the DI container is built.
- * AzuraCast's composer autoloader only knows App\, so register our own PSR-4 loader here.
+ * Acacia Radio's composer autoloader only knows App\, so register our own PSR-4 loader here.
  */
 spl_autoload_register(static function (string $class): void {
     $prefix = 'Plugin\\MusicDownloader\\';

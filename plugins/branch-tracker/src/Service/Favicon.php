@@ -7,8 +7,8 @@ namespace Plugin\BranchTracker\Service;
 use App\Assets\BrowserIconCustomAsset;
 
 /**
- * Favicon tags for the plugin's pages, using AzuraCast's own browser icon (the one uploaded under
- * Administration > Branding, or AzuraCast's default), so plugin pages match the rest of the site.
+ * Favicon tags for the plugin's pages, using Acacia Radio's own browser icon (the one uploaded under
+ * Administration > Branding, or Acacia Radio's default), so plugin pages match the rest of the site.
  */
 final class Favicon
 {

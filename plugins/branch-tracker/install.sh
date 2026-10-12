@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
-# Tracker plugin installer for AzuraCast (Docker installs, e.g. made with AzuraCast's docker.sh).
+# Tracker plugin installer for Acacia Radio (Docker installs, e.g. made with Acacia Radio's docker.sh).
 #
 #   curl -fsSL https://raw.githubusercontent.com/Felix1Catus/azuracast-tracker-plugin/main/install.sh -o install-tracker.sh
 #   sudo bash install-tracker.sh            # install or update
 #   sudo bash install-tracker.sh --uninstall
 #
 # Options:
-#   --dir PATH         AzuraCast directory, the one with docker-compose.yml (default: auto-detect)
+#   --dir PATH         Acacia Radio directory, the one with docker-compose.yml (default: auto-detect)
 #   --ref REF          Plugin version: a release tag such as v1.3.0 (default) or "main"
-#   --analytics MODE   all | no_ip   AzuraCast listener analytics, which Tracker needs (default: all)
+#   --analytics MODE   all | no_ip   Acacia Radio listener analytics, which Tracker needs (default: all)
 #   --yes, -y          Don't ask for confirmation
-#   --force            Continue even if the AzuraCast version is not the tested series
+#   --force            Continue even if the Acacia Radio version is not the tested series
 #   --uninstall        Unlock every station's stream and remove the plugin mount (database tables are kept)
 set -euo pipefail
 
 REPO="Felix1Catus/azuracast-tracker-plugin"
 DEFAULT_REF="v1.3.2"
-TESTED_SERIES="0.23"            # developed and tested on AzuraCast 0.23.8
+TESTED_SERIES="0.23"            # developed and tested on upstream 0.23.8
 PLUGIN="branch-tracker"         # folder name is required: it defines the PHP namespace Plugin\BranchTracker
 MARK="# managed-by: azuracast-tracker-plugin installer"
 
@@ -45,7 +45,7 @@ confirm() {
 }
 
 # ---------------------------------------------------------------- environment
-command -v docker >/dev/null 2>&1 || die "Docker not found. This installer is for Docker installs of AzuraCast; see INSTALL.md for other setups."
+command -v docker >/dev/null 2>&1 || die "Docker not found. This installer is for Docker installs of Acacia Radio; see INSTALL.md for other setups."
 if docker compose version >/dev/null 2>&1; then DC=(docker compose); elif command -v docker-compose >/dev/null 2>&1; then DC=(docker-compose); else die "Docker Compose not found."; fi
 docker info >/dev/null 2>&1 || die "Cannot talk to Docker. Run as root (sudo) or as a member of the docker group."
 
@@ -54,22 +54,22 @@ if [ -z "$DIR" ]; then
     if [ -f "$d/docker-compose.yml" ] && grep -qiE 'image:.*azuracast' "$d/docker-compose.yml"; then DIR="$d"; break; fi
   done
 fi
-[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "AzuraCast not found. Pass --dir /path/to/azuracast (the folder containing docker-compose.yml)."
+[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "Acacia Radio not found. Pass --dir /path/to/azuracast (the folder containing docker-compose.yml)."
 DIR=$(cd "$DIR" && pwd)
 cd "$DIR"
-grep -qiE 'image:.*azuracast' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like AzuraCast's."
+grep -qiE 'image:.*azuracast' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like Acacia Radio's."
 
 container() {
   local id; id=$("${DC[@]}" ps -q web 2>/dev/null | head -1)
   [ -n "$id" ] && docker inspect -f '{{.Name}}' "$id" | sed 's#^/##'
 }
 C=$(container || true)
-[ -n "$C" ] || die "AzuraCast's web container isn't running. Start it first: cd $DIR && ${DC[*]} up -d"
+[ -n "$C" ] || die "Acacia Radio's web container isn't running. Start it first: cd $DIR && ${DC[*]} up -d"
 cli() { docker exec -u azuracast "$C" azuracast_cli "$@"; }
 stations() { docker exec "$C" curl -fsS http://127.0.0.1:6010/api/stations 2>/dev/null | grep -oE '"shortcode":"[^"]+"' | cut -d'"' -f4; }
 
 AZV=$(cli --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
-say "AzuraCast ${AZV:-?} found in $DIR (container: $C)"
+say "Acacia Radio ${AZV:-?} found in $DIR (container: $C)"
 
 OV="$DIR/docker-compose.override.yml"
 VOL_RO=":ro"
@@ -79,19 +79,19 @@ VOLUME="./plugins/$PLUGIN:/var/azuracast/www/plugins/$PLUGIN$VOL_RO"
 yq() { docker run --rm -v "$DIR:/workdir" -w /workdir mikefarah/yq:4 "$@"; }
 
 wait_ready() {
-  printf 'Waiting for AzuraCast'
+  printf 'Waiting for Acacia Radio'
   for _ in $(seq 1 120); do
     C=$(container || true)
     if [ -n "$C" ] && docker exec "$C" curl -fsS -o /dev/null http://127.0.0.1:6010/api/status 2>/dev/null; then echo " ready."; return 0; fi
     printf '.'; sleep 3
   done
-  echo; die "AzuraCast didn't come back within 6 minutes. Check: ${DC[*]} logs -f web"
+  echo; die "Acacia Radio didn't come back within 6 minutes. Check: ${DC[*]} logs -f web"
 }
 
 # ---------------------------------------------------------------- uninstall
 if [ "$ACTION" = uninstall ]; then
   echo "This unlocks every station's stream, turns off the public-page PIN login, removes the plugin mount"
-  echo "and recreates the AzuraCast container (about a minute of downtime). Branch data stays in the database."
+  echo "and recreates the Acacia Radio container (about a minute of downtime). Branch data stays in the database."
   confirm "Uninstall Tracker?" || die "Cancelled."
   if docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php"; then
     for s in $(stations); do
@@ -117,7 +117,7 @@ fi
 
 # ---------------------------------------------------------------- install / update
 if [ "${AZV%.*}" != "$TESTED_SERIES" ]; then
-  warn "Tracker is developed and tested on AzuraCast 0.23.8; this server runs ${AZV:-an unknown version}."
+  warn "Tracker is developed and tested on upstream 0.23.8; this server runs ${AZV:-an unknown version}."
   [ "$FORCE" = 1 ] || die "Re-run with --force to install anyway (at your own risk)."
 fi
 
@@ -125,10 +125,10 @@ cat <<EOF
 
 This will:
   1. put Tracker ($REF) in $DIR/plugins/$PLUGIN (an existing copy is kept as a .bak folder)
-  2. mount it into AzuraCast via $(basename "$OV")
-  3. recreate the AzuraCast container (stations restart; about a minute of downtime)
+  2. mount it into Acacia Radio via $(basename "$OV")
+  3. recreate the Acacia Radio container (stations restart; about a minute of downtime)
   4. run Tracker's database migrations and health check
-  5. set AzuraCast analytics to "$ANALYTICS" (Tracker needs listener records)
+  5. set Acacia Radio analytics to "$ANALYTICS" (Tracker needs listener records)
 Nothing else changes: streams stay open and public pages unchanged until you turn those on.
 EOF
 warn "If you haven't made a backup today: cd $DIR && ./docker.sh backup   (or Administration > Backups)"
@@ -161,7 +161,7 @@ chmod -R a+rX "$DEST"
 chmod +x "$DEST"/*.sh 2>/dev/null || true
 echo "Tracker $NEWV in $DEST"
 
-say "Mounting the plugin into AzuraCast"
+say "Mounting the plugin into Acacia Radio"
 if [ ! -f "$OV" ]; then
   printf '%s\nservices:\n  web:\n    volumes:\n      - %s\n' "$MARK" "$VOLUME" > "$OV"
   echo "Created $(basename "$OV")."
@@ -175,7 +175,7 @@ else
 fi
 "${DC[@]}" config -q || die "docker compose rejects the configuration; check $OV (a backup of the previous file is next to it)."
 
-say "Recreating the AzuraCast container"
+say "Recreating the Acacia Radio container"
 "${DC[@]}" up -d
 wait_ready
 docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php" || die "The plugin isn't visible inside the container; check the volume in $OV."
@@ -183,7 +183,7 @@ docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php" || die 
 say "Activating (migrations, caches, health check)"
 "$DEST/reload.sh" "$C"
 
-say "Enabling AzuraCast analytics ($ANALYTICS)"
+say "Enabling Acacia Radio analytics ($ANALYTICS)"
 cli azuracast:settings:set analytics "$ANALYTICS" >/dev/null && echo "done"
 
 say "Tracker $NEWV is installed"
@@ -192,7 +192,7 @@ cat <<EOF
 
 Next steps (per station; your stations: ${ST:-none yet}):
 
-  Open the board:       log in to AzuraCast, open a station, click the green "Branch Board" button
+  Open the board:       log in to Acacia Radio, open a station, click the green "Branch Board" button
                         (or go to /branch-tracker/<station>)
   Add branches:         board > Manage > Add branch   (each gets a PIN, shown once)
   Track branch streams: docker exec -u azuracast $C azuracast_cli branch-tracker:stream-auth <station> observe

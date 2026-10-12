@@ -1,6 +1,6 @@
 # Code review: bugs and improvements
 
-This review covers AzuraCast 0.23.8 (upstream `5ca47e6`) as forked into azuracast-retail. Each finding has an ID that is referenced from the GitHub issues and [REDESIGN.md](REDESIGN.md).
+This review covers upstream 0.23.8 (upstream `5ca47e6`) as forked into azuracast-retail. Each finding has an ID that is referenced from the GitHub issues and [REDESIGN.md](REDESIGN.md).
 
 **Status values:**
 - **Fixed:** fixed in the fork; see [FIXLOG.md](FIXLOG.md).
@@ -78,7 +78,7 @@ A plain `docker build` therefore produced a panel with no JavaScript.
 **Fix:** include a hash of the plugin list and plugin route files in the cache file name, or clear it in the startup script after the composer plugin step.
 
 ### R-8 · The built-in updater targets upstream images: **Fixed**
-`Sync/Task/CheckUpdatesTask.php` asks AzuraCast Central for updates, and `Service/WebUpdater.php` (enabled by `ENABLE_WEB_UPDATER=true`) replaces the container with the **upstream** image. On a fork, one click on "Update" in the panel would wipe the retail changes.
+`Sync/Task/CheckUpdatesTask.php` asks the upstream update service for updates, and `Service/WebUpdater.php` (enabled by `ENABLE_WEB_UPDATER=true`) replaces the container with the **upstream** image. On a fork, one click on "Update" in the panel would wipe the retail changes.
 
 **Fix:**
 - Default `ENABLE_WEB_UPDATER=false` in the fork image.
@@ -119,6 +119,6 @@ Plugins can add routes, permissions, entities, sync tasks and console commands, 
 
 ## Smaller notes
 
-- The `Powered by AzuraCast` footer and donate link are upstream branding. AGPL does not require keeping them, but the copyright and license notices must stay. Keep "Powered by AzuraCast" (it is accurate) and drop the donate line in the retail theme.
+- The `Powered by Acacia Radio` footer and donate link are upstream branding. AGPL does not require keeping them, but the copyright and license notices must stay. Keep "Powered by Acacia Radio" (it is accurate) and drop the donate line in the retail theme.
 - `MYSQL_PASSWORD="azur4c457"` is a default in the Dockerfile `ENV`. It is harmless while MariaDB only listens inside the container, but production should set its own in `azuracast.env`.
 - `Settings.sync_disabled` is only visible under Administration → Settings → Debugging, and nothing warns when it is on. Add a dashboard banner, since R-3 shows how easily it gets stuck.

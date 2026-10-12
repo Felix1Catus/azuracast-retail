@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'azuracast:setup',
-    description: 'Run all general AzuraCast setup steps.',
+    description: 'Run all general Acacia Radio setup steps.',
 )]
 final class SetupCommand extends CommandAbstract
 {
@@ -57,11 +57,11 @@ final class SetupCommand extends CommandAbstract
 
         // Header display
         if ($isInit) {
-            $io->title(__('AzuraCast Initializing...'));
+            $io->title(__('Acacia Radio Initializing...'));
         } else {
-            $io->title(__('AzuraCast Setup'));
+            $io->title(__('Acacia Radio Setup'));
             $io->writeln(
-                __('Welcome to AzuraCast. Please wait while some key dependencies of AzuraCast are set up...')
+                __('Welcome to Acacia Radio. Please wait while some key dependencies of Acacia Radio are set up...')
             );
             $io->newLine();
         }
@@ -119,7 +119,7 @@ final class SetupCommand extends CommandAbstract
         if ($update) {
             $io->success(
                 [
-                    __('AzuraCast is now updated to the latest version!'),
+                    __('Acacia Radio is now updated to the latest version!'),
                 ]
             );
         } else {
@@ -128,7 +128,7 @@ final class SetupCommand extends CommandAbstract
             /** @noinspection HttpUrlsUsage */
             $io->success(
                 [
-                    __('AzuraCast installation complete!'),
+                    __('Acacia Radio installation complete!'),
                     sprintf(
                         __('Visit %s to complete setup.'),
                         'http://' . $publicIp

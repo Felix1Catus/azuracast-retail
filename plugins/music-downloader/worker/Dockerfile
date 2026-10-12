@@ -1,5 +1,5 @@
 # Music Downloader worker: spotDL behind a small internal API (see ../README.md).
-# It runs next to AzuraCast's "web" container and writes into the same station_data volume.
+# It runs next to Acacia Radio's "web" container and writes into the same station_data volume.
 #   docker build -t azuracast-music-downloader:dev plugins/music-downloader/worker
 ARG DENO_VERSION=2.4.5
 FROM denoland/deno:bin-${DENO_VERSION} AS deno
@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY app /app/app
 
-# Same UID/GID as AzuraCast's "azuracast" user, so downloaded files belong to it.
+# Same UID/GID as Acacia Radio's "azuracast" user, so downloaded files belong to it.
 RUN groupadd -g 1000 azuracast && useradd -u 1000 -g 1000 -M -d /data/home azuracast \
     && mkdir -p /data/home && chown -R 1000:1000 /data
 

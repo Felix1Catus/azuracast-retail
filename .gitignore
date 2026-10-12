@@ -58,7 +58,7 @@ tmp/cache/*---*
 /plugins/*
 /plugins/**/*
 !/plugins/.gitkeep
-# Built-in modules shipped with AzuraCast Retail
+# Built-in modules shipped with Acacia Radio
 !/plugins/branch-tracker/
 !/plugins/branch-tracker/**
 !/plugins/music-downloader/

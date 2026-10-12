@@ -7,7 +7,7 @@ namespace Plugin\MusicDownloader;
 /**
  * Station-level permission added through App\Event\BuildPermissions. It shows up in Administration → Roles
  * like core ones; "administer all" covers it. The Spotify app settings (Client ID/Secret, YouTube cookies,
- * proxy) need AzuraCast's global "administer settings" instead.
+ * proxy) need Acacia Radio's global "administer settings" instead.
  */
 final class Permissions
 {

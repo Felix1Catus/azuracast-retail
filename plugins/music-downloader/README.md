@@ -1,22 +1,22 @@
-# Music Downloader: Spotify playlists into AzuraCast
+# Music Downloader: Spotify playlists into Acacia Radio
 
-**Music Downloader** adds a page to each AzuraCast station where staff paste a Spotify playlist, album or
+**Music Downloader** adds a page to each Acacia Radio station where staff paste a Spotify playlist, album or
 track link, choose a folder of the station's media library, and get the music downloaded there. It uses
 [spotDL](https://github.com/spotDL/spotify-downloader): the track list and tags come from Spotify, and the audio
 comes from YouTube Music (or the other sources listed in Settings).
 
 | | |
 |---|---|
-| **Version** | 0.1.3 (first version, not yet integrated into the AzuraCast Retail installer) |
-| **Developed on** | AzuraCast Retail 0.23.8-retail.6 · spotDL 4.5.2 · yt-dlp 2026.08.19 · Deno 2.4.5 · ffmpeg 7.1 |
-| **Works with** | AzuraCast 0.23.x on Docker, stations with **local** media storage |
+| **Version** | 0.1.3 (first version, not yet integrated into the Acacia Radio installer) |
+| **Developed on** | upstream 0.23.8-retail.6 · spotDL 4.5.2 · yt-dlp 2026.08.19 · Deno 2.4.5 · ffmpeg 7.1 |
+| **Works with** | upstream 0.23.x on Docker, stations with **local** media storage |
 | **Not supported** | S3 / Dropbox / SFTP media storage; spotify.link short links; ongoing playlist sync (one-time downloads only) |
 
 ## How it works
 
 ```
-AzuraCast panel ──► PHP plugin (in the AzuraCast container)
-                      • /music-downloader/{station}: page; AzuraCast login + "Download Music" permission
+Acacia Radio panel ──► PHP plugin (in the Acacia Radio container)
+                      • /music-downloader/{station}: page; Acacia Radio login + "Download Music" permission
                       • /api/station/{station}/music-downloader/...: JSON API used by the page
                       • /music-downloader/oauth/callback: Spotify login return (HTTPS sites)
                           │  internal Docker network, shared secret (music-downloader.env)
@@ -26,12 +26,12 @@ AzuraCast panel ──► PHP plugin (in the AzuraCast container)
                       • SQLite in the music_downloader_data volume: settings, Spotify logins, jobs, tracks
                       • one job at a time, each in its own process (nice 10, cpu_shares 256, 1 GB RAM limit)
                       • asks music-downloader-pot (bgutil PO-token server, 512 MB limit) for YouTube tokens
-                          │  station_data volume, mounted at the same path as in AzuraCast
+                          │  station_data volume, mounted at the same path as in Acacia Radio
                           ▼
          /var/azuracast/stations/<station>/media/<folder>/Artist - Title.mp3
                           │
                           ▼
-         AzuraCast's media scan (every 5 minutes) adds the files to the library
+         Acacia Radio's media scan (every 5 minutes) adds the files to the library
 ```
 
 A job:
@@ -39,7 +39,7 @@ A job:
    it (see the Spotify rules below), it falls back to spotDL's public access, which needs no account.
 2. **Downloads one track at a time** into a staging folder, converts it with ffmpeg, writes tags and cover art,
    and moves the finished file into the media folder. It's copied under a temporary `.mdpart` name and then
-   renamed, so AzuraCast never scans half a file.
+   renamed, so Acacia Radio never scans half a file.
 3. **Skips** tracks whose file already exists in the folder, and **stops early** after 5 failures in a row
    (usually YouTube blocking the server) instead of grinding through the whole list.
 
@@ -48,8 +48,8 @@ failed or cancelled tracks.
 
 ## Install
 
-On the AzuraCast server (Docker install), as root. The plugin is kept in two places: its own private
-repository (this folder at the repository root), and `plugins/music-downloader` in the AzuraCast Retail fork.
+On the Acacia Radio server (Docker install), as root. The plugin is kept in two places: its own private
+repository (this folder at the repository root), and `plugins/music-downloader` in the Acacia Radio fork.
 
 **From the plugin's private repository.** The server needs read access: an SSH key on a GitHub account that can
 see the repository, or a read-only deploy key.
@@ -69,13 +69,13 @@ sudo bash plugins/music-downloader/install.sh --uninstall
 
 `--dir /path/to/azuracast` selects the installation if it isn't auto-detected; `--yes` skips the confirmation.
 Updating: `git pull`, then run `install.sh` again. It rebuilds the worker and swaps the files in place, and
-only recreates the AzuraCast container when its mounts change. The first install needs about 2 GB of disk
+only recreates the Acacia Radio container when its mounts change. The first install needs about 2 GB of disk
 space for the images.
 
 The installer copies the plugin to `<azuracast>/plugins/music-downloader` and builds the worker image locally.
 It creates `music-downloader.env` (the shared secret, root-only) and adds the plugin mount and the worker
-service to `docker-compose.override.yml` (backed up first). It then recreates the AzuraCast container
-(about a minute of downtime) and checks that AzuraCast can reach the worker.
+service to `docker-compose.override.yml` (backed up first). It then recreates the Acacia Radio container
+(about a minute of downtime) and checks that Acacia Radio can reach the worker.
 
 ## Setup
 
@@ -93,7 +93,7 @@ service to `docker-compose.override.yml` (backed up first). It then recreates th
      overrides the choice.
 2. **Permissions.** Administrators can use everything. Other roles need the station permission **Download
    Music** (Administration → Roles). Settings need *administer settings*.
-3. **Each user** clicks **Connect Spotify** on the page. Logins are per AzuraCast user.
+3. **Each user** clicks **Connect Spotify** on the page. Logins are per Acacia Radio user.
 
 ### What a Spotify login can read (Spotify's 2026 rules)
 
@@ -153,7 +153,7 @@ plugins/music-downloader/reload.sh        # after changing PHP or templates on a
 **When downloads start failing everywhere,** YouTube has usually changed something. Bump `yt-dlp` in
 `worker/requirements.txt` and re-run the installer.
 
-## Built into AzuraCast Retail
+## Built into Acacia Radio
 
 In the fork this module is built in: `docker-compose.retail.yml` runs the worker and token containers, and
 `util/build_image.sh` builds the worker image as `azuracast-retail-music-downloader:<version>`. The installer and
@@ -162,5 +162,5 @@ item (`StationFeatures::MusicDownloader`, which also switches off the injected b
 `./docker.sh update` and not this `install.sh`; the installer refuses such installs. See
 `docs/retail/INSTALL.md`, section 3b.
 
-Still open: trigger AzuraCast's media scan when a job finishes, so files appear right away instead of within
+Still open: trigger Acacia Radio's media scan when a job finishes, so files appear right away instead of within
 5 minutes.

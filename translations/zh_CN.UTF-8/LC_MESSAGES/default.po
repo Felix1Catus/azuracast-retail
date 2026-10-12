@@ -341,8 +341,8 @@ msgid "All Days"
 msgstr "显示所有日期"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:57
-msgid "All listed domain names should point to this AzuraCast installation. Separate multiple domain names with commas."
-msgstr "所有列出的域名都应指向此 AzuraCast 安装。可以用逗号分隔多个域名。"
+msgid "All listed domain names should point to this Acacia Radio installation. Separate multiple domain names with commas."
+msgstr "所有列出的域名都应指向此 Acacia Radio 安装。可以用逗号分隔多个域名。"
 
 #: frontend/components/Stations/Playlists.vue:30
 msgid "All Playlists"
@@ -665,40 +665,40 @@ msgid "Avoid Duplicate Artists/Titles"
 msgstr "避免重复的艺术家/标题"
 
 #: frontend/components/Setup/Register.vue:15
-msgid "AzuraCast First-Time Setup"
+msgid "Acacia Radio First-Time Setup"
 msgstr "AzuraCast首次设置"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:21
-msgid "AzuraCast Instance Name"
+msgid "Acacia Radio Instance Name"
 msgstr "AzuraCast实例名称"
 
 #: frontend/components/Admin/GeoLite.vue:21
-msgid "AzuraCast ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
-msgstr "AzuraCast 内置免费的 IP 地理定位数据库。您可能更愿意使用 MaxMind GeoLite 服务来获得更准确的结果。使用 MaxMind GeoLite 需要许可证密钥，但一旦提供了密钥，我们就会自动更新数据库。"
+msgid "Acacia Radio ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
+msgstr "Acacia Radio 内置免费的 IP 地理定位数据库。您可能更愿意使用 MaxMind GeoLite 服务来获得更准确的结果。使用 MaxMind GeoLite 需要许可证密钥，但一旦提供了密钥，我们就会自动更新数据库。"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:8
-msgid "AzuraCast Update Checks"
+msgid "Acacia Radio Update Checks"
 msgstr "检查AzuraCast更新"
 
 #: frontend/components/Account/UserInfoPanel.vue:22
-msgid "AzuraCast User"
+msgid "Acacia Radio User"
 msgstr "AzuraCast用户"
 
 #: frontend/components/Admin/Permissions.vue:6
-msgid "AzuraCast uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
-msgstr "AzuraCast 使用基于角色的访问控制系统。角色被赋予访问网站某些部分的权限，然后用户被分配到这些角色中。"
+msgid "Acacia Radio uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
+msgstr "Acacia Radio 使用基于角色的访问控制系统。角色被赋予访问网站某些部分的权限，然后用户被分配到这些角色中。"
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:85
-msgid "AzuraCast Wiki"
-msgstr "AzuraCast 维基"
+msgid "Acacia Radio Wiki"
+msgstr "Acacia Radio 维基"
 
 #: frontend/components/Stations/Playlists/ImportModal.vue:67
-msgid "AzuraCast will scan the uploaded file for matches in this station's music library. Media should already be uploaded before running this step. You can re-run this tool as many times as needed."
+msgid "Acacia Radio will scan the uploaded file for matches in this station's music library. Media should already be uploaded before running this step. You can re-run this tool as many times as needed."
 msgstr "AzuraCast将扫描上传的文件，寻找与电台音乐库匹配的文件。在运行这一步之前，媒体应该已经被上传。你可以根据需要多次重新运行这个工具。"
 
 #: frontend/components/Admin/Relays.vue:6
-msgid "AzuraRelay is a standalone service that connects to your AzuraCast instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
-msgstr "AzuraRelay 是一项独立服务，可连接到您的 AzuraCast 实例，通过自己的服务器自动转播您的电台，然后将收听者详情报告给您的主实例。该页面显示当前连接的所有实例。"
+msgid "AzuraRelay is a standalone service that connects to your Acacia Radio instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
+msgstr "AzuraRelay 是一项独立服务，可连接到您的 Acacia Radio 实例，通过自己的服务器自动转播您的电台，然后将收听者详情报告给您的主实例。该页面显示当前连接的所有实例。"
 
 #: frontend/components/Stations/Media/MoveFilesModal.vue:20
 msgid "Back"
@@ -1220,8 +1220,8 @@ msgid "CPU Stats Help"
 msgstr "CPU 统计帮助"
 
 #: frontend/components/Admin/StorageLocations/Form/Dropbox.vue:22
-msgid "Create a new application. Choose \"Scoped Access\", select your preferred level of access, then name your app. Do not name it \"AzuraCast\", but rather use a name specific to your installation."
-msgstr "创建一个新的应用程序。选择 \"Scoped Access（范围访问）\"，选择您喜欢的访问级别，然后为应用程序命名。不要将其命名为 \"AzuraCast\"，而应使用与您的安装相关的名称。"
+msgid "Create a new application. Choose \"Scoped Access\", select your preferred level of access, then name your app. Do not name it \"Acacia Radio\", but rather use a name specific to your installation."
+msgstr "创建一个新的应用程序。选择 \"Scoped Access（范围访问）\"，选择您喜欢的访问级别，然后为应用程序命名。不要将其命名为 \"Acacia Radio\"，而应使用与您的安装相关的名称。"
 
 #: frontend/components/Setup/Station.vue:14
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:141
@@ -1391,7 +1391,7 @@ msgid "Customize Administrator Password"
 msgstr "自定义管理员密码"
 
 #: frontend/components/Setup/Settings.vue:10
-msgid "Customize AzuraCast Settings"
+msgid "Customize Acacia Radio Settings"
 msgstr "自定义AzuraCast设置"
 
 #: frontend/components/Admin/Stations/Form/FrontendForm.vue:72
@@ -1751,8 +1751,8 @@ msgid "Domain Name(s)"
 msgstr "域名"
 
 #: frontend/components/PanelLayout.vue:170
-msgid "Donate to support AzuraCast!"
-msgstr "捐款支持 AzuraCast！"
+msgid "Donate to support Acacia Radio!"
+msgstr "捐款支持 Acacia Radio！"
 
 #: frontend/components/Admin/Backups.vue:118
 #: frontend/components/Public/OnDemand.vue:40
@@ -2057,7 +2057,7 @@ msgid "Enable to allow this account to log in and stream."
 msgstr "启用以允许该帐户登录和流媒体传输。"
 
 #: frontend/components/Admin/Backups/ConfigureModal.vue:18
-msgid "Enable to have AzuraCast automatically run nightly backups at the time specified."
+msgid "Enable to have Acacia Radio automatically run nightly backups at the time specified."
 msgstr "启用AzuraCast在指定时间自动运行夜间备份。"
 
 #: frontend/components/Account/SecurityPanel.vue:61
@@ -2109,8 +2109,8 @@ msgid "Ensure the library matches your system architecture"
 msgstr "确保资料库与系统架构相匹配"
 
 #: frontend/components/Stations/Webhooks/Form/Mastodon.vue:26
-msgid "Enter \"AzuraCast\" as the application name. You can leave the URL fields unchanged. For \"Scopes\", only \"write:media\" and \"write:statuses\" are required."
-msgstr "输入 \"AzuraCast \"作为应用程序名称。URL 字段可以保持不变。对于 \"作用域\"，只需输入 \"write:media \"和 \"write:statuses\"。"
+msgid "Enter \"Acacia Radio\" as the application name. You can leave the URL fields unchanged. For \"Scopes\", only \"write:media\" and \"write:statuses\" are required."
+msgstr "输入 \"Acacia Radio \"作为应用程序名称。URL 字段可以保持不变。对于 \"作用域\"，只需输入 \"write:media \"和 \"write:statuses\"。"
 
 #: frontend/components/Admin/StorageLocations/Form/Dropbox.vue:57
 msgid "Enter the access code you receive below."
@@ -2441,7 +2441,7 @@ msgid "Hide Album Art on Public Pages"
 msgstr "在公共页面上隐藏专辑封面"
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:49
-msgid "Hide AzuraCast Branding on Public Pages"
+msgid "Hide Acacia Radio Branding on Public Pages"
 msgstr "在公共网页上隐藏AzuraCast品牌信息"
 
 #: frontend/components/Dashboard.vue:303
@@ -2534,7 +2534,7 @@ msgid "If a song has no album art, this URL will be listed instead. Leave blank 
 msgstr "如果一首歌没有专辑封面，这个URL会被列出。留空以使用标准占位图。"
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:59
-msgid "If a visitor is not signed in and visits the AzuraCast homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
+msgid "If a visitor is not signed in and visits the Acacia Radio homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
 msgstr "如果访问者没有登录并访问AzuraCast主页，您可以将他们自动重定向到这里指定的URL。如果留空，则默认将他们重定向到登录页面。"
 
 #: frontend/components/Stations/Playlists/Form/BasicInfo.vue:19
@@ -2554,11 +2554,11 @@ msgid "If enabled, a download button will also be present on the public \"On-Dem
 msgstr "如果启用，公共 \"点播 \"页面上还会出现一个下载按钮。"
 
 #: frontend/components/Admin/Stations/Form/StreamersForm.vue:28
-msgid "If enabled, AzuraCast will automatically record any live broadcasts made to this station to per-broadcast recordings."
+msgid "If enabled, Acacia Radio will automatically record any live broadcasts made to this station to per-broadcast recordings."
 msgstr "如果启用，AzuraCast将自动把该台的任何直播记录到每次广播的录音中。"
 
 #: frontend/components/Stations/Reports/SoundExchange.vue:92
-msgid "If enabled, AzuraCast will connect to the MusicBrainz database to attempt to find an ISRC for any files where one is missing. Disabling this may improve performance."
+msgid "If enabled, Acacia Radio will connect to the MusicBrainz database to attempt to find an ISRC for any files where one is missing. Disabling this may improve performance."
 msgstr "如果启用，AzuraCast将连接到MusicBrainz数据库，试图为任何缺少ISRC的文件找到一个ISRC。禁用这个可能会提高性能。"
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:106
@@ -2594,7 +2594,7 @@ msgid "If selected, album art will not display on public-facing radio pages."
 msgstr "如果选中，专辑封面将不会显示在面向公众的广播页面上。"
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:50
-msgid "If selected, this will remove the AzuraCast branding from public-facing pages."
+msgid "If selected, this will remove the Acacia Radio branding from public-facing pages."
 msgstr "如果选中，这将从面向公众的页面中移除AzuraCast品牌。"
 
 #: frontend/components/Stations/Playlists/Form/ScheduleRow.vue:45
@@ -2873,8 +2873,8 @@ msgid "Learn More about Post-processing CPU Impact"
 msgstr "进一步了解后期处理对 CPU 的影响"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:22
-msgid "Learn more about release channels in the AzuraCast docs."
-msgstr "在 AzuraCast 文档中了解有关发布频道的详细信息。"
+msgid "Learn more about release channels in the Acacia Radio docs."
+msgstr "在 Acacia Radio 文档中了解有关发布频道的详细信息。"
 
 #: frontend/components/Admin/Settings/SecurityPrivacyTab.vue:72
 msgid "Learn more about this header."
@@ -3638,7 +3638,7 @@ msgid "Note: the port after this one will automatically be used for legacy conne
 msgstr "注意：后面的端口将自动用于传统连接。"
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:35
-msgid "Note: This should be the public-facing homepage of the radio station, not the AzuraCast URL. It will be included in broadcast details."
+msgid "Note: This should be the public-facing homepage of the radio station, not the Acacia Radio URL. It will be included in broadcast details."
 msgstr "注意：这应该是电台面向公众的主页，而不是AzuraCast的URL。它将包含在广播的详细信息中。"
 
 #: frontend/components/Stations/Streamers.vue:152
@@ -4041,8 +4041,8 @@ msgid "Powered by"
 msgstr "技术支持"
 
 #: frontend/components/Stations/Webhooks/Form/Discord.vue:128
-msgid "Powered by AzuraCast"
-msgstr "由 AzuraCast 提供"
+msgid "Powered by Acacia Radio"
+msgstr "由 Acacia Radio 提供"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:29
 msgid "Prefer Browser URL (If Available)"
@@ -4794,8 +4794,8 @@ msgid "Settings"
 msgstr "设置"
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:79
-msgid "Setup instructions for broadcasting software are available on the AzuraCast wiki."
-msgstr "AzuraCast wiki 上有广播软件的设置说明。"
+msgid "Setup instructions for broadcasting software are available on the Acacia Radio wiki."
+msgstr "Acacia Radio wiki 上有广播软件的设置说明。"
 
 #: frontend/components/Admin/StorageLocations/Form/Sftp.vue:11
 msgid "SFTP Host"
@@ -4844,8 +4844,8 @@ msgid "Shoutcast 2 DNAS is not currently installed on this installation."
 msgstr "此安装中目前未安装 Shoutcast 2 DNAS。"
 
 #: frontend/components/Admin/Shoutcast.vue:17
-msgid "Shoutcast 2 DNAS is not free software, and its restrictive license does not allow AzuraCast to distribute the Shoutcast binary."
-msgstr "Shoutcast 2 DNAS 不是自由软件，其限制性许可证不允许 AzuraCast 发布 Shoutcast 二进制文件。"
+msgid "Shoutcast 2 DNAS is not free software, and its restrictive license does not allow Acacia Radio to distribute the Shoutcast binary."
+msgstr "Shoutcast 2 DNAS 不是自由软件，其限制性许可证不允许 Acacia Radio 发布 Shoutcast 二进制文件。"
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:44
 msgid "Shoutcast Clients"
@@ -4881,7 +4881,7 @@ msgid "Show HLS Stream on Public Player"
 msgstr "在公共播放器上显示 HLS 流"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:36
-msgid "Show new releases within your update channel on the AzuraCast homepage."
+msgid "Show new releases within your update channel on the Acacia Radio homepage."
 msgstr "在AzuraCast主页显示您的更新频道的新版本。"
 
 #: frontend/components/Stations/Mounts/Form/BasicInfo.vue:27
@@ -5254,8 +5254,8 @@ msgid "Stereo Tool is not currently installed on this installation."
 msgstr "此安装中当前未安装 Stereo Tool。"
 
 #: frontend/components/Admin/StereoTool.vue:31
-msgid "Stereo Tool is not free software, and its restrictive license does not allow AzuraCast to distribute the Stereo Tool binary."
-msgstr "Stereo Tool 不是自由软件，其限制性许可证不允许 AzuraCast 分发 Stereo Tool 二进制文件。"
+msgid "Stereo Tool is not free software, and its restrictive license does not allow Acacia Radio to distribute the Stereo Tool binary."
+msgstr "Stereo Tool 不是自由软件，其限制性许可证不允许 Acacia Radio 分发 Stereo Tool 二进制文件。"
 
 #: frontend/components/Admin/Stations/Form/BackendForm.vue:189
 msgid "Stereo Tool License Key"
@@ -5468,8 +5468,8 @@ msgid "The display name assigned to this relay when viewing it on administrative
 msgstr "在管理页面或公共页面上查看此中继时指定的显示名称。留空以自动生成显示名称。"
 
 #: frontend/components/Stations/LiquidsoapConfig.vue:28
-msgid "The editable text boxes are areas where you can insert custom configuration code. The non-editable sections are automatically generated by AzuraCast."
-msgstr "可编辑文本框是您插入自定义配置代码的区域。不可编辑的部分由 AzuraCast 自动生成。"
+msgid "The editable text boxes are areas where you can insert custom configuration code. The non-editable sections are automatically generated by Acacia Radio."
+msgstr "可编辑文本框是您插入自定义配置代码的区域。不可编辑的部分由 Acacia Radio 自动生成。"
 
 #: frontend/components/Stations/Podcasts/PodcastForm/BasicInfo.vue:54
 msgid "The email of the podcast contact. May be required in order to list the podcast on services like Apple Podcasts, Spotify, Google Podcasts, etc."
@@ -5688,8 +5688,8 @@ msgid "This is a 3-5 digit number."
 msgstr "这是一个 3-5 位数的数字。"
 
 #: frontend/components/Stations/LiquidsoapConfig.vue:33
-msgid "This is an advanced feature and custom code is not officially supported by AzuraCast. You may break your station by adding custom code, but removing it should fix any issues."
-msgstr "这是一项高级功能，AzuraCast 官方不建议您添加自定义代码。添加自定义代码可能会破坏您的电台，但删除它应该可以解决任何问题。"
+msgid "This is an advanced feature and custom code is not officially supported by Acacia Radio. You may break your station by adding custom code, but removing it should fix any issues."
+msgstr "这是一项高级功能，Acacia Radio 官方不建议您添加自定义代码。添加自定义代码可能会破坏您的电台，但删除它应该可以解决任何问题。"
 
 #: frontend/components/Stations/Streamers/Form/BasicInfo.vue:30
 msgid "This is the informal display name that will be shown in API responses if the streamer/DJ is live."
@@ -5708,8 +5708,8 @@ msgid "This javascript code will be applied to the station public pages."
 msgstr "此 javascript 代码将应用于电台公共页面。"
 
 #: frontend/components/Admin/Stations/Form/BackendForm.vue:228
-msgid "This mode disables AzuraCast's AutoDJ management, using Liquidsoap itself to manage song playback. \"next song\" and some other features will not be available."
-msgstr "该模式禁用 AzuraCast 的 AutoDJ 管理功能，使用 Liquidsoap 本身来管理歌曲播放。\"下一首歌 \"和其他一些功能将不可用。"
+msgid "This mode disables Acacia Radio's AutoDJ management, using Liquidsoap itself to manage song playback. \"next song\" and some other features will not be available."
+msgstr "该模式禁用 Acacia Radio 的 AutoDJ 管理功能，使用 Liquidsoap 本身来管理歌曲播放。\"下一首歌 \"和其他一些功能将不可用。"
 
 #: frontend/components/Common/DateRangeDropdown.vue:146
 msgid "This Month"
@@ -5720,7 +5720,7 @@ msgid "This name should always begin with a slash (/), and must be a valid URL, 
 msgstr "这个地址应该总是以斜杠(/)开头，并且必须是一个有效的URL，比如/autodj.mp3"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:22
-msgid "This name will appear as a sub-header next to the AzuraCast logo, to help identify this server."
+msgid "This name will appear as a sub-header next to the Acacia Radio logo, to help identify this server."
 msgstr "这个名字将出现在AzuraCast标志旁边的小标题中，以帮助识别这个服务器。"
 
 #: frontend/components/Admin/ApiKeys.vue:6
@@ -5752,7 +5752,7 @@ msgid "This port is not used by any external process. Only modify this port if t
 msgstr "此端口不被任何外部进程使用。只有当指定的端口正在使用时，才能修改此端口。留空以自动分配一个端口。"
 
 #: frontend/components/Stations/Playlists/QueueModal.vue:12
-msgid "This queue contains the remaining tracks in the order they will be queued by the AzuraCast AutoDJ (if the tracks are eligible to be played)."
+msgid "This queue contains the remaining tracks in the order they will be queued by the Acacia Radio AutoDJ (if the tracks are eligible to be played)."
 msgstr "这个队列包含剩余的曲目，其顺序将由AzuraCast AutoDJ排队进行播放，（如果曲目有资格播放的话）。"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:236
@@ -6080,16 +6080,16 @@ msgstr "更新"
 #: frontend/components/Admin/menu.ts:66
 #: frontend/components/Admin/Updates.vue:3
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:44
-msgid "Update AzuraCast"
-msgstr "更新 AzuraCast"
+msgid "Update Acacia Radio"
+msgstr "更新 Acacia Radio"
 
 #: frontend/components/Admin/Updates.vue:74
-msgid "Update AzuraCast via Web"
-msgstr "通过网络更新 AzuraCast"
+msgid "Update Acacia Radio via Web"
+msgstr "通过网络更新 Acacia Radio"
 
 #: frontend/components/Admin/Updates.vue:215
-msgid "Update AzuraCast? Your installation will restart."
-msgstr "更新 AzuraCast？您的安装将重新启动。"
+msgid "Update Acacia Radio? Your installation will restart."
+msgstr "更新 Acacia Radio？您的安装将重新启动。"
 
 #: frontend/components/Admin/Updates.vue:10
 msgid "Update Details"
@@ -6167,8 +6167,8 @@ msgid "Use (Us)"
 msgstr "使用（US）"
 
 #: frontend/components/Account/ApiKeysPanel.vue:8
-msgid "Use API keys to authenticate with the AzuraCast API using the same permissions as your user account."
-msgstr "使用与用户账户相同权限的 API 密钥来验证 AzuraCast API。"
+msgid "Use API keys to authenticate with the Acacia Radio API using the same permissions as your user account."
+msgstr "使用与用户账户相同权限的 API 密钥来验证 Acacia Radio API。"
 
 #: frontend/components/Account/EditForm.vue:68
 msgid "Use Browser Default"
@@ -6428,7 +6428,7 @@ msgstr "权重排名"
 
 #: frontend/components/Login.vue:17
 #: frontend/components/Setup/Register.vue:19
-msgid "Welcome to AzuraCast!"
+msgid "Welcome to Acacia Radio!"
 msgstr "欢迎来到AzuraCast!"
 
 #: frontend/components/Login.vue:11
@@ -6503,7 +6503,7 @@ msgid "You can only perform the actions your user account is allowed to perform.
 msgstr "您只能执行允许您的用户账户执行的操作。"
 
 #: frontend/components/Stations/Mounts/Form/Advanced.vue:13
-msgid "You can set a custom URL for this stream that AzuraCast will use when referring to it on the web interface and in the Now Playing API return data. Leave empty to use the default value."
+msgid "You can set a custom URL for this stream that Acacia Radio will use when referring to it on the web interface and in the Now Playing API return data. Leave empty to use the default value."
 msgstr ""
 
 #: frontend/components/Stations/SftpUsers.vue:56
@@ -6636,8 +6636,8 @@ msgid "Your password has been updated."
 msgstr "您的密码已更新。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:113
-msgid "Set Up AzuraCast"
-msgstr "设置 AzuraCast"
+msgid "Set Up Acacia Radio"
+msgstr "设置 Acacia Radio"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:192
 msgid "Setup has already been completed!"
@@ -6648,20 +6648,20 @@ msgid "All Stations"
 msgstr "所有电台"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:80
-msgid "AzuraCast Application Log"
+msgid "Acacia Radio Application Log"
 msgstr "AzuraCast应用程序日志"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:86
-msgid "AzuraCast Now Playing Log"
-msgstr "AzuraCast 正在播放日志"
+msgid "Acacia Radio Now Playing Log"
+msgstr "Acacia Radio 正在播放日志"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:92
-msgid "AzuraCast Synchronized Task Log"
-msgstr "AzuraCast 同步任务日志"
+msgid "Acacia Radio Synchronized Task Log"
+msgstr "Acacia Radio 同步任务日志"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:98
-msgid "AzuraCast Queue Worker Log"
-msgstr "AzuraCast 队列工作日志"
+msgid "Acacia Radio Queue Worker Log"
+msgstr "Acacia Radio 队列工作日志"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:104
 #, php-format
@@ -6701,8 +6701,8 @@ msgid "Test Message"
 msgstr "测试消息"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:54
-msgid "This is a test message from AzuraCast. If you are receiving this message, it means your e-mail settings are configured correctly."
-msgstr "这是来自 AzuraCast 的测试邮件。如果您收到此信息，说明您的电子邮件设置配置正确。"
+msgid "This is a test message from Acacia Radio. If you are receiving this message, it means your e-mail settings are configured correctly."
+msgstr "这是来自 Acacia Radio 的测试邮件。如果您收到此信息，说明您的电子邮件设置配置正确。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:68
 msgid "Test message sent successfully."
@@ -7027,7 +7027,7 @@ msgid "Database rolled back to stable release version \"%s\"."
 msgstr "数据库回滚到稳定版本\"%s\"。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:26
-msgid "AzuraCast Settings"
+msgid "Acacia Radio Settings"
 msgstr "AzuraCast设置"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:29
@@ -7072,7 +7072,7 @@ msgid "Restore failed: %s"
 msgstr "恢复失败：%s"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:95
-msgid "AzuraCast Backup"
+msgid "Acacia Radio Backup"
 msgstr "AzuraCast备份"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:96
@@ -7123,15 +7123,15 @@ msgid "Database migration completed!"
 msgstr "数据库迁移已完成！"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:60
-msgid "AzuraCast Initializing..."
-msgstr "AzuraCast 正在初始化..."
+msgid "Acacia Radio Initializing..."
+msgstr "Acacia Radio 正在初始化..."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:62
-msgid "AzuraCast Setup"
+msgid "Acacia Radio Setup"
 msgstr "安装AzuraCast"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:64
-msgid "Welcome to AzuraCast. Please wait while some key dependencies of AzuraCast are set up..."
+msgid "Welcome to Acacia Radio. Please wait while some key dependencies of Acacia Radio are set up..."
 msgstr "欢迎来到AzuraCast。请稍等一下，AzuraCast的一些关键的依赖关系已经建立起来了。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:69
@@ -7155,11 +7155,11 @@ msgid "Refreshing All Stations"
 msgstr "刷新所有电台"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:125
-msgid "AzuraCast is now updated to the latest version!"
+msgid "Acacia Radio is now updated to the latest version!"
 msgstr "AzuraCast现在已更新为最新版本！"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:134
-msgid "AzuraCast installation complete!"
+msgid "Acacia Radio installation complete!"
 msgstr "AzuraCast安装完成！"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:136
@@ -7419,8 +7419,8 @@ msgid "One of the essential services on this installation is not currently runni
 msgstr "此安装上的一个基本服务当前未运行。请访问系统管理员并检查系统日志，找出问题的原因。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:54
-msgid "New AzuraCast Stable Release Available"
-msgstr "新版 AzuraCast 稳定版发布"
+msgid "New Acacia Radio Stable Release Available"
+msgstr "新版 Acacia Radio 稳定版发布"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:58
 #, php-format
@@ -7428,8 +7428,8 @@ msgid "Version %s is now available. You are currently running version %s. Updati
 msgstr "版本 %s 现已可用。您当前运行的是版本 %s。建议更新。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:75
-msgid "New AzuraCast Rolling Release Available"
-msgstr "新版 AzuraCast 滚动发布"
+msgid "New Acacia Radio Rolling Release Available"
+msgstr "新版 Acacia Radio 滚动发布"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:79
 #, php-format
@@ -7465,7 +7465,7 @@ msgid "The performance profiling extension is currently enabled on this installa
 msgstr "性能分析扩展目前已在此安装上启用。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
-msgid "You can track the execution time and memory usage of any AzuraCast page or application from the profiler page."
+msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
 msgstr "您可以从分析器页面跟踪任何AzuraCast页面或应用程序的执行时间和内存使用情况。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
@@ -7485,8 +7485,8 @@ msgid "You may want to update your base URL to ensure it is correct."
 msgstr "您可能需要更新基础 URL，以确保其正确性。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:45
-msgid "If you regularly use different URLs to access AzuraCast, you should enable the \"Prefer Browser URL\" setting."
-msgstr "如果您经常使用不同的 URL 访问 AzuraCast，则应启用 \"首选浏览器 URL \"设置。"
+msgid "If you regularly use different URLs to access Acacia Radio, you should enable the \"Prefer Browser URL\" setting."
+msgstr "如果您经常使用不同的 URL 访问 Acacia Radio，则应启用 \"首选浏览器 URL \"设置。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:52
 #, php-format
@@ -7494,36 +7494,36 @@ msgid "Your \"Base URL\" setting (%s) does not match the URL you are currently u
 msgstr "您的 \"基础 URL \"设置（%s）与您当前使用的 URL（%s）不匹配。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:33
-msgid "AzuraCast is free and open-source software."
-msgstr "AzuraCast 是一款免费开源软件。"
+msgid "Acacia Radio is free and open-source software."
+msgstr "Acacia Radio 是一款免费开源软件。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:34
-msgid "If you are enjoying AzuraCast, please consider donating to support our work. We depend on donations to build new features, fix bugs, and keep AzuraCast modern, accessible and free."
-msgstr "如果您喜欢 AzuraCast，请考虑捐款以支持我们的工作。我们依靠捐款来构建新功能、修复错误，并保持 AzuraCast 的现代化、可访问性和免费性。"
+msgid "If you are enjoying Acacia Radio, please consider donating to support our work. We depend on donations to build new features, fix bugs, and keep Acacia Radio modern, accessible and free."
+msgstr "如果您喜欢 Acacia Radio，请考虑捐款以支持我们的工作。我们依靠捐款来构建新功能、修复错误，并保持 Acacia Radio 的现代化、可访问性和免费性。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:40
-msgid "Donate to AzuraCast"
-msgstr "捐助 AzuraCast"
+msgid "Donate to Acacia Radio"
+msgstr "捐助 Acacia Radio"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:176
-msgid "AzuraCast Installer"
-msgstr "AzuraCast 安装程序"
+msgid "Acacia Radio Installer"
+msgstr "Acacia Radio 安装程序"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:179
-msgid "Welcome to AzuraCast! Complete the initial server setup by answering a few questions."
-msgstr "欢迎您使用 AzuraCast！填写几个问题，来完成初始服务器的设置。"
+msgid "Welcome to Acacia Radio! Complete the initial server setup by answering a few questions."
+msgstr "欢迎您使用 Acacia Radio！填写几个问题，来完成初始服务器的设置。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:185
-msgid "AzuraCast Updater"
-msgstr "AzuraCast 更新器"
+msgid "Acacia Radio Updater"
+msgstr "Acacia Radio 更新器"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:192
 msgid "Change installation settings?"
 msgstr "您要更改安装设置？"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:201
-msgid "AzuraCast is currently configured to listen on the following ports:"
-msgstr "AzuraCast 目前配置为监听以下端口："
+msgid "Acacia Radio is currently configured to listen on the following ports:"
+msgstr "Acacia Radio 目前配置为监听以下端口："
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:205
 #, php-format
@@ -7546,8 +7546,8 @@ msgid "Radio Ports: %s"
 msgstr "电台端口：%s"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:213
-msgid "Customize ports used for AzuraCast?"
-msgstr "自定义用于 AzuraCast 的端口？"
+msgid "Customize ports used for Acacia Radio?"
+msgstr "自定义用于 Acacia Radio 的端口？"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:266
 msgid "Writing configuration files..."
@@ -7558,8 +7558,8 @@ msgid "Server configuration complete!"
 msgstr "服务器配置完成！"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AbstractEnvFile.php:90
-msgid "This file was automatically generated by AzuraCast."
-msgstr "该文件由 AzuraCast 自动生成。"
+msgid "This file was automatically generated by Acacia Radio."
+msgstr "该文件由 Acacia Radio 自动生成。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AbstractEnvFile.php:91
 msgid "You can modify it as necessary. To apply changes, restart the Docker containers."
@@ -7596,28 +7596,28 @@ msgid "HTTP Port"
 msgstr "HTTP 端口"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:43
-msgid "The main port AzuraCast listens to for insecure HTTP connections."
-msgstr "AzuraCast 监听不安全 HTTP 连接的主端口。"
+msgid "The main port Acacia Radio listens to for insecure HTTP connections."
+msgstr "Acacia Radio 监听不安全 HTTP 连接的主端口。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:49
 msgid "HTTPS Port"
 msgstr "HTTPs 端口"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:50
-msgid "The main port AzuraCast listens to for secure HTTPS connections."
-msgstr "AzuraCast 监听安全 HTTPS 连接的主端口。"
+msgid "The main port Acacia Radio listens to for secure HTTPS connections."
+msgstr "Acacia Radio 监听安全 HTTPS 连接的主端口。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:57
-msgid "The port AzuraCast listens to for SFTP file management connections."
-msgstr "AzuraCast 监听 SFTP 文件管理连接的端口。"
+msgid "The port Acacia Radio listens to for SFTP file management connections."
+msgstr "Acacia Radio 监听 SFTP 文件管理连接的端口。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:63
 msgid "Station Ports"
 msgstr "站点端口"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:64
-msgid "The ports AzuraCast should listen to for station broadcasts and incoming DJ connections."
-msgstr "AzuraCast 应侦听电台广播和传入 DJ 连接的端口。"
+msgid "The ports Acacia Radio should listen to for station broadcasts and incoming DJ connections."
+msgstr "Acacia Radio 应侦听电台广播和传入 DJ 连接的端口。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:70
 msgid "Docker User UID"
@@ -7856,8 +7856,8 @@ msgid "Nginx Max Client Body Size"
 msgstr "Nginx 的最大客户端和主体大小"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AzuraCastEnvFile.php:251
-msgid "This is the total size any single request body can be. AzuraCast chunks its uploads into smaller file sizes, so this only applies when doing custom uploads via the API. Sizes should be listed in a format like \"100K\", \"128M\", \"1G\" for kilobytes, megabytes, and gigabytes respectively."
-msgstr "这是任何单个请求体的总大小。AzuraCast 会把上传的文件分成小块，因此这只适用于通过 API 进行自定义上传的情况。大小应以 \"100K\"、\"128M\"、\"1G \"等格式列出，分别表示千字节、兆字节和千兆字节。"
+msgid "This is the total size any single request body can be. Acacia Radio chunks its uploads into smaller file sizes, so this only applies when doing custom uploads via the API. Sizes should be listed in a format like \"100K\", \"128M\", \"1G\" for kilobytes, megabytes, and gigabytes respectively."
+msgstr "这是任何单个请求体的总大小。Acacia Radio 会把上传的文件分成小块，因此这只适用于通过 API 进行自定义上传的情况。大小应以 \"100K\"、\"128M\"、\"1G \"等格式列出，分别表示千字节、兆字节和千兆字节。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AzuraCastEnvFile.php:257
 msgid "Enable web-based Docker image updates"

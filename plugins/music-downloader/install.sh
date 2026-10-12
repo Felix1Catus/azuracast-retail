@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Music Downloader plugin installer for AzuraCast / AzuraCast Retail (Docker installs).
+# Music Downloader plugin installer for Acacia Radio / Acacia Radio (Docker installs).
 #
 #   sudo bash plugins/music-downloader/install.sh              # install or update, from a checkout of the fork
 #   sudo bash install.sh --ref main                            # or download the plugin from GitHub
 #   sudo bash plugins/music-downloader/install.sh --uninstall
 #
 # What it sets up (see README.md):
-#   - the PHP plugin, mounted read-only into AzuraCast's "web" container
+#   - the PHP plugin, mounted read-only into Acacia Radio's "web" container
 #   - a "music-downloader" worker container (spotDL, yt-dlp, ffmpeg, Deno), built locally from worker/,
 #     sharing the station_data volume and reachable only on the internal Docker network
 #   - music-downloader.env: the shared secret between the two (root-only file)
 #
 # Options:
-#   --dir PATH     AzuraCast directory, the one with docker-compose.yml (default: auto-detect)
+#   --dir PATH     Acacia Radio directory, the one with docker-compose.yml (default: auto-detect)
 #   --ref REF      Download this branch or tag of the fork instead of using the files next to this script
 #   --yes, -y      Don't ask for confirmation
 #   --uninstall    Remove the plugin mount and the worker container (its data volume is kept)
@@ -48,7 +48,7 @@ confirm() {
 }
 
 # ---------------------------------------------------------------- environment
-command -v docker >/dev/null 2>&1 || die "Docker not found. This installer is for Docker installs of AzuraCast."
+command -v docker >/dev/null 2>&1 || die "Docker not found. This installer is for Docker installs of Acacia Radio."
 docker compose version >/dev/null 2>&1 || die "Docker Compose v2 (docker compose) not found."
 DC=(docker compose)
 docker info >/dev/null 2>&1 || die "Cannot talk to Docker. Run as root (sudo) or as a member of the docker group."
@@ -58,13 +58,13 @@ if [ -z "$DIR" ]; then
     if [ -f "$d/docker-compose.yml" ] && grep -qiE 'image:.*azuracast' "$d/docker-compose.yml"; then DIR="$d"; break; fi
   done
 fi
-[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "AzuraCast not found. Pass --dir /path/to/azuracast (the folder containing docker-compose.yml)."
+[ -n "$DIR" ] && [ -f "$DIR/docker-compose.yml" ] || die "Acacia Radio not found. Pass --dir /path/to/azuracast (the folder containing docker-compose.yml)."
 DIR=$(cd "$DIR" && pwd)
 cd "$DIR"
-grep -qiE 'image:.*azuracast' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like AzuraCast's."
-grep -qE '^\s+station_data:' docker-compose.yml || die "docker-compose.yml has no station_data volume; this installer expects AzuraCast's standard layout."
+grep -qiE 'image:.*azuracast' docker-compose.yml || die "$DIR/docker-compose.yml doesn't look like Acacia Radio's."
+grep -qE '^\s+station_data:' docker-compose.yml || die "docker-compose.yml has no station_data volume; this installer expects Acacia Radio's standard layout."
 if [ "$ACTION" = install ] && grep -qE '^  music-downloader:' docker-compose.yml; then
-  die "Music Downloader is built into this installation (AzuraCast Retail): docker-compose.yml already runs it. Update with ./docker.sh update instead."
+  die "Music Downloader is built into this installation (Acacia Radio): docker-compose.yml already runs it. Update with ./docker.sh update instead."
 fi
 
 container() {
@@ -72,7 +72,7 @@ container() {
   [ -n "$id" ] && docker inspect -f '{{.Name}}' "$id" | sed 's#^/##'
 }
 C=$(container || true)
-[ -n "$C" ] || die "AzuraCast's web container isn't running. Start it first: cd $DIR && ${DC[*]} up -d"
+[ -n "$C" ] || die "Acacia Radio's web container isn't running. Start it first: cd $DIR && ${DC[*]} up -d"
 
 OV="$DIR/docker-compose.override.yml"
 VOL_RO=":ro"
@@ -82,20 +82,20 @@ VOLUME="./plugins/$PLUGIN:/var/azuracast/www/plugins/$PLUGIN$VOL_RO"
 yq() { docker run --rm -u "$(id -u):$(id -g)" -v "$DIR:/workdir" -w /workdir mikefarah/yq:4 "$@"; }
 
 wait_ready() {
-  printf 'Waiting for AzuraCast'
+  printf 'Waiting for Acacia Radio'
   for _ in $(seq 1 120); do
     C=$(container || true)
     if [ -n "$C" ] && docker exec "$C" curl -fsS -o /dev/null http://127.0.0.1:6010/api/status 2>/dev/null; then echo " ready."; return 0; fi
     printf '.'; sleep 3
   done
-  echo; die "AzuraCast didn't come back within 6 minutes. Check: ${DC[*]} logs -f web"
+  echo; die "Acacia Radio didn't come back within 6 minutes. Check: ${DC[*]} logs -f web"
 }
 
 backup_override() { [ -f "$OV" ] && cp "$OV" "$OV.bak-$(date +%Y%m%d%H%M%S)" || true; }
 
 # ---------------------------------------------------------------- uninstall
 if [ "$ACTION" = uninstall ]; then
-  echo "This removes the Music Downloader mount and its worker container, and recreates the AzuraCast"
+  echo "This removes the Music Downloader mount and its worker container, and recreates the Acacia Radio"
   echo "container (about a minute of downtime). Downloaded music stays in the media library; the worker's"
   echo "data volume (Spotify logins, download history) is kept."
   confirm "Uninstall Music Downloader?" || die "Cancelled."
@@ -124,7 +124,7 @@ This will:
   2. build the worker image (spotDL + yt-dlp + ffmpeg + Deno; a few minutes the first time)
   3. add the plugin mount, the "$SERVICE" worker and the "$POT_SERVICE" YouTube token server
      ($POT_IMAGE) to $(basename "$OV")
-  4. recreate the AzuraCast container (stations restart; about a minute of downtime)
+  4. recreate the Acacia Radio container (stations restart; about a minute of downtime)
 EOF
 confirm "Continue?" || die "Cancelled."
 
@@ -165,7 +165,7 @@ docker build -t "$IMAGE" "$DEST/worker" || die "The worker image didn't build."
 
 if [ ! -s "$DIR/$ENV_FILE" ]; then
   TOKEN=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
-  (umask 077; printf '# Shared secret between AzuraCast and the Music Downloader worker (created by install.sh).\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' \
+  (umask 077; printf '# Shared secret between Acacia Radio and the Music Downloader worker (created by install.sh).\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' \
     "$TOKEN" "$TOKEN" > "$DIR/$ENV_FILE")
   echo "Created $ENV_FILE (root-only)."
 fi
@@ -200,7 +200,7 @@ yq -i "
 " docker-compose.override.yml || die "Couldn't update $OV automatically (a backup is next to it)."
 "${DC[@]}" config -q || die "docker compose rejects the configuration; check $OV (a backup of the previous file is next to it)."
 
-say "Starting the worker and recreating AzuraCast"
+say "Starting the worker and recreating Acacia Radio"
 "${DC[@]}" up -d
 wait_ready
 docker exec "$C" test -f "/var/azuracast/www/plugins/$PLUGIN/events.php" || die "The plugin isn't visible inside the container; check the volume in $OV."
@@ -218,7 +218,7 @@ say "Music Downloader $NEWV is installed"
 cat <<EOF
 
 Next steps:
-  1. Log in to AzuraCast as an administrator, open a station and click "Music Downloader"
+  1. Log in to Acacia Radio as an administrator, open a station and click "Music Downloader"
      (or go to /music-downloader/<station id>).
   2. Settings (bottom of that page): enter your Spotify app's Client ID and Secret, and register the
      Redirect URI shown there in the Spotify developer dashboard.

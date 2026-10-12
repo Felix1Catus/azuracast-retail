@@ -14,7 +14,7 @@ use Plugin\BranchTracker\Exception\ValidationException;
 /**
  * All branch rules in one place, shared by the admin API and the CLI importer.
  *
- * NB: AzuraCast forces Doctrine's DEFERRED_EXPLICIT change tracking on every entity, plugins included
+ * NB: Acacia Radio forces Doctrine's DEFERRED_EXPLICIT change tracking on every entity, plugins included
  * (App\Doctrine\Event\SetExplicitChangeTracking). A modified entity is only written if it is persist()ed
  * again before flush(); without that, updates are silently dropped.
  */

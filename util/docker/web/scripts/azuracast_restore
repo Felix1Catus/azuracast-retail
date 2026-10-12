@@ -12,7 +12,7 @@ if [ $(whoami) != 'azuracast' ]; then
     exec gosu azuracast azuracast_restore "$@"
 fi
 
-echo "AzuraCast Backup Restore"
+echo "Acacia Radio Backup Restore"
 
 APPLICATION_ENV="${APPLICATION_ENV:-production}"
 echo "(Environment: $APPLICATION_ENV)"

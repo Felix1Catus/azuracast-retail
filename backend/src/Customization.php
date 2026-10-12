@@ -67,7 +67,7 @@ final class Customization
     }
 
     /**
-     * Get the instance name for this AzuraCast instance.
+     * Get the instance name for this Acacia Radio instance.
      */
     public function getInstanceName(): string
     {
@@ -198,7 +198,7 @@ final class Customization
     }
 
     /**
-     * Return whether to show or hide the AzuraCast name from public-facing pages.
+     * Return whether to show or hide the Acacia Radio name from public-facing pages.
      */
     public function hideProductName(): bool
     {

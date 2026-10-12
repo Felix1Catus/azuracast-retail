@@ -193,7 +193,7 @@
           <span class="muted small" id="dest-preview"></span>
         </div>
         <p class="note">Files are named “Artist - Title”. Tracks already in the folder are skipped. New files show up
-          in the station's Music Files within about 5 minutes (AzuraCast's media scan). Downloads run one at a time.</p>
+          in the station's Music Files within about 5 minutes (Acacia Radio's media scan). Downloads run one at a time.</p>
       </form>
     </section>
   </div>
@@ -572,7 +572,7 @@
     $('#redirect-uri').value = s.redirect.uri;
     $('#redirect-note').textContent = s.redirect.automatic
       ? 'Your site uses HTTPS, so the login finishes automatically.'
-      : 'Your site isn\'t on HTTPS, and Spotify only accepts HTTPS or 127.0.0.1 redirect addresses. So the login ends on a page that doesn\'t load, and users paste its address back here. Set up HTTPS (Let\'s Encrypt in AzuraCast) to make it automatic.';
+      : 'Your site isn\'t on HTTPS, and Spotify only accepts HTTPS or 127.0.0.1 redirect addresses. So the login ends on a page that doesn\'t load, and users paste its address back here. Set up HTTPS (Let\'s Encrypt in Acacia Radio) to make it automatic.';
     $('#client-id').value = s.client_id;
     $('#client-secret').value = '';
     $('#client-secret').placeholder = s.has_client_secret ? 'saved (leave empty to keep)' : '';

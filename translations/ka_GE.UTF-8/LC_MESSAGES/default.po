@@ -345,7 +345,7 @@ msgid "All Days"
 msgstr "ყველა დღე"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:57
-msgid "All listed domain names should point to this AzuraCast installation. Separate multiple domain names with commas."
+msgid "All listed domain names should point to this Acacia Radio installation. Separate multiple domain names with commas."
 msgstr ""
 
 #: frontend/components/Stations/Playlists.vue:30
@@ -669,39 +669,39 @@ msgid "Avoid Duplicate Artists/Titles"
 msgstr ""
 
 #: frontend/components/Setup/Register.vue:15
-msgid "AzuraCast First-Time Setup"
+msgid "Acacia Radio First-Time Setup"
 msgstr ""
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:21
-msgid "AzuraCast Instance Name"
+msgid "Acacia Radio Instance Name"
 msgstr "AzuraCast-ის ასლის სახელი"
 
 #: frontend/components/Admin/GeoLite.vue:21
-msgid "AzuraCast ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
+msgid "Acacia Radio ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
 msgstr ""
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:8
-msgid "AzuraCast Update Checks"
+msgid "Acacia Radio Update Checks"
 msgstr ""
 
 #: frontend/components/Account/UserInfoPanel.vue:22
-msgid "AzuraCast User"
+msgid "Acacia Radio User"
 msgstr ""
 
 #: frontend/components/Admin/Permissions.vue:6
-msgid "AzuraCast uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
+msgid "Acacia Radio uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
 msgstr ""
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:85
-msgid "AzuraCast Wiki"
+msgid "Acacia Radio Wiki"
 msgstr ""
 
 #: frontend/components/Stations/Playlists/ImportModal.vue:67
-msgid "AzuraCast will scan the uploaded file for matches in this station's music library. Media should already be uploaded before running this step. You can re-run this tool as many times as needed."
+msgid "Acacia Radio will scan the uploaded file for matches in this station's music library. Media should already be uploaded before running this step. You can re-run this tool as many times as needed."
 msgstr ""
 
 #: frontend/components/Admin/Relays.vue:6
-msgid "AzuraRelay is a standalone service that connects to your AzuraCast instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
+msgid "AzuraRelay is a standalone service that connects to your Acacia Radio instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
 msgstr ""
 
 #: frontend/components/Stations/Media/MoveFilesModal.vue:20
@@ -1224,7 +1224,7 @@ msgid "CPU Stats Help"
 msgstr ""
 
 #: frontend/components/Admin/StorageLocations/Form/Dropbox.vue:22
-msgid "Create a new application. Choose \"Scoped Access\", select your preferred level of access, then name your app. Do not name it \"AzuraCast\", but rather use a name specific to your installation."
+msgid "Create a new application. Choose \"Scoped Access\", select your preferred level of access, then name your app. Do not name it \"Acacia Radio\", but rather use a name specific to your installation."
 msgstr ""
 
 #: frontend/components/Setup/Station.vue:14
@@ -1395,7 +1395,7 @@ msgid "Customize Administrator Password"
 msgstr ""
 
 #: frontend/components/Setup/Settings.vue:10
-msgid "Customize AzuraCast Settings"
+msgid "Customize Acacia Radio Settings"
 msgstr ""
 
 #: frontend/components/Admin/Stations/Form/FrontendForm.vue:72
@@ -1755,7 +1755,7 @@ msgid "Domain Name(s)"
 msgstr ""
 
 #: frontend/components/PanelLayout.vue:170
-msgid "Donate to support AzuraCast!"
+msgid "Donate to support Acacia Radio!"
 msgstr ""
 
 #: frontend/components/Admin/Backups.vue:118
@@ -2061,7 +2061,7 @@ msgid "Enable to allow this account to log in and stream."
 msgstr ""
 
 #: frontend/components/Admin/Backups/ConfigureModal.vue:18
-msgid "Enable to have AzuraCast automatically run nightly backups at the time specified."
+msgid "Enable to have Acacia Radio automatically run nightly backups at the time specified."
 msgstr ""
 
 #: frontend/components/Account/SecurityPanel.vue:61
@@ -2113,7 +2113,7 @@ msgid "Ensure the library matches your system architecture"
 msgstr ""
 
 #: frontend/components/Stations/Webhooks/Form/Mastodon.vue:26
-msgid "Enter \"AzuraCast\" as the application name. You can leave the URL fields unchanged. For \"Scopes\", only \"write:media\" and \"write:statuses\" are required."
+msgid "Enter \"Acacia Radio\" as the application name. You can leave the URL fields unchanged. For \"Scopes\", only \"write:media\" and \"write:statuses\" are required."
 msgstr ""
 
 #: frontend/components/Admin/StorageLocations/Form/Dropbox.vue:57
@@ -2445,7 +2445,7 @@ msgid "Hide Album Art on Public Pages"
 msgstr ""
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:49
-msgid "Hide AzuraCast Branding on Public Pages"
+msgid "Hide Acacia Radio Branding on Public Pages"
 msgstr ""
 
 #: frontend/components/Dashboard.vue:303
@@ -2538,7 +2538,7 @@ msgid "If a song has no album art, this URL will be listed instead. Leave blank 
 msgstr ""
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:59
-msgid "If a visitor is not signed in and visits the AzuraCast homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
+msgid "If a visitor is not signed in and visits the Acacia Radio homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
 msgstr ""
 
 #: frontend/components/Stations/Playlists/Form/BasicInfo.vue:19
@@ -2558,11 +2558,11 @@ msgid "If enabled, a download button will also be present on the public \"On-Dem
 msgstr ""
 
 #: frontend/components/Admin/Stations/Form/StreamersForm.vue:28
-msgid "If enabled, AzuraCast will automatically record any live broadcasts made to this station to per-broadcast recordings."
+msgid "If enabled, Acacia Radio will automatically record any live broadcasts made to this station to per-broadcast recordings."
 msgstr ""
 
 #: frontend/components/Stations/Reports/SoundExchange.vue:92
-msgid "If enabled, AzuraCast will connect to the MusicBrainz database to attempt to find an ISRC for any files where one is missing. Disabling this may improve performance."
+msgid "If enabled, Acacia Radio will connect to the MusicBrainz database to attempt to find an ISRC for any files where one is missing. Disabling this may improve performance."
 msgstr ""
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:106
@@ -2598,7 +2598,7 @@ msgid "If selected, album art will not display on public-facing radio pages."
 msgstr ""
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:50
-msgid "If selected, this will remove the AzuraCast branding from public-facing pages."
+msgid "If selected, this will remove the Acacia Radio branding from public-facing pages."
 msgstr ""
 
 #: frontend/components/Stations/Playlists/Form/ScheduleRow.vue:45
@@ -2877,7 +2877,7 @@ msgid "Learn More about Post-processing CPU Impact"
 msgstr ""
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:22
-msgid "Learn more about release channels in the AzuraCast docs."
+msgid "Learn more about release channels in the Acacia Radio docs."
 msgstr ""
 
 #: frontend/components/Admin/Settings/SecurityPrivacyTab.vue:72
@@ -3642,7 +3642,7 @@ msgid "Note: the port after this one will automatically be used for legacy conne
 msgstr ""
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:35
-msgid "Note: This should be the public-facing homepage of the radio station, not the AzuraCast URL. It will be included in broadcast details."
+msgid "Note: This should be the public-facing homepage of the radio station, not the Acacia Radio URL. It will be included in broadcast details."
 msgstr ""
 
 #: frontend/components/Stations/Streamers.vue:152
@@ -4045,7 +4045,7 @@ msgid "Powered by"
 msgstr "უზრუნველყოფილია"
 
 #: frontend/components/Stations/Webhooks/Form/Discord.vue:128
-msgid "Powered by AzuraCast"
+msgid "Powered by Acacia Radio"
 msgstr "უზრუნველყოფილია AzuraCast-ის მიერ"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:29
@@ -4798,7 +4798,7 @@ msgid "Settings"
 msgstr ""
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:79
-msgid "Setup instructions for broadcasting software are available on the AzuraCast wiki."
+msgid "Setup instructions for broadcasting software are available on the Acacia Radio wiki."
 msgstr ""
 
 #: frontend/components/Admin/StorageLocations/Form/Sftp.vue:11
@@ -4848,7 +4848,7 @@ msgid "Shoutcast 2 DNAS is not currently installed on this installation."
 msgstr ""
 
 #: frontend/components/Admin/Shoutcast.vue:17
-msgid "Shoutcast 2 DNAS is not free software, and its restrictive license does not allow AzuraCast to distribute the Shoutcast binary."
+msgid "Shoutcast 2 DNAS is not free software, and its restrictive license does not allow Acacia Radio to distribute the Shoutcast binary."
 msgstr ""
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:44
@@ -4885,7 +4885,7 @@ msgid "Show HLS Stream on Public Player"
 msgstr ""
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:36
-msgid "Show new releases within your update channel on the AzuraCast homepage."
+msgid "Show new releases within your update channel on the Acacia Radio homepage."
 msgstr ""
 
 #: frontend/components/Stations/Mounts/Form/BasicInfo.vue:27
@@ -5258,7 +5258,7 @@ msgid "Stereo Tool is not currently installed on this installation."
 msgstr ""
 
 #: frontend/components/Admin/StereoTool.vue:31
-msgid "Stereo Tool is not free software, and its restrictive license does not allow AzuraCast to distribute the Stereo Tool binary."
+msgid "Stereo Tool is not free software, and its restrictive license does not allow Acacia Radio to distribute the Stereo Tool binary."
 msgstr ""
 
 #: frontend/components/Admin/Stations/Form/BackendForm.vue:189
@@ -5472,7 +5472,7 @@ msgid "The display name assigned to this relay when viewing it on administrative
 msgstr ""
 
 #: frontend/components/Stations/LiquidsoapConfig.vue:28
-msgid "The editable text boxes are areas where you can insert custom configuration code. The non-editable sections are automatically generated by AzuraCast."
+msgid "The editable text boxes are areas where you can insert custom configuration code. The non-editable sections are automatically generated by Acacia Radio."
 msgstr ""
 
 #: frontend/components/Stations/Podcasts/PodcastForm/BasicInfo.vue:54
@@ -5692,7 +5692,7 @@ msgid "This is a 3-5 digit number."
 msgstr ""
 
 #: frontend/components/Stations/LiquidsoapConfig.vue:33
-msgid "This is an advanced feature and custom code is not officially supported by AzuraCast. You may break your station by adding custom code, but removing it should fix any issues."
+msgid "This is an advanced feature and custom code is not officially supported by Acacia Radio. You may break your station by adding custom code, but removing it should fix any issues."
 msgstr ""
 
 #: frontend/components/Stations/Streamers/Form/BasicInfo.vue:30
@@ -5712,7 +5712,7 @@ msgid "This javascript code will be applied to the station public pages."
 msgstr ""
 
 #: frontend/components/Admin/Stations/Form/BackendForm.vue:228
-msgid "This mode disables AzuraCast's AutoDJ management, using Liquidsoap itself to manage song playback. \"next song\" and some other features will not be available."
+msgid "This mode disables Acacia Radio's AutoDJ management, using Liquidsoap itself to manage song playback. \"next song\" and some other features will not be available."
 msgstr ""
 
 #: frontend/components/Common/DateRangeDropdown.vue:146
@@ -5724,7 +5724,7 @@ msgid "This name should always begin with a slash (/), and must be a valid URL, 
 msgstr ""
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:22
-msgid "This name will appear as a sub-header next to the AzuraCast logo, to help identify this server."
+msgid "This name will appear as a sub-header next to the Acacia Radio logo, to help identify this server."
 msgstr ""
 
 #: frontend/components/Admin/ApiKeys.vue:6
@@ -5756,7 +5756,7 @@ msgid "This port is not used by any external process. Only modify this port if t
 msgstr ""
 
 #: frontend/components/Stations/Playlists/QueueModal.vue:12
-msgid "This queue contains the remaining tracks in the order they will be queued by the AzuraCast AutoDJ (if the tracks are eligible to be played)."
+msgid "This queue contains the remaining tracks in the order they will be queued by the Acacia Radio AutoDJ (if the tracks are eligible to be played)."
 msgstr ""
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:236
@@ -6084,15 +6084,15 @@ msgstr ""
 #: frontend/components/Admin/menu.ts:66
 #: frontend/components/Admin/Updates.vue:3
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:44
-msgid "Update AzuraCast"
+msgid "Update Acacia Radio"
 msgstr ""
 
 #: frontend/components/Admin/Updates.vue:74
-msgid "Update AzuraCast via Web"
+msgid "Update Acacia Radio via Web"
 msgstr ""
 
 #: frontend/components/Admin/Updates.vue:215
-msgid "Update AzuraCast? Your installation will restart."
+msgid "Update Acacia Radio? Your installation will restart."
 msgstr ""
 
 #: frontend/components/Admin/Updates.vue:10
@@ -6171,7 +6171,7 @@ msgid "Use (Us)"
 msgstr ""
 
 #: frontend/components/Account/ApiKeysPanel.vue:8
-msgid "Use API keys to authenticate with the AzuraCast API using the same permissions as your user account."
+msgid "Use API keys to authenticate with the Acacia Radio API using the same permissions as your user account."
 msgstr ""
 
 #: frontend/components/Account/EditForm.vue:68
@@ -6432,7 +6432,7 @@ msgstr ""
 
 #: frontend/components/Login.vue:17
 #: frontend/components/Setup/Register.vue:19
-msgid "Welcome to AzuraCast!"
+msgid "Welcome to Acacia Radio!"
 msgstr ""
 
 #: frontend/components/Login.vue:11
@@ -6507,7 +6507,7 @@ msgid "You can only perform the actions your user account is allowed to perform.
 msgstr ""
 
 #: frontend/components/Stations/Mounts/Form/Advanced.vue:13
-msgid "You can set a custom URL for this stream that AzuraCast will use when referring to it on the web interface and in the Now Playing API return data. Leave empty to use the default value."
+msgid "You can set a custom URL for this stream that Acacia Radio will use when referring to it on the web interface and in the Now Playing API return data. Leave empty to use the default value."
 msgstr ""
 
 #: frontend/components/Stations/SftpUsers.vue:56
@@ -6640,7 +6640,7 @@ msgid "Your password has been updated."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:113
-msgid "Set Up AzuraCast"
+msgid "Set Up Acacia Radio"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Frontend/SetupController.php:192
@@ -6652,19 +6652,19 @@ msgid "All Stations"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:80
-msgid "AzuraCast Application Log"
+msgid "Acacia Radio Application Log"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:86
-msgid "AzuraCast Now Playing Log"
+msgid "Acacia Radio Now Playing Log"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:92
-msgid "AzuraCast Synchronized Task Log"
+msgid "Acacia Radio Synchronized Task Log"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:98
-msgid "AzuraCast Queue Worker Log"
+msgid "Acacia Radio Queue Worker Log"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:104
@@ -6705,7 +6705,7 @@ msgid "Test Message"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:54
-msgid "This is a test message from AzuraCast. If you are receiving this message, it means your e-mail settings are configured correctly."
+msgid "This is a test message from Acacia Radio. If you are receiving this message, it means your e-mail settings are configured correctly."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:68
@@ -7031,7 +7031,7 @@ msgid "Database rolled back to stable release version \"%s\"."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:26
-msgid "AzuraCast Settings"
+msgid "Acacia Radio Settings"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:29
@@ -7076,7 +7076,7 @@ msgid "Restore failed: %s"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:95
-msgid "AzuraCast Backup"
+msgid "Acacia Radio Backup"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:96
@@ -7127,15 +7127,15 @@ msgid "Database migration completed!"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:60
-msgid "AzuraCast Initializing..."
+msgid "Acacia Radio Initializing..."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:62
-msgid "AzuraCast Setup"
+msgid "Acacia Radio Setup"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:64
-msgid "Welcome to AzuraCast. Please wait while some key dependencies of AzuraCast are set up..."
+msgid "Welcome to Acacia Radio. Please wait while some key dependencies of Acacia Radio are set up..."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:69
@@ -7159,11 +7159,11 @@ msgid "Refreshing All Stations"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:125
-msgid "AzuraCast is now updated to the latest version!"
+msgid "Acacia Radio is now updated to the latest version!"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:134
-msgid "AzuraCast installation complete!"
+msgid "Acacia Radio installation complete!"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:136
@@ -7423,7 +7423,7 @@ msgid "One of the essential services on this installation is not currently runni
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:54
-msgid "New AzuraCast Stable Release Available"
+msgid "New Acacia Radio Stable Release Available"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:58
@@ -7432,7 +7432,7 @@ msgid "Version %s is now available. You are currently running version %s. Updati
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:75
-msgid "New AzuraCast Rolling Release Available"
+msgid "New Acacia Radio Rolling Release Available"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/UpdateCheck.php:79
@@ -7469,7 +7469,7 @@ msgid "The performance profiling extension is currently enabled on this installa
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
-msgid "You can track the execution time and memory usage of any AzuraCast page or application from the profiler page."
+msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
@@ -7489,7 +7489,7 @@ msgid "You may want to update your base URL to ensure it is correct."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:45
-msgid "If you regularly use different URLs to access AzuraCast, you should enable the \"Prefer Browser URL\" setting."
+msgid "If you regularly use different URLs to access Acacia Radio, you should enable the \"Prefer Browser URL\" setting."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:52
@@ -7498,27 +7498,27 @@ msgid "Your \"Base URL\" setting (%s) does not match the URL you are currently u
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:33
-msgid "AzuraCast is free and open-source software."
+msgid "Acacia Radio is free and open-source software."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:34
-msgid "If you are enjoying AzuraCast, please consider donating to support our work. We depend on donations to build new features, fix bugs, and keep AzuraCast modern, accessible and free."
+msgid "If you are enjoying Acacia Radio, please consider donating to support our work. We depend on donations to build new features, fix bugs, and keep Acacia Radio modern, accessible and free."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/DonateAdvisorCheck.php:40
-msgid "Donate to AzuraCast"
+msgid "Donate to Acacia Radio"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:176
-msgid "AzuraCast Installer"
+msgid "Acacia Radio Installer"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:179
-msgid "Welcome to AzuraCast! Complete the initial server setup by answering a few questions."
+msgid "Welcome to Acacia Radio! Complete the initial server setup by answering a few questions."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:185
-msgid "AzuraCast Updater"
+msgid "Acacia Radio Updater"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:192
@@ -7526,7 +7526,7 @@ msgid "Change installation settings?"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:201
-msgid "AzuraCast is currently configured to listen on the following ports:"
+msgid "Acacia Radio is currently configured to listen on the following ports:"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:205
@@ -7550,7 +7550,7 @@ msgid "Radio Ports: %s"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:213
-msgid "Customize ports used for AzuraCast?"
+msgid "Customize ports used for Acacia Radio?"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:266
@@ -7562,7 +7562,7 @@ msgid "Server configuration complete!"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AbstractEnvFile.php:90
-msgid "This file was automatically generated by AzuraCast."
+msgid "This file was automatically generated by Acacia Radio."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AbstractEnvFile.php:91
@@ -7600,7 +7600,7 @@ msgid "HTTP Port"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:43
-msgid "The main port AzuraCast listens to for insecure HTTP connections."
+msgid "The main port Acacia Radio listens to for insecure HTTP connections."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:49
@@ -7608,11 +7608,11 @@ msgid "HTTPS Port"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:50
-msgid "The main port AzuraCast listens to for secure HTTPS connections."
+msgid "The main port Acacia Radio listens to for secure HTTPS connections."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:57
-msgid "The port AzuraCast listens to for SFTP file management connections."
+msgid "The port Acacia Radio listens to for SFTP file management connections."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:63
@@ -7620,7 +7620,7 @@ msgid "Station Ports"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:64
-msgid "The ports AzuraCast should listen to for station broadcasts and incoming DJ connections."
+msgid "The ports Acacia Radio should listen to for station broadcasts and incoming DJ connections."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/EnvFile.php:70
@@ -7860,7 +7860,7 @@ msgid "Nginx Max Client Body Size"
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AzuraCastEnvFile.php:251
-msgid "This is the total size any single request body can be. AzuraCast chunks its uploads into smaller file sizes, so this only applies when doing custom uploads via the API. Sizes should be listed in a format like \"100K\", \"128M\", \"1G\" for kilobytes, megabytes, and gigabytes respectively."
+msgid "This is the total size any single request body can be. Acacia Radio chunks its uploads into smaller file sizes, so this only applies when doing custom uploads via the API. Sizes should be listed in a format like \"100K\", \"128M\", \"1G\" for kilobytes, megabytes, and gigabytes respectively."
 msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/EnvFiles/AzuraCastEnvFile.php:257

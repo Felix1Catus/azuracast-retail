@@ -1,6 +1,6 @@
 # Fix log
 
-These are the changes AzuraCast Retail makes to upstream AzuraCast, newest first. Each entry gives:
+These are the changes Acacia Radio makes to upstream, newest first. Each entry gives:
 - the finding (`R-n`, from [REVIEW.md](REVIEW.md))
 - the GitHub issue
 - the files involved
@@ -31,25 +31,25 @@ Not a bug: a new station starts only after **Start Station** on its overview pag
 
 ## 0.23.8-retail.4 (2026-10-11)
 
-Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). Application code is unchanged from retail.3: this release adds the installer and fixes `docker.sh`.
+Base: upstream 0.23.8 rolling, upstream `ebf75a267` (unchanged). Application code is unchanged from retail.3: this release adds the installer and fixes `docker.sh`.
 
 | # | Change | Files | Verified |
 |---|---|---|---|
-| — | **One-command installer** for a fresh Ubuntu/Debian server. It checks the machine, installs Docker, clones the source, builds the newest release, writes `/var/azuracast` (ports 80/443), starts AzuraCast with the `/listen/` proxy and, with `--domain`, gets HTTPS. Safe to run again | `util/install_retail.sh`, INSTALL §2a | Fresh Ubuntu 24.04 VPS (1 vCPU, 4 GB): install from GitHub in 7 min 53 s; setup wizard on :80; :443 answers; `/source` and the Branch Board module respond; ports 8000/2022/8005 closed. Re-run: 33 s, settings kept. Also tested in a Docker-in-Docker container without systemd |
+| — | **One-command installer** for a fresh Ubuntu/Debian server. It checks the machine, installs Docker, clones the source, builds the newest release, writes `/var/azuracast` (ports 80/443), starts Acacia Radio with the `/listen/` proxy and, with `--domain`, gets HTTPS. Safe to run again | `util/install_retail.sh`, INSTALL §2a | Fresh Ubuntu 24.04 VPS (1 vCPU, 4 GB): install from GitHub in 7 min 53 s; setup wizard on :80; :443 answers; `/source` and the Branch Board module respond; ports 8000/2022/8005 closed. Re-run: 33 s, settings kept. Also tested in a Docker-in-Docker container without systemd |
 | — | **Installer fixes found in testing:** without systemd, the Docker daemon starts detached (a Ctrl-C used to stop its port proxies). The final URL shows the public address | `util/install_retail.sh` | Re-run after a daemon restart |
 | — | **`docker.sh update` re-run keeps the rollback target.** Updating to the installed version used to set `AZURACAST_RETAIL_PREVIOUS_IMAGE` to itself | `docker.sh` | Local install and VPS |
 | — | **Docs:** the repository is public (no token needed); the HTTPS step no longer points at `docker.sh setup-letsencrypt`, which only prints a hint | INSTALL.md, FORK.md | — |
 
 ## 0.23.8-retail.3 (2026-10-11)
 
-Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). No core migrations: the Branch Board tables are Tracker's own, and they're created or kept as they are.
+Base: upstream 0.23.8 rolling, upstream `ebf75a267` (unchanged). No core migrations: the Branch Board tables are Tracker's own, and they're created or kept as they are.
 
 | # | Change | Issue | Files | Verified |
 |---|---|---|---|---|
 | R-13 | **Built-in Branch Board.** Tracker 1.3.2 ships in the image as `plugins/branch-tracker`, so there is nothing to install. `StationFeatures::BranchBoard` is on when the module is present, and the station menu has a native **Branch Board** item (permission *View Branches*). Tracker no longer injects its floating button when that item exists. The same tables are used, so data carries over and branches stay logged in | #12 | `plugins/branch-tracker`, `StationFeatures.php`, `StationGlobalFeatures.php`, `GetDashboardAction.php`, `Stations/menu.ts`, `util/sync_tracker.sh` | Local copy of production without the plugin mount: menu item, board, player and PIN login work, and the Tracker suites pass |
 
 
-Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267` (unchanged). No database migrations: rolling back to `0.23.8-retail.1` or to upstream 0.23.8 is safe.
+Base: upstream 0.23.8 rolling, upstream `ebf75a267` (unchanged). No database migrations: rolling back to `0.23.8-retail.1` or to upstream 0.23.8 is safe.
 
 ### Code removed (#13)
 
@@ -83,7 +83,7 @@ The webhook dispatcher keeps only the local handler (static now-playing files an
 
 ### Branding
 
-The donation line in the panel footer and the admin donation notification are gone. "Powered by AzuraCast" and the source code link stay.
+The donation line in the panel footer and the admin donation notification are gone. "Powered by Acacia Radio" and the source code link stay.
 
 ### Retail edition, feature strip (#11)
 
@@ -125,14 +125,14 @@ Also: requests for a feature a station doesn't offer now return **404** instead 
 
 ## 0.23.8-retail.1 (2026-10-10)
 
-Base: AzuraCast 0.23.8 rolling, upstream `ebf75a267`.
+Base: upstream 0.23.8 rolling, upstream `ebf75a267`.
 
 | # | Fix | Issue | Files | Verified |
 |---|---|---|---|---|
 | R-4 | **Upstream sync** to `ebf75a267`. This brings in the security fix that stops the static Now Playing files and Centrifugo publishing stations whose API is private. It also brings composer and npm updates, FullCalendar v7 and Centrifugo 6.9.7. No new migrations | #4 | merge commit | Image build; panel smoke test |
 | R-12 | **Source code link** in the public page footer (login, player), shown even when the product name is hidden. Tracker 1.3.1 adds the same link to the branch player and board | #10 | `backend/templates/minimal.phtml`; plugin `SourceLink` | `/login` footer shows the link; plugin player footer shows the link |
 | R-10 | **Compose file with HTTP/HTTPS only** (`docker-compose.retail.yml`). It keeps the upstream project, container and volume names, uses the fork image and has no updater container | #9 | `docker-compose.retail.yml` | Local stack on the fork image |
-| R-8 | **Upstream updates disabled.** The web updater is always off, the AzuraCast Central check and its notification are skipped, and `docker.sh update` / `update-self` refuse to run on a retail install. The image defaults to `ENABLE_WEB_UPDATER=false` | #7 | `Environment.php`, `CheckUpdatesTask.php`, `UpdateCheck.php`, `docker.sh`, `Dockerfile` | `docker.sh update` exits with a message on a retail compose file |
+| R-8 | **Upstream updates disabled.** The web updater is always off, the the upstream update service check and its notification are skipped, and `docker.sh update` / `update-self` refuse to run on a retail install. The image defaults to `ENABLE_WEB_UPDATER=false` | #7 | `Environment.php`, `CheckUpdatesTask.php`, `UpdateCheck.php`, `docker.sh`, `Dockerfile` | `docker.sh update` exits with a message on a retail compose file |
 | R-7 | **Route cache keyed on route files.** The cache file name hashes the core route files and each plugin's `events.php` (path and modification time), so installing or updating a plugin never serves stale routes | #6 | `AppFactory.php` | Plugin routes resolve after a plugin change without manual cache removal |
 | R-6 | **Branch presence independent of analytics.** Connected clients are always collected. For the "none" and "no IP" levels, the analytics task now deletes only listener rows for ended connections (it used to delete all of them) | #5 | `NowPlayingTask.php`, `ListenerRepository.php`, `RunAnalyticsTask.php` | Board shows connected branches |
 | R-9 | **Autoloader note.** Documented that the image uses a classmap-authoritative autoloader | #8 | `FORK.md`, `INSTALL.md` | n/a |

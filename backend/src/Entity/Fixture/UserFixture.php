@@ -19,9 +19,9 @@ final class UserFixture extends AbstractFixture implements DependentFixtureInter
 
         if (!empty($adminEmail) && !empty($adminPassword)) {
             $demoUser = new User();
-            $demoUser->email = 'demo@azuracast.com';
+            $demoUser->email = 'demo@example.com';
             $demoUser->setNewPassword('demo');
-            $demoUser->name = 'AzuraCast Demo User';
+            $demoUser->name = 'Acacia Radio Demo User';
 
             $demoRole = $this->getReference('demo_role', Role::class);
             $demoUser->roles->add($demoRole);

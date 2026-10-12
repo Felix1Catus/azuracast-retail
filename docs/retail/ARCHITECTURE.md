@@ -1,6 +1,6 @@
-# AzuraCast Retail: architecture map
+# Acacia Radio: architecture map
 
-This is a map of the AzuraCast 0.23.8 codebase (upstream `5ca47e6`) as it applies to the retail fork. Use it to find the code behind a feature, and to see what each part costs at runtime before keeping, hiding or removing it. See [REDESIGN.md](REDESIGN.md) for the retail plan and [REVIEW.md](REVIEW.md) for the bugs and improvements found while reading the code.
+This is a map of the upstream 0.23.8 codebase (upstream `5ca47e6`) as it applies to the retail fork. Use it to find the code behind a feature, and to see what each part costs at runtime before keeping, hiding or removing it. See [REDESIGN.md](REDESIGN.md) for the retail plan and [REVIEW.md](REVIEW.md) for the bugs and improvements found while reading the code.
 
 ## 1. One container, many processes
 
@@ -53,7 +53,7 @@ There is **no event for the station menu**, which lives in the frontend (see §3
 | Scheduling | `Entity/StationSchedule`, `Radio/AutoDJ/Scheduler.php` | Day-of-week and time windows per playlist or streamer, in the station's timezone |
 | Console | `Console/Command/*` | `azuracast:setup`, `backup`, `restore`, `settings:set`, `sync:*`, `locale:*`, `api:docs` |
 | Version | `Version.php` | Reads `.gitinfo` (written at build time) or falls back to `git` |
-| Updater | `Sync/Task/CheckUpdatesTask.php`, `Service/WebUpdater.php` | Calls AzuraCast Central; the web updater pulls the **upstream** image |
+| Updater | `Sync/Task/CheckUpdatesTask.php`, `Service/WebUpdater.php` | Calls the upstream update service; the web updater pulls the **upstream** image |
 
 **Feature gating:** `Enums/StationFeatures.php` gives each optional feature a `supportedForStation()` check, combining station settings, the backend/frontend type and global settings. The checks are enforced in two places:
 - routes, through `Middleware\StationSupportsFeature`

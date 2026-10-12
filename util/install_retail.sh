@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# AzuraCast Retail: one-command install on a fresh Ubuntu/Debian server.
+# Acacia Radio: one-command install on a fresh Ubuntu/Debian server.
 #
 #   sudo bash install_retail.sh [options]
 #
@@ -10,7 +10,7 @@
 #   3. clones or updates the source checkout and checks out a release
 #   4. builds the image (util/build_image.sh)
 #   5. writes the install directory (docker-compose.yml, docker.sh, .env, azuracast.env, music-downloader.env)
-#   6. starts AzuraCast and waits until it answers
+#   6. starts Acacia Radio and waits until it answers
 #   7. with --domain: sets the site URL and gets a Let's Encrypt certificate
 #
 # Options:
@@ -152,7 +152,7 @@ docker info >/dev/null 2>&1 || fail "The Docker daemon is not running (see /var/
 ok "Docker daemon is running"
 
 # ------------------------------------------------------------------------------------------------ 3. source
-step "Getting the AzuraCast Retail source"
+step "Getting the Acacia Radio source"
 GIT=(git)
 if [[ -n "${RETAIL_GIT_TOKEN:-}" ]]; then
   # The token is passed through git's credential protocol, never put in a URL.
@@ -227,28 +227,28 @@ if [[ ! -f azuracast.env ]]; then
   chmod 600 azuracast.env
   ok "Created azuracast.env with a random database password"
 fi
-# Music Downloader: worker image and the secret shared by AzuraCast and the worker (docker-compose.retail.yml).
+# Music Downloader: worker image and the secret shared by Acacia Radio and the worker (docker-compose.retail.yml).
 set_env .env MUSIC_DOWNLOADER_IMAGE "$WORKER_IMAGE"
 if [[ ! -s music-downloader.env ]]; then
   MD_TOKEN="$(openssl rand -hex 32 2>/dev/null || head -c32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
-  (umask 077; printf '# Shared secret between AzuraCast and the Music Downloader worker.\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' "$MD_TOKEN" "$MD_TOKEN" > music-downloader.env)
+  (umask 077; printf '# Shared secret between Acacia Radio and the Music Downloader worker.\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' "$MD_TOKEN" "$MD_TOKEN" > music-downloader.env)
   ok "Created music-downloader.env"
 fi
 docker compose config -q
 ok "docker-compose.yml, docker.sh, .env, azuracast.env and music-downloader.env are in place"
 
 # ------------------------------------------------------------------------------------------------ 6. start
-step "Starting AzuraCast"
+step "Starting Acacia Radio"
 docker compose up -d --remove-orphans
-info "Waiting for AzuraCast to answer (first start sets up the database, about 1-3 min)..."
+info "Waiting for Acacia Radio to answer (first start sets up the database, about 1-3 min)..."
 STATUS=""
 for _ in $(seq 1 90); do
   STATUS=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$HTTP_PORT/api/status" || true)
   [[ "$STATUS" == 200 ]] && break
   sleep 4
 done
-[[ "$STATUS" == 200 ]] || fail "AzuraCast did not answer on port $HTTP_PORT (see: docker compose logs web)."
-ok "AzuraCast is running"
+[[ "$STATUS" == 200 ]] || fail "Acacia Radio did not answer on port $HTTP_PORT (see: docker compose logs web)."
+ok "Acacia Radio is running"
 
 CLI=(docker compose exec -T --user=azuracast web azuracast_cli)
 # Only HTTP/HTTPS are published, so players must use the /listen/ proxy.

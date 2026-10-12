@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="AzuraCast">
-    <description>The AzuraCast PHP coding standard.</description>
+<ruleset name="Acacia Radio">
+    <description>The Acacia Radio PHP coding standard.</description>
 
     <file>backend/config</file>
     <file>backend/src</file>

@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * The branch player at /public/{station_id}/branch (always available). The same page is served on the
  * station's own /public/{station_id} when "public page login" is on (Middleware\PublicPageTakeover).
- * Self-contained (templates/player.html), so AzuraCast UI changes can't break it.
+ * Self-contained (templates/player.html), so Acacia Radio UI changes can't break it.
  */
 final class PlayerPageAction implements SingleActionInterface
 {

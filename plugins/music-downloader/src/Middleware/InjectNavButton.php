@@ -10,10 +10,10 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Adds the "Music Downloader" button to AzuraCast's panel pages. AzuraCast has no plugin hook for its
+ * Adds the "Music Downloader" button to Acacia Radio's panel pages. Acacia Radio has no plugin hook for its
  * precompiled Vue menus, so this appends one <script> tag to the panel's HTML; the script (templates/nav.js)
  * shows the button on station pages only if the user has "download music". Any failure leaves the page as is.
- * (Same approach as the Tracker plugin; once AzuraCast Retail has a native menu item, this is switched off.)
+ * (Same approach as the Tracker plugin; once Acacia Radio Retail has a native menu item, this is switched off.)
  */
 final class InjectNavButton implements MiddlewareInterface
 {

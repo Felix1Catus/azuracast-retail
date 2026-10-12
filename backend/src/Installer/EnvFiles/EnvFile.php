@@ -41,28 +41,28 @@ final class EnvFile extends AbstractEnvFile
                 'AZURACAST_HTTP_PORT' => [
                     'name' => __('HTTP Port'),
                     'description' => __(
-                        'The main port AzuraCast listens to for insecure HTTP connections.',
+                        'The main port Acacia Radio listens to for insecure HTTP connections.',
                     ),
                     'default' => 80,
                 ],
                 'AZURACAST_HTTPS_PORT' => [
                     'name' => __('HTTPS Port'),
                     'description' => __(
-                        'The main port AzuraCast listens to for secure HTTPS connections.',
+                        'The main port Acacia Radio listens to for secure HTTPS connections.',
                     ),
                     'default' => 443,
                 ],
                 'AZURACAST_SFTP_PORT' => [
                     'name' => __('SFTP Port'),
                     'description' => __(
-                        'The port AzuraCast listens to for SFTP file management connections.',
+                        'The port Acacia Radio listens to for SFTP file management connections.',
                     ),
                     'default' => 2022,
                 ],
                 'AZURACAST_STATION_PORTS' => [
                     'name' => __('Station Ports'),
                     'description' => __(
-                        'The ports AzuraCast should listen to for station broadcasts and incoming DJ connections.',
+                        'The ports Acacia Radio should listen to for station broadcasts and incoming DJ connections.',
                     ),
                     'default' => implode(',', Configuration::enumerateDefaultPorts()),
                 ],

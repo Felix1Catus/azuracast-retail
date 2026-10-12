@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Plugin\BranchTracker\Service;
 
 /**
- * "Source code" link for the plugin's pages. AzuraCast Retail serves the running source at /source
- * (AGPL-3.0 section 13); on a stock AzuraCast install that route doesn't exist and no link is shown.
+ * "Source code" link for the plugin's pages. Acacia Radio Retail serves the running source at /source
+ * (AGPL-3.0 section 13); on a stock Acacia Radio install that route doesn't exist and no link is shown.
  */
 final class SourceLink
 {

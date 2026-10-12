@@ -1,7 +1,7 @@
 {
   "name": "azuracast/azuracast",
   "type": "project",
-  "description": "The AzuraCast self-hosted web radio station management suite.",
+  "description": "The Acacia Radio self-hosted web radio station management suite.",
   "license": "AGPL-3.0-or-later",
   "authors": [
     {
