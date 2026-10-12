@@ -8,6 +8,29 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.8 (2026-10-12)
+
+Rebrand phase 2: internal names. Existing installs keep all data: the database keeps its name and the Docker
+volumes stay the same; stored paths move with a migration. Details: [REBRAND.md](REBRAND.md#phase-2-internal-names-done).
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Internal names.** `/var/acacia`, user `acacia` (same uid/gid), `acacia_cli` and `acacia:*` commands, `acacia.env` and `ACACIA_*` settings, images `acacia-radio`/`acacia-radio-music-downloader`, containers `acacia*`, Liquidsoap `acacia.*`, code identifiers and file names (`util/rebrand.py`, re-runnable) | whole tree | Built image: 0 mentions outside protected lines and external project names |
+| — | **Migration for existing installs.** `./docker.sh update` renames the env file and keys (backups kept), pins the old database name and user, keeps `COMPOSE_PROJECT_NAME` (same volumes) and installs the new compose template; migration `Version20261012120000` moves `station.radio_base_dir` and `storage_location.path` to `/var/acacia/` and renames Liquidsoap identifiers in custom code | `docker.sh`, `backend/src/Entity/Migration/Version20261012120000.php` | Dev server: retail.7 to phase 2 via `./docker.sh update`; paths migrated, database and volumes kept, station configs regenerated with the new user and paths, Music Downloader kept its settings and history and downloads again |
+| — | **Compatibility for installs started the old way** (old compose file or env): old database name kept, volumes mounted at the old paths linked into `/var/acacia`, `AZURACAST_*` variables mapped, stale station process configs rewritten before supervisord starts, `/var/azuracast` linked to `/var/acacia` | `util/docker/common/scripts/my_init` | Dev server | <!-- rebrand:keep -->
+| — | **Fixes found deploying to the dev server:** `is-retail` didn't recognise installs still on the old image name, so `update` took the upstream path and replaced `docker.sh` (restored; nothing else changed). Station `supervisord.conf` files still named the old user, so the container restart-looped (~9 min off air until fixed by hand); now rewritten at startup | `docker.sh`, `my_init` | Dev server |
+
+**Updating from retail.7** (the installed `docker.sh` predates the rename, so get the new one first):
+
+```bash
+cd /var/azuracast && ./docker.sh backup  # rebrand:keep (install folder of existing installs)
+git -C "$(grep ^RETAIL_SOURCE_DIR= .env | cut -d= -f2)" fetch --tags origin
+git -C "$(grep ^RETAIL_SOURCE_DIR= .env | cut -d= -f2)" checkout --detach v0.23.8-retail.8
+./docker.sh update-self && ./docker.sh update v0.23.8-retail.8
+```
+
+Rolling back to retail.7 needs the file backups and a database migration step: see REBRAND.md, "Rolling back".
+
 ## 0.23.8-retail.7 (2026-10-12)
 
 First Acacia Radio release: the Music Downloader module and the rebrand of everything users see. Base: upstream 0.23.8
