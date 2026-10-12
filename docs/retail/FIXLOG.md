@@ -8,6 +8,15 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.14 (2026-10-12)
+
+Music Downloader 0.2.1. Update with `./docker.sh update`, then sign the YouTube account in again once
+(Music Downloader > Settings > YouTube account).
+
+| # | Fix | Files | Verified |
+|---|---|---|---|
+| — | **YouTube account no longer signed out at its first refresh.** The worker loaded its older cookie file into the browser profile, overwriting the rotated session, and cookies were exported while YouTube's page could still rotate them. The profile is now never overwritten, and cookies are exported after leaving YouTube | `plugins/music-downloader/worker/app/browser.py`, `browser_api.py`, `youtube_session.py` | Test containers, worker self-test; sign-in on dev server pending |
+
 ## 0.23.8-retail.13 (2026-10-12)
 
 Music Downloader 0.2.0: YouTube account. Update with `./docker.sh update` (it adds the

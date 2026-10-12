@@ -3,8 +3,9 @@
 The music-downloader-browser container (app/browser_api.py) runs Chromium with the account's saved profile.
 The administrator signs in through the remote view in Settings (no password is stored). After that this
 module, used by the API process, its keeper thread and the job runners, asks the browser to refresh: open
-youtube.com with the newest cookies and export what YouTube sends back. When YouTube has signed the account
-out, the state becomes "expired" and an alert asks an administrator to sign in again.
+youtube.com in the saved profile and export its cookies. The profile is the only copy that's written back
+to; the worker's cookie file is just its latest export. When YouTube has signed the account out, the state
+becomes "expired" and an alert asks an administrator to sign in again.
 
 The state lives in the settings table (yt_state, JSON). A file lock keeps the processes from driving the
 browser at the same time. States: disconnected (no account), connected, expired, error.
@@ -139,20 +140,14 @@ def refresh(*, max_age: Optional[int] = None, blocking: bool = True) -> Dict[str
     """Refresh the cookies from the browser. max_age: skip when the last attempt is younger (before a job)."""
     with _lock(blocking):
         with db.session() as conn:
-            s = db.get_settings(conn)
             state = get_state(conn)
         if not state.get("account"):
             return state
         if max_age is not None and db.now() - int(state.get("last_check") or 0) < max_age:
             return state
 
-        cookie_text = None
-        if s["cookie_source"] == "account" and config.COOKIE_FILE.exists():
-            # yt-dlp may have stored newer cookies than the browser profile has; continue from those.
-            cookie_text = config.COOKIE_FILE.read_text(errors="replace")
-
         try:
-            result = browser("POST", "/refresh", {"cookies": cookie_text})
+            result = browser("POST", "/refresh", {})
         except Busy:
             return state  # the remote view is open
         except BrowserError as exc:

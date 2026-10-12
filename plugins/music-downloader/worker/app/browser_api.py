@@ -6,10 +6,9 @@ profile of the YouTube account, signed in by an administrator through the remote
 
 import hmac
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from fastapi import Depends, FastAPI, Header, HTTPException
-from pydantic import BaseModel, Field
 
 from app import config
 from app.browser import Browser, Busy
@@ -46,13 +45,9 @@ def health() -> Dict[str, Any]:
     return {"ok": True}
 
 
-class RefreshIn(BaseModel):
-    cookies: Optional[str] = Field(default=None, max_length=1_000_000)
-
-
 @app.post("/refresh", dependencies=auth)
-def refresh(body: RefreshIn) -> Dict[str, Any]:
-    return run(lambda: browser.refresh(body.cookies))
+def refresh() -> Dict[str, Any]:
+    return run(browser.refresh)
 
 
 @app.post("/view/open", dependencies=auth)

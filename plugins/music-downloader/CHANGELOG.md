@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 (2026-10-12)
+
+- Fix: the YouTube account was signed out at its first refresh. The worker loaded its (older) cookie file into
+  the browser profile before opening YouTube, overwriting the rotated session, and the export happened while
+  YouTube's page could still rotate the cookies. Now the profile is never overwritten, and cookies are exported
+  after leaving YouTube, so the worker's copy matches the profile exactly. Sign in again once after updating.
+
 ## 0.2.0 (2026-10-12)
 
 - **Connect YouTube account:** an administrator signs a separate Google account in once, in a browser on the

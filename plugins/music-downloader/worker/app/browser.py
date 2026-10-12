@@ -51,7 +51,7 @@ def _is_youtube(domain: str) -> bool:
     return domain.lstrip(".") == "youtube.com" or domain.endswith(".youtube.com")
 
 
-# ------------------------------------------------------------------ cookies.txt <-> Playwright
+# ------------------------------------------------------------------ Playwright -> cookies.txt
 
 
 def to_netscape(cookies: List[Dict[str, Any]]) -> str:
@@ -72,28 +72,6 @@ def to_netscape(cookies: List[Dict[str, Any]]) -> str:
             c["value"],
         ]))
     return "\n".join(lines) + "\n"
-
-
-def from_netscape(text: str) -> List[Dict[str, Any]]:
-    result = []
-    for raw in text.splitlines():
-        line = raw.rstrip("\r")
-        http_only = line.startswith("#HttpOnly_")
-        if http_only:
-            line = line[len("#HttpOnly_"):]
-        if not line or line.startswith("#"):
-            continue
-        f = line.split("\t")
-        if len(f) != 7 or not _is_youtube(f[0].lower()):
-            continue
-        cookie: Dict[str, Any] = {
-            "name": f[5], "value": f[6], "domain": f[0], "path": f[2] or "/",
-            "secure": f[3] == "TRUE", "httpOnly": http_only,
-        }
-        if f[4].isdigit() and int(f[4]) > 0:
-            cookie["expires"] = int(f[4])
-        result.append(cookie)
-    return result
 
 
 # ------------------------------------------------------------------ the browser
@@ -249,22 +227,24 @@ class Browser:
         except Exception:  # pylint: disable=broad-except
             pass
         page.wait_for_timeout(6000)
+        sign_in_button = page.locator('ytd-masthead a[href*="accounts.google.com/ServiceLogin"]').count()
+        # Leave YouTube before exporting: its pages rotate the session cookies, and a rotation after the export
+        # would leave the worker with stale cookies that Google treats as a signed-out (or stolen) session.
+        page.goto("about:blank")
+        page.wait_for_timeout(1000)
         cookies = self._context().cookies()
         names = {c["name"] for c in cookies if _is_youtube(c["domain"])}
-        sign_in_button = page.locator('ytd-masthead a[href*="accounts.google.com/ServiceLogin"]').count()
         logged_in = bool(names & LOGIN_COOKIES) and sign_in_button == 0
         return {"logged_in": logged_in, "cookies": to_netscape(cookies)}
 
-    def refresh(self, cookie_text: Optional[str]) -> Dict[str, Any]:
+    def refresh(self) -> Dict[str, Any]:
+        """The profile is the only source of the session: cookies are exported from it, never imported into it
+        (loading an older copy over a rotated session signs it out)."""
         def run():
             if self.view_open:
                 raise Busy("The browser is open in the remote view.")
             self._open()
             try:
-                if cookie_text:
-                    imported = from_netscape(cookie_text)
-                    if imported:
-                        self._context().add_cookies(imported)
                 return self._youtube_state()
             finally:
                 self._close()
