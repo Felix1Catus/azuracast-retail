@@ -23,7 +23,13 @@
             class="navbar-brand ms-0 me-auto"
             :to="{ name: 'dashboard' }"
         >
-            acacia<strong>radio</strong>
+            <img
+                src="/static/icons/production/96.png"
+                alt=""
+                width="32"
+                height="32"
+                class="me-2 rounded align-middle"
+            >acacia<strong>radio</strong>
             <small v-if="instanceName">{{ instanceName }}</small>
         </router-link>
 

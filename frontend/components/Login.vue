@@ -4,6 +4,14 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-sm">
+                        <img
+                            v-if="!hideProductName"
+                            src="/static/icons/production/192.png"
+                            alt=""
+                            width="96"
+                            height="96"
+                            class="d-block mx-auto mb-3"
+                        >
                         <h2
                             v-if="hideProductName"
                             class="card-title text-center"
