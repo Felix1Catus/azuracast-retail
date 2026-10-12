@@ -242,6 +242,8 @@ def _download(conn, job, settings, staging: Path) -> Optional[str]:
     from spotdl.types.song import Song
     from spotdl.utils.formatter import create_file_name
 
+    _speed_up_spotdl_search()
+
     dest = Path(job["dest_dir"])
     dest.mkdir(parents=True, exist_ok=True)
     _check_free_space(dest)
@@ -335,6 +337,32 @@ def _download(conn, job, settings, staging: Path) -> Optional[str]:
                 )
 
     return None
+
+
+def _speed_up_spotdl_search() -> None:
+    """spotDL's YouTube search fetches every result page in full ("ytsearch10:" without flat extraction) and
+    may fetch up to 8 more for view counts. Behind PO tokens and JS challenges each fetch takes ~6 s, so
+    matching took ~60 s per track. A flat search returns the same title, duration, channel and views from
+    the single search page."""
+    from spotdl.providers.audio.base import AudioProvider
+    from spotdl.providers.audio.youtube import YouTube
+
+    original_get_results = YouTube.get_results
+
+    def flat_get_results(self, search_term, *args, **kwargs):
+        params = self.audio_handler.params
+        previous = params.get("extract_flat")
+        params["extract_flat"] = "in_playlist"
+        try:
+            return original_get_results(self, search_term, *args, **kwargs)
+        finally:
+            params["extract_flat"] = previous
+
+    YouTube.get_results = flat_get_results  # type: ignore[method-assign]
+
+    if not config.RANK_BY_VIEWS:
+        # Views of 0 for results without them make get_best_result() keep the best-scoring match.
+        AudioProvider.get_views = lambda self, url: 0  # type: ignore[method-assign]
 
 
 def _set_track(conn, track_id: int, status: str, file: Optional[str] = None, error: Optional[str] = None) -> None:

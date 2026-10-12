@@ -7,7 +7,7 @@ comes from YouTube Music (or the other sources listed in Settings).
 
 | | |
 |---|---|
-| **Version** | 0.1.2 (first version, not yet integrated into the AzuraCast Retail installer) |
+| **Version** | 0.1.3 (first version, not yet integrated into the AzuraCast Retail installer) |
 | **Developed on** | AzuraCast Retail 0.23.8-retail.6 · spotDL 4.5.2 · yt-dlp 2026.08.19 · Deno 2.4.5 · ffmpeg 7.1 |
 | **Works with** | AzuraCast 0.23.x on Docker, stations with **local** media storage |
 | **Not supported** | S3 / Dropbox / SFTP media storage; spotify.link short links; ongoing playlist sync (one-time downloads only) |

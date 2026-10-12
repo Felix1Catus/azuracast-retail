@@ -3,7 +3,8 @@
 YouTube blocks most datacenter IPs unless the request is signed in (cookies) and carries a "PO token". On a
 signed-in session, YouTube often serves the regular web client only as SABR streams, which yt-dlp can't
 download, so:
-  - player clients: web_safari first (it also gets HLS streams, which aren't SABR), then web
+  - player clients: mweb (audio-only streams, including auto-generated "Topic" uploads; needs signed-in
+    cookies on a blocked IP), then web_safari (HLS streams for music videos)
   - PO tokens: from the bgutil server in the music-downloader-pot container
   - format: audio-only when offered, otherwise the HLS streams 93-95 (AAC-LC audio + a small video track,
     which ffmpeg drops with -vn), then anything with audio

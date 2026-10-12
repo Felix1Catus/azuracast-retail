@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3 (2026-10-12)
+
+- About 4x faster: ~17 s per track instead of ~65-75 s on a 1-CPU server. spotDL's YouTube search fully
+  extracted all 10 results (plus up to 8 more pages for view counts), each costing ~6 s behind PO tokens and
+  JS challenges. The search is now flat (one request; same title, duration, channel and views), and view
+  counts are no longer fetched page by page (`MD_RANK_BY_VIEWS=1` restores that).
+- YouTube clients are now `mweb,web_safari` (`MD_YOUTUBE_CLIENTS`): with signed-in cookies, mweb gets
+  audio-only Opus (~130-140 kbps) for both music videos and auto-generated "Topic" uploads, which web_safari
+  alone couldn't download.
+
 ## 0.1.2 (2026-10-12)
 
 - Downloads work on servers that YouTube blocks: with signed-in cookies, YouTube still served the web client

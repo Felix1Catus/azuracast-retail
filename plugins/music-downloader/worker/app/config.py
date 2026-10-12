@@ -22,7 +22,12 @@ RUNNER_NICE = int(os.environ.get("MD_RUNNER_NICE", "10"))
 
 # YouTube access (see app/ytdlp.py). The PO-token server is the music-downloader-pot container.
 POT_URL = os.environ.get("MD_POT_URL", "http://music-downloader-pot:4416")
-YOUTUBE_CLIENTS = os.environ.get("MD_YOUTUBE_CLIENTS", "web_safari,web")
+YOUTUBE_CLIENTS = os.environ.get("MD_YOUTUBE_CLIENTS", "mweb,web_safari")
+
+# spotDL breaks ties between similar YouTube matches by view count, fetching each candidate's page with yt-dlp
+# (up to 8 per track; with PO tokens and JS challenges that's ~50 s of a ~65 s track). Off by default: the
+# best text/duration match is used instead. Set MD_RANK_BY_VIEWS=1 to restore spotDL's behaviour.
+RANK_BY_VIEWS = os.environ.get("MD_RANK_BY_VIEWS", "0") == "1"
 
 SPOTIFY_SCOPES = "playlist-read-private playlist-read-collaborative user-library-read user-follow-read"
 
