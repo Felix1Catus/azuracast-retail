@@ -346,7 +346,7 @@ msgstr "Ganztägig"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:57
 msgid "All listed domain names should point to this Acacia Radio installation. Separate multiple domain names with commas."
-msgstr "Alle aufgeführten Domainnamen sollten auf diese AzuraCast-Installation verweisen. Trennen Sie mehrere Domainnamen mit Kommas."
+msgstr "Alle aufgeführten Domainnamen sollten auf diese Acacia-Radio-Installation verweisen. Trennen Sie mehrere Domainnamen mit Kommas."
 
 #: frontend/components/Stations/Playlists.vue:30
 msgid "All Playlists"
@@ -5725,7 +5725,7 @@ msgstr "Dieser Name sollte immer mit einem Schrägstrich (/) beginnen und muss e
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:22
 msgid "This name will appear as a sub-header next to the Acacia Radio logo, to help identify this server."
-msgstr "Dieser Name erscheint als Sub-Header neben dem AzuraCast-Logo, um diesen Server zu identifizieren."
+msgstr "Dieser Name erscheint als Sub-Header neben dem Acacia-Radio-Logo, um diesen Server zu identifizieren."
 
 #: frontend/components/Admin/ApiKeys.vue:6
 msgid "This page lists all API keys assigned to all users across the system. To manage your own API keys, visit your account profile."
@@ -6653,7 +6653,7 @@ msgstr "Alle Sender"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:80
 msgid "Acacia Radio Application Log"
-msgstr "AzuraCast-Anwendungsprotokoll"
+msgstr "Acacia-Radio-Anwendungsprotokoll"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:86
 msgid "Acacia Radio Now Playing Log"
@@ -7032,7 +7032,7 @@ msgstr ""
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:26
 msgid "Acacia Radio Settings"
-msgstr "AzuraCast-Einstellungen"
+msgstr "Acacia-Radio-Einstellungen"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:29
 msgid "Setting Key"
@@ -7164,7 +7164,7 @@ msgstr "Acacia Radio ist aktuell!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:134
 msgid "Acacia Radio installation complete!"
-msgstr "AzuraCast-Installation abgeschlossen!"
+msgstr "Acacia-Radio-Installation abgeschlossen!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:136
 #, php-format
@@ -7470,7 +7470,7 @@ msgstr "Die Performance-Profiling Erweiterung ist derzeit bei dieser Installatio
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
 msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
-msgstr "Die Ausführungszeiten und die Speichernutzung jeder AzuraCast-Seite oder -Anwendung kann auf der Profiler-Seite verfolgt werden."
+msgstr "Die Ausführungszeiten und die Speichernutzung jeder Acacia-Radio-Seite oder -Anwendung kann auf der Profiler-Seite verfolgt werden."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
 msgid "Profiler Control Panel"

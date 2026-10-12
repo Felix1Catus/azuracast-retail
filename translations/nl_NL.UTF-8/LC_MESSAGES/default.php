@@ -1308,7 +1308,7 @@
       'Synchronization Not Recently Run' => 'Synchronisatie niet recent uitgevoerd',
       'The routine synchronization task has not run recently. This may indicate an error with your installation.' => 'De routine synchronisatie taak is onlangs niet uitgevoerd. Dit kan duiden op een fout met uw installatie.',
       'The performance profiling extension is currently enabled on this installation.' => 'De extensie voor het prestatie profiel is momenteel ingeschakeld op deze installatie.',
-      'You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page.' => 'U kunt de uitvoeringstijd en het geheugengebruik van elke AzuraCast-pagina of -toepassing volgen vanaf de profielpagina.',
+      'You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page.' => 'U kunt de uitvoeringstijd en het geheugengebruik van elke Acacia-Radio-pagina of -toepassing volgen vanaf de profielpagina.',
       'Profiler Control Panel' => 'Profiel Configuratiescherm',
       'Performance profiling is currently enabled for all requests.' => 'Prestatieprofiel is momenteel ingeschakeld voor alle verzoeken.',
       'This can have an adverse impact on system performance. You should disable this when possible.' => 'Dit kan een negatieve invloed hebben op de systeemprestaties. U kunt dit het beste uitschakelen als dit mogelijk is.',

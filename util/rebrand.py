@@ -70,6 +70,13 @@ RULES: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"Acacia Radio Retail"), BRAND),
     # Translators' spellings ("Azuracast", "d'Azuracast").
     (re.compile(r"(?<![\w@/\\.-])Azuracast(?![\w-])"), BRAND),
+    # Inflected forms in translations: compounds ("AzuraCast-Installation" -> "Acacia-Radio-Installation") and
+    # case endings ("AzuraCastu" -> "Acacia Radio").
+    (re.compile(r"(?<![\w@/\\.-])Azura[Cc]ast(?=-)"), "Acacia-Radio"),
+    (re.compile(r"(?<![\w@/\\.-])Azura[Cc]ast[a-z\u00e0-\u024f]{1,4}(?![\w-])"), BRAND),
+    # Next to non-Latin script (Korean particles, Chinese): "AzuraCast가", "检查AzuraCast更新".
+    (re.compile(r"(?<![\w@/\\.-])Azura[Cc]ast(?=[^\x00-\u024f])"), BRAND),
+    (re.compile(r"(?<=[^\x00-\u024f])Azura[Cc]ast"), BRAND),
 ]
 
 # Phase 1 is done when no product name (any capitalised spelling, as a word) and no link to an azuracast.com

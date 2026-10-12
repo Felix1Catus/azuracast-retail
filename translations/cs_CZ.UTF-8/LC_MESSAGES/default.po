@@ -2886,7 +2886,7 @@ msgstr ""
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:22
 msgid "Learn more about release channels in the Acacia Radio docs."
-msgstr "Další informace o kanálech vydání najdete v dokumentech k AzuraCastu."
+msgstr "Další informace o kanálech vydání najdete v dokumentech k Acacia Radio."
 
 #: frontend/components/Admin/Settings/SecurityPrivacyTab.vue:72
 msgid "Learn more about this header."
@@ -4894,7 +4894,7 @@ msgstr "Zobrazit Stream HLS ve Veřejném Přehrávači"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:36
 msgid "Show new releases within your update channel on the Acacia Radio homepage."
-msgstr "Zobrazení nových verzí v rámci aktualizačního kanálu na domovské stránce AzuraCastu."
+msgstr "Zobrazení nových verzí v rámci aktualizačního kanálu na domovské stránce Acacia Radio."
 
 #: frontend/components/Stations/Mounts/Form/BasicInfo.vue:27
 #: frontend/components/Stations/Remotes/Form/BasicInfo.vue:63
@@ -6714,7 +6714,7 @@ msgstr "Testovací Zpráva"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:54
 msgid "This is a test message from Acacia Radio. If you are receiving this message, it means your e-mail settings are configured correctly."
-msgstr "Toto je testovací zpráva z AzuraCastu. Pokud tuto zprávu dostáváte, znamená to, že nastavení e-mailu je správně nakonfigurováno."
+msgstr "Toto je testovací zpráva z Acacia Radio. Pokud tuto zprávu dostáváte, znamená to, že nastavení e-mailu je správně nakonfigurováno."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/SendTestMessageAction.php:68
 msgid "Test message sent successfully."
@@ -7144,7 +7144,7 @@ msgstr "Nastavení Acacia Radio"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:64
 msgid "Welcome to Acacia Radio. Please wait while some key dependencies of Acacia Radio are set up..."
-msgstr "Vítejte v AzuraCastu. Počkejte prosím, než se nastaví některé klíčové závislosti AzuraCastu..."
+msgstr "Vítejte v Acacia Radio. Počkejte prosím, než se nastaví některé klíčové závislosti Acacia Radio..."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:69
 msgid "Running Database Migrations"
@@ -7498,7 +7498,7 @@ msgstr "Možná budete chtít aktualizovat základní adresu URL, abyste se ujis
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:45
 msgid "If you regularly use different URLs to access Acacia Radio, you should enable the \"Prefer Browser URL\" setting."
-msgstr "Pokud pro přístup k AzuraCastu pravidelně používáte různé adresy URL, měli byste povolit nastavení \"Preferovat adresu URL prohlížeče\"."
+msgstr "Pokud pro přístup k Acacia Radio pravidelně používáte různé adresy URL, měli byste povolit nastavení \"Preferovat adresu URL prohlížeče\"."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/BaseUrlCheck.php:52
 #, php-format

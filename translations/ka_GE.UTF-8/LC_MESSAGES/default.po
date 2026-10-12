@@ -674,7 +674,7 @@ msgstr ""
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:21
 msgid "Acacia Radio Instance Name"
-msgstr "AzuraCast-ის ასლის სახელი"
+msgstr "Acacia-Radio-ის ასლის სახელი"
 
 #: frontend/components/Admin/GeoLite.vue:21
 msgid "Acacia Radio ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
@@ -4046,7 +4046,7 @@ msgstr "უზრუნველყოფილია"
 
 #: frontend/components/Stations/Webhooks/Form/Discord.vue:128
 msgid "Powered by Acacia Radio"
-msgstr "უზრუნველყოფილია AzuraCast-ის მიერ"
+msgstr "უზრუნველყოფილია Acacia-Radio-ის მიერ"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:29
 msgid "Prefer Browser URL (If Available)"

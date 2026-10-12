@@ -666,11 +666,11 @@ msgstr "避免重复的艺术家/标题"
 
 #: frontend/components/Setup/Register.vue:15
 msgid "Acacia Radio First-Time Setup"
-msgstr "AzuraCast首次设置"
+msgstr "Acacia Radio首次设置"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:21
 msgid "Acacia Radio Instance Name"
-msgstr "AzuraCast实例名称"
+msgstr "Acacia Radio实例名称"
 
 #: frontend/components/Admin/GeoLite.vue:21
 msgid "Acacia Radio ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
@@ -678,11 +678,11 @@ msgstr "Acacia Radio 内置免费的 IP 地理定位数据库。您可能更愿�
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:8
 msgid "Acacia Radio Update Checks"
-msgstr "检查AzuraCast更新"
+msgstr "检查Acacia Radio更新"
 
 #: frontend/components/Account/UserInfoPanel.vue:22
 msgid "Acacia Radio User"
-msgstr "AzuraCast用户"
+msgstr "Acacia Radio用户"
 
 #: frontend/components/Admin/Permissions.vue:6
 msgid "Acacia Radio uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
@@ -694,7 +694,7 @@ msgstr "Acacia Radio 维基"
 
 #: frontend/components/Stations/Playlists/ImportModal.vue:67
 msgid "Acacia Radio will scan the uploaded file for matches in this station's music library. Media should already be uploaded before running this step. You can re-run this tool as many times as needed."
-msgstr "AzuraCast将扫描上传的文件，寻找与电台音乐库匹配的文件。在运行这一步之前，媒体应该已经被上传。你可以根据需要多次重新运行这个工具。"
+msgstr "Acacia Radio将扫描上传的文件，寻找与电台音乐库匹配的文件。在运行这一步之前，媒体应该已经被上传。你可以根据需要多次重新运行这个工具。"
 
 #: frontend/components/Admin/Relays.vue:6
 msgid "AzuraRelay is a standalone service that connects to your Acacia Radio instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
@@ -1392,7 +1392,7 @@ msgstr "自定义管理员密码"
 
 #: frontend/components/Setup/Settings.vue:10
 msgid "Customize Acacia Radio Settings"
-msgstr "自定义AzuraCast设置"
+msgstr "自定义Acacia Radio设置"
 
 #: frontend/components/Admin/Stations/Form/FrontendForm.vue:72
 msgid "Customize Broadcasting Port"
@@ -2058,7 +2058,7 @@ msgstr "启用以允许该帐户登录和流媒体传输。"
 
 #: frontend/components/Admin/Backups/ConfigureModal.vue:18
 msgid "Enable to have Acacia Radio automatically run nightly backups at the time specified."
-msgstr "启用AzuraCast在指定时间自动运行夜间备份。"
+msgstr "启用Acacia Radio在指定时间自动运行夜间备份。"
 
 #: frontend/components/Account/SecurityPanel.vue:61
 msgid "Enable Two-Factor"
@@ -2442,7 +2442,7 @@ msgstr "在公共页面上隐藏专辑封面"
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:49
 msgid "Hide Acacia Radio Branding on Public Pages"
-msgstr "在公共网页上隐藏AzuraCast品牌信息"
+msgstr "在公共网页上隐藏Acacia Radio品牌信息"
 
 #: frontend/components/Dashboard.vue:303
 msgid "Hide Charts"
@@ -2535,7 +2535,7 @@ msgstr "如果一首歌没有专辑封面，这个URL会被列出。留空以使
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:59
 msgid "If a visitor is not signed in and visits the Acacia Radio homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
-msgstr "如果访问者没有登录并访问AzuraCast主页，您可以将他们自动重定向到这里指定的URL。如果留空，则默认将他们重定向到登录页面。"
+msgstr "如果访问者没有登录并访问Acacia Radio主页，您可以将他们自动重定向到这里指定的URL。如果留空，则默认将他们重定向到登录页面。"
 
 #: frontend/components/Stations/Playlists/Form/BasicInfo.vue:19
 msgid "If disabled, the playlist will not be included in radio playback, but can still be managed."
@@ -2555,11 +2555,11 @@ msgstr "如果启用，公共 \"点播 \"页面上还会出现一个下载按钮
 
 #: frontend/components/Admin/Stations/Form/StreamersForm.vue:28
 msgid "If enabled, Acacia Radio will automatically record any live broadcasts made to this station to per-broadcast recordings."
-msgstr "如果启用，AzuraCast将自动把该台的任何直播记录到每次广播的录音中。"
+msgstr "如果启用，Acacia Radio将自动把该台的任何直播记录到每次广播的录音中。"
 
 #: frontend/components/Stations/Reports/SoundExchange.vue:92
 msgid "If enabled, Acacia Radio will connect to the MusicBrainz database to attempt to find an ISRC for any files where one is missing. Disabling this may improve performance."
-msgstr "如果启用，AzuraCast将连接到MusicBrainz数据库，试图为任何缺少ISRC的文件找到一个ISRC。禁用这个可能会提高性能。"
+msgstr "如果启用，Acacia Radio将连接到MusicBrainz数据库，试图为任何缺少ISRC的文件找到一个ISRC。禁用这个可能会提高性能。"
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:106
 msgid "If enabled, music from playlists with on-demand streaming enabled will be available to stream via a specialized public page."
@@ -2595,7 +2595,7 @@ msgstr "如果选中，专辑封面将不会显示在面向公众的广播页面
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:50
 msgid "If selected, this will remove the Acacia Radio branding from public-facing pages."
-msgstr "如果选中，这将从面向公众的页面中移除AzuraCast品牌。"
+msgstr "如果选中，这将从面向公众的页面中移除Acacia Radio品牌。"
 
 #: frontend/components/Stations/Playlists/Form/ScheduleRow.vue:45
 msgid "If the end time is before the start time, the playlist will play overnight."
@@ -3639,7 +3639,7 @@ msgstr "注意：后面的端口将自动用于传统连接。"
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:35
 msgid "Note: This should be the public-facing homepage of the radio station, not the Acacia Radio URL. It will be included in broadcast details."
-msgstr "注意：这应该是电台面向公众的主页，而不是AzuraCast的URL。它将包含在广播的详细信息中。"
+msgstr "注意：这应该是电台面向公众的主页，而不是Acacia Radio的URL。它将包含在广播的详细信息中。"
 
 #: frontend/components/Stations/Streamers.vue:152
 msgid "Notes"
@@ -4882,7 +4882,7 @@ msgstr "在公共播放器上显示 HLS 流"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:36
 msgid "Show new releases within your update channel on the Acacia Radio homepage."
-msgstr "在AzuraCast主页显示您的更新频道的新版本。"
+msgstr "在Acacia Radio主页显示您的更新频道的新版本。"
 
 #: frontend/components/Stations/Mounts/Form/BasicInfo.vue:27
 #: frontend/components/Stations/Remotes/Form/BasicInfo.vue:63
@@ -5721,7 +5721,7 @@ msgstr "这个地址应该总是以斜杠(/)开头，并且必须是一个有效
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:22
 msgid "This name will appear as a sub-header next to the Acacia Radio logo, to help identify this server."
-msgstr "这个名字将出现在AzuraCast标志旁边的小标题中，以帮助识别这个服务器。"
+msgstr "这个名字将出现在Acacia Radio标志旁边的小标题中，以帮助识别这个服务器。"
 
 #: frontend/components/Admin/ApiKeys.vue:6
 msgid "This page lists all API keys assigned to all users across the system. To manage your own API keys, visit your account profile."
@@ -5753,7 +5753,7 @@ msgstr "此端口不被任何外部进程使用。只有当指定的端口正在
 
 #: frontend/components/Stations/Playlists/QueueModal.vue:12
 msgid "This queue contains the remaining tracks in the order they will be queued by the Acacia Radio AutoDJ (if the tracks are eligible to be played)."
-msgstr "这个队列包含剩余的曲目，其顺序将由AzuraCast AutoDJ排队进行播放，（如果曲目有资格播放的话）。"
+msgstr "这个队列包含剩余的曲目，其顺序将由Acacia Radio AutoDJ排队进行播放，（如果曲目有资格播放的话）。"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:236
 msgid "This service can provide album art for tracks where none is available locally."
@@ -6429,7 +6429,7 @@ msgstr "权重排名"
 #: frontend/components/Login.vue:17
 #: frontend/components/Setup/Register.vue:19
 msgid "Welcome to Acacia Radio!"
-msgstr "欢迎来到AzuraCast!"
+msgstr "欢迎来到Acacia Radio!"
 
 #: frontend/components/Login.vue:11
 msgid "Welcome!"
@@ -6649,7 +6649,7 @@ msgstr "所有电台"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:80
 msgid "Acacia Radio Application Log"
-msgstr "AzuraCast应用程序日志"
+msgstr "Acacia Radio应用程序日志"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:86
 msgid "Acacia Radio Now Playing Log"
@@ -7028,7 +7028,7 @@ msgstr "数据库回滚到稳定版本\"%s\"。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:26
 msgid "Acacia Radio Settings"
-msgstr "AzuraCast设置"
+msgstr "Acacia Radio设置"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:29
 msgid "Setting Key"
@@ -7073,7 +7073,7 @@ msgstr "恢复失败：%s"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:95
 msgid "Acacia Radio Backup"
-msgstr "AzuraCast备份"
+msgstr "Acacia Radio备份"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Backup/BackupCommand.php:96
 msgid "Please wait while a backup is generated..."
@@ -7128,11 +7128,11 @@ msgstr "Acacia Radio 正在初始化..."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:62
 msgid "Acacia Radio Setup"
-msgstr "安装AzuraCast"
+msgstr "安装Acacia Radio"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:64
 msgid "Welcome to Acacia Radio. Please wait while some key dependencies of Acacia Radio are set up..."
-msgstr "欢迎来到AzuraCast。请稍等一下，AzuraCast的一些关键的依赖关系已经建立起来了。"
+msgstr "欢迎来到Acacia Radio。请稍等一下，Acacia Radio的一些关键的依赖关系已经建立起来了。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:69
 msgid "Running Database Migrations"
@@ -7156,11 +7156,11 @@ msgstr "刷新所有电台"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:125
 msgid "Acacia Radio is now updated to the latest version!"
-msgstr "AzuraCast现在已更新为最新版本！"
+msgstr "Acacia Radio现在已更新为最新版本！"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:134
 msgid "Acacia Radio installation complete!"
-msgstr "AzuraCast安装完成！"
+msgstr "Acacia Radio安装完成！"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:136
 #, php-format
@@ -7466,7 +7466,7 @@ msgstr "性能分析扩展目前已在此安装上启用。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
 msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
-msgstr "您可以从分析器页面跟踪任何AzuraCast页面或应用程序的执行时间和内存使用情况。"
+msgstr "您可以从分析器页面跟踪任何Acacia Radio页面或应用程序的执行时间和内存使用情况。"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
 msgid "Profiler Control Panel"

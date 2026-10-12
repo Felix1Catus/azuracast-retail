@@ -7470,7 +7470,7 @@ msgstr "De extensie voor het prestatie profiel is momenteel ingeschakeld op deze
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
 msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
-msgstr "U kunt de uitvoeringstijd en het geheugengebruik van elke AzuraCast-pagina of -toepassing volgen vanaf de profielpagina."
+msgstr "U kunt de uitvoeringstijd en het geheugengebruik van elke Acacia-Radio-pagina of -toepassing volgen vanaf de profielpagina."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
 msgid "Profiler Control Panel"

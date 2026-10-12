@@ -346,7 +346,7 @@ msgstr ""
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:57
 msgid "All listed domain names should point to this Acacia Radio installation. Separate multiple domain names with commas."
-msgstr "Alla listade domännamn bör peka på denna AzuraCast-installation. Separera flera domännamn med kommatecken."
+msgstr "Alla listade domännamn bör peka på denna Acacia-Radio-installation. Separera flera domännamn med kommatecken."
 
 #: frontend/components/Stations/Playlists.vue:30
 msgid "All Playlists"
@@ -674,7 +674,7 @@ msgstr "Acacia Radio första gången installation"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:21
 msgid "Acacia Radio Instance Name"
-msgstr "AzuraCast-instans namn"
+msgstr "Acacia-Radio-instans namn"
 
 #: frontend/components/Admin/GeoLite.vue:21
 msgid "Acacia Radio ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
@@ -686,7 +686,7 @@ msgstr "Acacia Radio Uppdateringskontroller"
 
 #: frontend/components/Account/UserInfoPanel.vue:22
 msgid "Acacia Radio User"
-msgstr "AzuraCast-användare"
+msgstr "Acacia-Radio-användare"
 
 #: frontend/components/Admin/Permissions.vue:6
 msgid "Acacia Radio uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
@@ -1396,7 +1396,7 @@ msgstr "Anpassa administratörslösenord"
 
 #: frontend/components/Setup/Settings.vue:10
 msgid "Customize Acacia Radio Settings"
-msgstr "Anpassa AzuraCast-inställningar"
+msgstr "Anpassa Acacia-Radio-inställningar"
 
 #: frontend/components/Admin/Stations/Form/FrontendForm.vue:72
 msgid "Customize Broadcasting Port"
@@ -2539,7 +2539,7 @@ msgstr "Om en låt inte har något skivomslag, kommer denna URL att listas istä
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:59
 msgid "If a visitor is not signed in and visits the Acacia Radio homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
-msgstr "Om en besökare inte är inloggad och besöker AzuraCasts hemsida, kan du automatiskt omdirigera dem till den URL som anges här. Lämna tomt för att omdirigera dem till inloggningsskärmen som standard."
+msgstr "Om en besökare inte är inloggad och besöker Acacia Radio hemsida, kan du automatiskt omdirigera dem till den URL som anges här. Lämna tomt för att omdirigera dem till inloggningsskärmen som standard."
 
 #: frontend/components/Stations/Playlists/Form/BasicInfo.vue:19
 msgid "If disabled, the playlist will not be included in radio playback, but can still be managed."
@@ -2878,7 +2878,7 @@ msgstr ""
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:22
 msgid "Learn more about release channels in the Acacia Radio docs."
-msgstr "Läs mer om utgivningskanaler i AzuraCast-dokumenten."
+msgstr "Läs mer om utgivningskanaler i Acacia-Radio-dokumenten."
 
 #: frontend/components/Admin/Settings/SecurityPrivacyTab.vue:72
 msgid "Learn more about this header."
@@ -4886,7 +4886,7 @@ msgstr "Visa HLS Stream på offentlig spelare"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:36
 msgid "Show new releases within your update channel on the Acacia Radio homepage."
-msgstr "Visa nya utgåvor i din uppdateringskanal på AzuraCasts hemsida."
+msgstr "Visa nya utgåvor i din uppdateringskanal på Acacia Radio hemsida."
 
 #: frontend/components/Stations/Mounts/Form/BasicInfo.vue:27
 #: frontend/components/Stations/Remotes/Form/BasicInfo.vue:63
@@ -5725,7 +5725,7 @@ msgstr "Detta namn bör alltid börja med ett snedstreck (/), och måste vara en
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:22
 msgid "This name will appear as a sub-header next to the Acacia Radio logo, to help identify this server."
-msgstr "Detta namn kommer att visas som en underrubrik bredvid AzuraCast-logotypen, för att hjälpa till att identifiera denna server."
+msgstr "Detta namn kommer att visas som en underrubrik bredvid Acacia-Radio-logotypen, för att hjälpa till att identifiera denna server."
 
 #: frontend/components/Admin/ApiKeys.vue:6
 msgid "This page lists all API keys assigned to all users across the system. To manage your own API keys, visit your account profile."
@@ -6653,7 +6653,7 @@ msgstr "Alla stationer"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:80
 msgid "Acacia Radio Application Log"
-msgstr "AzuraCast-applikationslogg"
+msgstr "Acacia-Radio-applikationslogg"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:86
 msgid "Acacia Radio Now Playing Log"
@@ -7164,7 +7164,7 @@ msgstr "Acacia Radio är nu uppdaterad till den senaste versionen!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:134
 msgid "Acacia Radio installation complete!"
-msgstr "AzuraCast-installationen är klar!"
+msgstr "Acacia-Radio-installationen är klar!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:136
 #, php-format
@@ -7470,7 +7470,7 @@ msgstr "Tillägget för prestandaprofilering är för närvarande aktiverat på 
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
 msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
-msgstr "Du kan spåra exekveringstiden och minnesanvändningen av någon AzuraCast-sida eller program från profilersidan."
+msgstr "Du kan spåra exekveringstiden och minnesanvändningen av någon Acacia-Radio-sida eller program från profilersidan."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
 msgid "Profiler Control Panel"
@@ -7519,7 +7519,7 @@ msgstr "Välkommen till Acacia Radio! Slutför den ursprungliga serverkonfigurat
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:185
 msgid "Acacia Radio Updater"
-msgstr "AzuraCast-uppdaterare"
+msgstr "Acacia-Radio-uppdaterare"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:192
 msgid "Change installation settings?"

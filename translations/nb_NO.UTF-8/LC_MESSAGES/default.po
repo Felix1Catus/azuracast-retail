@@ -674,7 +674,7 @@ msgstr "Acacia Radio førstegangsoppsett"
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:21
 msgid "Acacia Radio Instance Name"
-msgstr "AzuraCast-forekomstnavn"
+msgstr "Acacia-Radio-forekomstnavn"
 
 #: frontend/components/Admin/GeoLite.vue:21
 msgid "Acacia Radio ships with a built-in free IP geolocation database. You may prefer to use the MaxMind GeoLite service instead to achieve more accurate results. Using MaxMind GeoLite requires a license key, but once the key is provided, we will automatically keep the database updated."
@@ -682,11 +682,11 @@ msgstr "Acacia Radio leveres med en innebygd gratis IP-geolokaliseringsdatabase.
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:8
 msgid "Acacia Radio Update Checks"
-msgstr "AzuraCast-oppdateringssjekker"
+msgstr "Acacia-Radio-oppdateringssjekker"
 
 #: frontend/components/Account/UserInfoPanel.vue:22
 msgid "Acacia Radio User"
-msgstr "AzuraCast-bruker"
+msgstr "Acacia-Radio-bruker"
 
 #: frontend/components/Admin/Permissions.vue:6
 msgid "Acacia Radio uses a role-based access control system. Roles are given permissions to certain sections of the site, then users are assigned into those roles."
@@ -702,7 +702,7 @@ msgstr "Acacia Radio vil skanne den opplastede filen for treff i denne stasjonen
 
 #: frontend/components/Admin/Relays.vue:6
 msgid "AzuraRelay is a standalone service that connects to your Acacia Radio instance, automatically relays your stations via its own server, then reports the listener details back to your main instance. This page shows all currently connected instances."
-msgstr "AzuraRelay er en frittstående tjeneste som kobler til AzuraCast-forekomsten. automatisk Sender stasjonene dine via sin egen server, så rapporter lytterdetaljene tilbake til din hovedinstans. Denne siden viser alle tilkoblede forekomster."
+msgstr "AzuraRelay er en frittstående tjeneste som kobler til Acacia-Radio-forekomsten. automatisk Sender stasjonene dine via sin egen server, så rapporter lytterdetaljene tilbake til din hovedinstans. Denne siden viser alle tilkoblede forekomster."
 
 #: frontend/components/Stations/Media/MoveFilesModal.vue:20
 msgid "Back"
@@ -1396,7 +1396,7 @@ msgstr "Tilpass administratorpassord"
 
 #: frontend/components/Setup/Settings.vue:10
 msgid "Customize Acacia Radio Settings"
-msgstr "Tilpass AzuraCast-innstillinger"
+msgstr "Tilpass Acacia-Radio-innstillinger"
 
 #: frontend/components/Admin/Stations/Form/FrontendForm.vue:72
 msgid "Customize Broadcasting Port"
@@ -2446,7 +2446,7 @@ msgstr "Skjul albumomslag på offentlige sider"
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:49
 msgid "Hide Acacia Radio Branding on Public Pages"
-msgstr "Skjul AzuraCast-merkevarebygging på offentlige sider"
+msgstr "Skjul Acacia-Radio-merkevarebygging på offentlige sider"
 
 #: frontend/components/Dashboard.vue:303
 msgid "Hide Charts"
@@ -2539,7 +2539,7 @@ msgstr "Hvis en sang ikke har noen albumomslag, vil denne URL-en bli oppført i 
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:59
 msgid "If a visitor is not signed in and visits the Acacia Radio homepage, you can automatically redirect them to the URL specified here. Leave blank to redirect them to the login screen by default."
-msgstr "Hvis en besøkende ikke er logget på og besøker AzuraCast-hjemmesiden, kan du automatisk omdirigere dem til URL-en som er spesifisert her. La stå tomt for å omdirigere dem til påloggingsskjermen som standard."
+msgstr "Hvis en besøkende ikke er logget på og besøker Acacia-Radio-hjemmesiden, kan du automatisk omdirigere dem til URL-en som er spesifisert her. La stå tomt for å omdirigere dem til påloggingsskjermen som standard."
 
 #: frontend/components/Stations/Playlists/Form/BasicInfo.vue:19
 msgid "If disabled, the playlist will not be included in radio playback, but can still be managed."
@@ -2599,7 +2599,7 @@ msgstr "Hvis valgt, vil ikke albumgrafikk vises på offentlige radiosider."
 
 #: frontend/components/Admin/Branding/BrandingForm.vue:50
 msgid "If selected, this will remove the Acacia Radio branding from public-facing pages."
-msgstr "Hvis valgt, vil dette fjerne AzuraCast-merkevaren fra offentlige sider."
+msgstr "Hvis valgt, vil dette fjerne Acacia-Radio-merkevaren fra offentlige sider."
 
 #: frontend/components/Stations/Playlists/Form/ScheduleRow.vue:45
 msgid "If the end time is before the start time, the playlist will play overnight."
@@ -2878,7 +2878,7 @@ msgstr "Lær mer om CPU Innvirkning etter behandling"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:22
 msgid "Learn more about release channels in the Acacia Radio docs."
-msgstr "Lær mer om utgivelseskanaler i AzuraCast-dokumentene."
+msgstr "Lær mer om utgivelseskanaler i Acacia-Radio-dokumentene."
 
 #: frontend/components/Admin/Settings/SecurityPrivacyTab.vue:72
 msgid "Learn more about this header."
@@ -3643,7 +3643,7 @@ msgstr ""
 
 #: frontend/components/Admin/Stations/Form/ProfileForm.vue:35
 msgid "Note: This should be the public-facing homepage of the radio station, not the Acacia Radio URL. It will be included in broadcast details."
-msgstr "Merk: Dette bør være den offentlige hjemmesiden til radiostasjonen, ikke AzuraCast-URLen. Det vil bli inkludert i kringkastingsdetaljer."
+msgstr "Merk: Dette bør være den offentlige hjemmesiden til radiostasjonen, ikke Acacia-Radio-URLen. Det vil bli inkludert i kringkastingsdetaljer."
 
 #: frontend/components/Stations/Streamers.vue:152
 msgid "Notes"
@@ -4799,7 +4799,7 @@ msgstr "Innstillinger"
 
 #: frontend/components/Stations/Streamers/ConnectionInfo.vue:79
 msgid "Setup instructions for broadcasting software are available on the Acacia Radio wiki."
-msgstr "Oppsettinstruksjoner for kringkastingsprogramvare er tilgjengelig på AzuraCast-wikien."
+msgstr "Oppsettinstruksjoner for kringkastingsprogramvare er tilgjengelig på Acacia-Radio-wikien."
 
 #: frontend/components/Admin/StorageLocations/Form/Sftp.vue:11
 msgid "SFTP Host"
@@ -4886,7 +4886,7 @@ msgstr "Vis HLS Stream på Offentlig spiller"
 
 #: frontend/components/Admin/Settings/ServicesTab.vue:36
 msgid "Show new releases within your update channel on the Acacia Radio homepage."
-msgstr "Vis nye utgivelser i oppdateringskanalen din på AzuraCast-hjemmesiden."
+msgstr "Vis nye utgivelser i oppdateringskanalen din på Acacia-Radio-hjemmesiden."
 
 #: frontend/components/Stations/Mounts/Form/BasicInfo.vue:27
 #: frontend/components/Stations/Remotes/Form/BasicInfo.vue:63
@@ -5713,7 +5713,7 @@ msgstr "Denne javascript-koden vil bli brukt på stasjonens offentlige sider og 
 
 #: frontend/components/Admin/Stations/Form/BackendForm.vue:228
 msgid "This mode disables Acacia Radio's AutoDJ management, using Liquidsoap itself to manage song playback. \"next song\" and some other features will not be available."
-msgstr "Denne modusen deaktiverer AzuraCasts AutoDJ-administrasjon ved å bruke selve Liquidsoap til å administrere sangavspilling. \"Neste sang\" og noen andre funksjoner vil ikke være tilgjengelige."
+msgstr "Denne modusen deaktiverer Acacia Radio AutoDJ-administrasjon ved å bruke selve Liquidsoap til å administrere sangavspilling. \"Neste sang\" og noen andre funksjoner vil ikke være tilgjengelige."
 
 #: frontend/components/Common/DateRangeDropdown.vue:146
 msgid "This Month"
@@ -5725,7 +5725,7 @@ msgstr "Dette navnet skal alltid begynne med en skråstrek (/), og må være en 
 
 #: frontend/components/Admin/Settings/GeneralTab.vue:22
 msgid "This name will appear as a sub-header next to the Acacia Radio logo, to help identify this server."
-msgstr "Dette navnet vil vises som en underoverskrift ved siden av AzuraCast-logoen, for å hjelpe med å identifisere denne serveren."
+msgstr "Dette navnet vil vises som en underoverskrift ved siden av Acacia-Radio-logoen, for å hjelpe med å identifisere denne serveren."
 
 #: frontend/components/Admin/ApiKeys.vue:6
 msgid "This page lists all API keys assigned to all users across the system. To manage your own API keys, visit your account profile."
@@ -6653,7 +6653,7 @@ msgstr "Alle Stasjoner"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:80
 msgid "Acacia Radio Application Log"
-msgstr "AzuraCast-applikasjonslogg"
+msgstr "Acacia-Radio-applikasjonslogg"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Controller/Api/Admin/LogsAction.php:86
 msgid "Acacia Radio Now Playing Log"
@@ -7032,7 +7032,7 @@ msgstr "Database rullet tilbake til stabil utgivelsesversjon \"%s\"."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:26
 msgid "Acacia Radio Settings"
-msgstr "AzuraCast-innstillinger"
+msgstr "Acacia-Radio-innstillinger"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/Settings/ListCommand.php:29
 msgid "Setting Key"
@@ -7132,7 +7132,7 @@ msgstr "Acacia Radio initialiserer..."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:62
 msgid "Acacia Radio Setup"
-msgstr "AzuraCast-oppsett"
+msgstr "Acacia-Radio-oppsett"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:64
 msgid "Welcome to Acacia Radio. Please wait while some key dependencies of Acacia Radio are set up..."
@@ -7164,7 +7164,7 @@ msgstr "Acacia Radio er nå oppdatert til siste versjon!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:134
 msgid "Acacia Radio installation complete!"
-msgstr "AzuraCast-installasjonen er fullført!"
+msgstr "Acacia-Radio-installasjonen er fullført!"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Console/Command/SetupCommand.php:136
 #, php-format
@@ -7470,7 +7470,7 @@ msgstr "Ytelsesprofileringsutvidelsen er for øyeblikket aktivert på denne inst
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:35
 msgid "You can track the execution time and memory usage of any Acacia Radio page or application from the profiler page."
-msgstr "Du kan spore utførelsestiden og minnebruken til enhver AzuraCast-side eller -applikasjon fra profileringssiden."
+msgstr "Du kan spore utførelsestiden og minnebruken til enhver Acacia-Radio-side eller -applikasjon fra profileringssiden."
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Notification/Check/ProfilerAdvisorCheck.php:41
 msgid "Profiler Control Panel"
@@ -7519,7 +7519,7 @@ msgstr "Velkommen til Acacia Radio! Fullfør det første serveroppsettet ved å 
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:185
 msgid "Acacia Radio Updater"
-msgstr "AzuraCast-oppdatering"
+msgstr "Acacia-Radio-oppdatering"
 
 #: /home/runner/work/AzuraCast/AzuraCast/backend/src/Installer/Command/InstallCommand.php:192
 msgid "Change installation settings?"
