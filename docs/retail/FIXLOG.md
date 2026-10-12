@@ -8,6 +8,16 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.12 (2026-10-12)
+
+Dashboard and usability. Update with `./docker.sh update`.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Listener summary** replaces the dashboard's listener chart: listening now, unique listeners, stations on air, most listened (refreshed every 15 s) | `Dashboard.vue`, `_acacia.scss` | Dev server |
+| — | **Station cards** replace the dashboard's station table: cover art with play button, On air / Offline badge, current song, listener count, Public Page and Manage; search with more than 6 stations; stacks on phones | `Dashboard.vue`, `_acacia.scss` | Dev server |
+| — | **Header** shows an initial badge and the user's name instead of the bare e-mail address; **keyboard focus** has a clear outline | `DashboardLayout.vue`, `_acacia.scss` | Dev server |
+
 ## 0.23.8-retail.11 (2026-10-12)
 
 Design fixes from reviewing every page live. Update with `./docker.sh update`.
