@@ -104,6 +104,7 @@ return static function (CallableEventDispatcherInterface $dispatcher) use ($guar
                     $group->post('/login', $c . ':loginAction')->setName('branch-tracker:login');
                     $group->post('/heartbeat', $c . ':heartbeatAction')->setName('branch-tracker:heartbeat');
                     $group->post('/logout', $c . ':logoutAction')->setName('branch-tracker:logout');
+                    $group->post('/notice-seen', $c . ':noticeSeenAction')->setName('branch-tracker:notice-seen');
                 }
             )->add(Middleware\RequireStation::class)
                 ->add(Middleware\GetStation::class)

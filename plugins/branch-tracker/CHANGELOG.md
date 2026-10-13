@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.0 (2026-10-13)
+
+- **One-time "what's new" notice in the branch player**, shown once per branch (not per device) in Egyptian Arabic,
+  right to left, over the player while the music keeps playing. Branches that are already signed in get it with
+  their next heartbeat. Dismissing it is recorded on the branch (`branch_branch.notice_seen`, new migration), so
+  it doesn't come back on another device. The text and its id live in `src/Service/BranchNotice.php`; changing
+  the id shows a new notice to every branch once.
+
 ## 1.3.2 (2026-10-11)
 
 - On **Acacia Radio Retail**, which has a native "Branch Board" item in the station menu and ships Tracker built in,

@@ -8,6 +8,14 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.18 (2026-10-13)
+
+Branch Board (Tracker 1.4.0). Update with `./docker.sh update`.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **One-time "what's new" notice in the branch player**, once per branch (not per device), in Egyptian Arabic, right to left, over the player while the music keeps playing: the 3-minute silence at each azan, the new music source, and the playing-status and volume tracking. Branches already signed in get it with their next heartbeat; dismissing it is stored on the branch (`branch_branch.notice_seen`, new migration). Text and id: `plugins/branch-tracker/src/Service/BranchNotice.php` (a new id shows a new notice once) | `plugins/branch-tracker/` (`BranchNotice.php`, `BranchAuthController.php`, `SessionService.php`, `Entity/Branch.php`, `templates/player.html`, migration) | Dev server: shown via heartbeat, dismissed, not shown again after reload |
+
 ## 0.23.8-retail.17 (2026-10-13)
 
 Faster installs and updates. `./docker.sh update` works as before but still builds the images; to download them
