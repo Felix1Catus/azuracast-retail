@@ -712,7 +712,7 @@ retail-update() {
   echo "Installed: $CURRENT"
   echo "Update to: $TARGET (image $IMAGE)"
   echo "[NOTICE] Before you continue, please make sure you have a recent backup (./docker.sh backup)."
-  if ! ask "Build and switch to this version now?" Y; then
+  if ! ask "Download (or build) this version and switch to it now?" Y; then
     exit
   fi
 

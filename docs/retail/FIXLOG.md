@@ -10,12 +10,19 @@ Upstream syncs are listed too.
 
 ## 0.23.8-retail.17 (2026-10-13)
 
-Faster installs and updates. Update with `./docker.sh update-self && ./docker.sh update` (the new `docker.sh`
-downloads the images; the old one still builds them, which also works).
+Faster installs and updates. `./docker.sh update` works as before but still builds the images; to download them
+instead, refresh `docker.sh` from the release first:
+
+```bash
+git -C /opt/acacia-radio fetch --tags && git -C /opt/acacia-radio checkout --detach v0.23.8-retail.17
+./docker.sh update-self && ./docker.sh update
+```
+
+(The source checkout is `RETAIL_SOURCE_DIR` in `.env`.) Later updates download the images on their own.
 
 | # | Change | Files | Verified |
 |---|---|---|---|
-| — | **Prebuilt release images:** GitHub Actions builds both images for every release tag and publishes them as `ghcr.io/felix1catus/acacia-radio:<version>` and `...-music-downloader:<version>`. The installer and `./docker.sh update` download them (a few minutes instead of 15–40) and build locally only when they can't (arm64, `--build`, `ACACIA_IMAGE_REGISTRY=none`) | `.github/workflows/release-images.yml`, `util/install_retail.sh`, `docker.sh` | Fresh install in a clean Debian container and dev server update, both from the registry |
+| — | **Prebuilt release images:** GitHub Actions builds both images for every release tag and publishes them as `ghcr.io/felix1catus/acacia-radio:<version>` and `...-music-downloader:<version>`. The installer and `./docker.sh update` download them (a few minutes instead of 15–40) and build locally only when they can't (arm64, `--build`, `ACACIA_IMAGE_REGISTRY=none`) | `.github/workflows/release-images.yml`, `util/install_retail.sh`, `docker.sh` | Fresh install in a clean Debian container; dev server updated from the registry in 60 s |
 | — | **Quieter installer:** one line per step with a spinner and timings, all command output in `/var/log/acacia-install.log`, the log's last lines when a step fails, a summary at the end; partial git clone; checks Docker Compose is 2.24 or newer; `--build` and `--help` | `util/install_retail.sh` | Step runner tested (success, fallback, failure); shellcheck |
 | — | **Leaner image:** the final image holds only what runs on the server (no frontend sources, tests, docs or development files) | `Dockerfile`, `.dockerignore` | Image built and started with a fresh database: all migrations ran, pages and plugins answer |
 | — | **`/source` redirects to the repository** at the exact commit the server runs (or the repository's front page when unknown), instead of building an archive on the server | `SourceCodeAction.php`, `routes/public.php`, `PanelFooter.vue` | Fresh image: 302 to `github.com/Felix1Catus/azuracast-retail/tree/<commit>` |
