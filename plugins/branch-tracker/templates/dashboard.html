@@ -118,6 +118,7 @@
     <div class="chips" id="chips"></div>
     <div class="toolbar">
       <input type="search" id="live-filter" placeholder="Filter branches…" aria-label="Filter branches">
+      <select id="company-filter" aria-label="Company"></select>
       <span class="grow"></span>
       <span class="muted" id="live-updated"></span>
       <button class="btn danger" id="logout-all" type="button" title="Sign out every branch; each player shows the PIN screen within a minute">Log out all / Log in again</button>
@@ -197,13 +198,14 @@
       <form class="inline" id="add-form">
         <input name="code" placeholder="Branch ID (e.g. HUB-001)" required maxlength="50" aria-label="Branch ID">
         <input name="name" placeholder="Branch name" required maxlength="100" aria-label="Branch name">
+        <select name="company" id="add-company" aria-label="Company"></select>
         <button class="btn primary">Add branch</button>
         <span class="error" id="add-error"></span>
       </form>
     </div>
     <div class="panel table-wrap">
       <table>
-        <thead><tr><th>Branch</th><th class="col-pin">PIN</th><th>Enabled</th><th class="hide-sm">Created</th><th></th></tr></thead>
+        <thead><tr><th>Branch</th><th>Company</th><th class="col-pin">PIN</th><th>Enabled</th><th class="hide-sm">Created</th><th></th></tr></thead>
         <tbody id="manage-body"></tbody>
       </table>
     </div>
@@ -288,6 +290,30 @@
 
   // ---------- LIVE ----------
   let liveData = [];
+  // ---------- companies: set per branch under Manage, filter on the board (remembered in this browser) ----------
+  const COMPANIES = CFG.companies || [];
+  let companyFilter = '';
+  try { companyFilter = localStorage.getItem('branch-company-filter') || ''; } catch {}
+  function companyOptions(selected, emptyLabel) {
+    return [['', emptyLabel], ...COMPANIES.map((c) => [c, c])]
+      .map(([v, l]) => `<option value="${esc(v)}"${v === (selected || '') ? ' selected' : ''}>${esc(l)}</option>`).join('');
+  }
+  function inCompany(b) {
+    if (!companyFilter) return true;
+    return companyFilter === '-' ? !b.company : b.company === companyFilter;
+  }
+  $('#company-filter').innerHTML = companyOptions(companyFilter === '-' ? '' : companyFilter, 'All companies')
+    + `<option value="-"${companyFilter === '-' ? ' selected' : ''}>No company set</option>`;
+  $('#company-filter').value = companyFilter;
+  $('#add-company').innerHTML = companyOptions('', 'Company…');
+  $('#company-filter').addEventListener('change', (e) => {
+    companyFilter = e.target.value;
+    try { localStorage.setItem('branch-company-filter', companyFilter); } catch {}
+    renderLive();
+    if (!$('#tab-manage').hidden && CFG.canManage) loadManage();
+  });
+  if (!COMPANIES.length) $('#company-filter').hidden = true;
+
   // ---------- PINs (managers only: GET /pins needs "manage branches") ----------
   let pins = {};
   async function loadPins() {
@@ -321,7 +347,8 @@
   }
   function renderLive() {
     const q = $('#live-filter').value.trim().toLowerCase();
-    const enabled = liveData.filter((b) => b.is_enabled);
+    const scoped = liveData.filter(inCompany);
+    const enabled = scoped.filter((b) => b.is_enabled);
     const count = (s) => enabled.filter((b) => b.status === s).length;
     $('#chips').innerHTML = [
       ['Playing now', count('playing')], ['Signed in, not playing', count('online')], ['Offline', count('offline')],
@@ -329,7 +356,7 @@
     ].map(([k, v]) => `<div class="chip"><b>${esc(v)}</b><span>${esc(k)}</span></div>`).join('');
 
     const order = { playing: 0, online: 1, offline: 2 };
-    const rows = liveData
+    const rows = scoped
       .filter((b) => !q || `${b.name} ${b.code}`.toLowerCase().includes(q))
       .sort((a, b) => (a.is_enabled === b.is_enabled ? 0 : a.is_enabled ? -1 : 1) || order[a.status] - order[b.status] || a.name.localeCompare(b.name));
     $('#live-body').innerHTML = rows.length ? rows.map((b) => {
@@ -337,7 +364,7 @@
       const label = STATUS_TEXT[b.status];
       const since = s ? (s.streaming_since && b.status === 'playing' ? s.streaming_since : s.started_at) : null;
       return `<tr class="s-${b.status}">
-        <td>${esc(b.name)} <span class="code">${esc(b.code)}</span>${b.is_enabled ? '' : '<span class="tag">disabled</span>'}</td>
+        <td>${esc(b.name)} <span class="code">${esc(b.code)}</span>${b.company ? `<span class="tag">${esc(b.company)}</span>` : ''}${b.is_enabled ? '' : '<span class="tag">disabled</span>'}</td>
         <td><span class="dot"></span>${label}${b.status_source === 'player' ? '<span class="tag" title="Reported by the player; stream auth is off">reported</span>' : ''}</td>
         <td class="hide-sm">${since ? esc(fmtDT.format(new Date(since))) : '<span class="muted">—</span>'}</td>
         <td class="num">${b.listened_today_seconds ? hm(b.listened_today_seconds) : '<span class="muted">0m</span>'}</td>
@@ -465,9 +492,10 @@
     try { renderSettings(await api('/settings')); } catch {}
     await loadPins();
     try {
-      const list = await api('');
+      const list = (await api('')).filter(inCompany);
       $('#manage-body').innerHTML = list.map((b) => `<tr data-id="${b.id}" data-code="${esc(b.code)}" data-name="${esc(b.name)}">
         <td>${esc(b.name)} <span class="code">${esc(b.code)}</span>${b.has_open_session ? '<span class="tag">signed in</span>' : ''}</td>
+        <td><select data-act="company" aria-label="Company">${companyOptions(b.company, '—')}</select></td>
         <td class="col-pin">${pinCell(b.id)}</td>
         <td><input type="checkbox" data-act="toggle" ${b.is_enabled ? 'checked' : ''} aria-label="Enabled"></td>
         <td class="hide-sm muted">${esc(fmtDT.format(new Date(b.created_at)))}</td>
@@ -475,7 +503,7 @@
           <button class="btn" data-act="rename">Rename</button>
           <button class="btn" data-act="pin">Set PIN</button>
           <button class="btn danger" data-act="delete">Delete</button></div></td></tr>`).join('');
-    } catch (e) { $('#manage-body').innerHTML = `<tr><td colspan="5" class="empty error">${esc(e.message)}</td></tr>`; }
+    } catch (e) { $('#manage-body').innerHTML = `<tr><td colspan="6" class="empty error">${esc(e.message)}</td></tr>`; }
   }
   $('#manage-body').addEventListener('click', async (e) => {
     const act = e.target.dataset.act; if (!act || act === 'toggle') return;
@@ -497,6 +525,12 @@
     } catch (err) { alert(err.message); }
   });
   $('#manage-body').addEventListener('change', async (e) => {
+    if (e.target.dataset.act === 'company') {
+      const tr = e.target.closest('tr');
+      try { await api(`/${tr.dataset.id}`, { method: 'PUT', body: { company: e.target.value } }); liveData = []; }
+      catch (err) { alert(err.message); loadManage(); }
+      return;
+    }
     if (e.target.dataset.act !== 'toggle') return;
     const tr = e.target.closest('tr');
     try { await api(`/${tr.dataset.id}`, { method: 'PUT', body: { is_enabled: e.target.checked } }); }
@@ -507,6 +541,7 @@
     const f = e.target;
     try {
       const r = await api('', { method: 'POST', body: { code: f.code.value, name: f.name.value } });
+      if (f.company.value) await api(`/${r.id}`, { method: 'PUT', body: { company: f.company.value } });
       f.reset(); showPin(`PIN for ${r.name}`, r.code, r.pin); loadManage();
     } catch (err) { $('#add-error').textContent = err.message; }
   });

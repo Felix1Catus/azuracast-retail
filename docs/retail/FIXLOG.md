@@ -8,6 +8,14 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.20 (2026-10-13)
+
+Branch Board (Tracker 1.6.0). Update with `./docker.sh update`.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Company per branch** (Tradeline / XPRS) set from a dropdown under Manage, shown as a tag, and a **company filter** on the board (and Manage) that also narrows the summary counts | `plugins/branch-tracker/` (`Entity/Branch.php`, `BranchService.php`, `PresenceService.php`, `DashboardPageAction.php`, `templates/dashboard.html`, migration) | Dev server: company saved, invalid one rejected, board data carries it, clearing works |
+
 ## 0.23.8-retail.19 (2026-10-13)
 
 Branch Board (Tracker 1.5.0). Update with `./docker.sh update`, then fill the PIN column once:

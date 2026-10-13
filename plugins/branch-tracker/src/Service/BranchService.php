@@ -78,7 +78,7 @@ final class BranchService
         return [$branch, $pin];
     }
 
-    /** Partial update of code / name / is_enabled. Disabling ends the branch's open session. */
+    /** Partial update of code / name / company / is_enabled. Disabling ends the branch's open session. */
     public function update(Branch $branch, array $data): Branch
     {
         if (array_key_exists('code', $data)) {
@@ -91,6 +91,13 @@ final class BranchService
         }
         if (array_key_exists('name', $data)) {
             $branch->name = $this->cleanName((string)$data['name']);
+        }
+        if (array_key_exists('company', $data)) {
+            $company = trim((string)$data['company']);
+            if ('' !== $company && !in_array($company, Branch::COMPANIES, true)) {
+                throw new ValidationException(sprintf('Company must be one of: %s.', implode(', ', Branch::COMPANIES)), true);
+            }
+            $branch->company = '' === $company ? null : $company;
         }
         if (array_key_exists('is_enabled', $data)) {
             $branch->is_enabled = filter_var($data['is_enabled'], FILTER_VALIDATE_BOOL);

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0 (2026-10-13)
+
+- **Company per branch** (Tradeline or XPRS, `Branch::COMPANIES`): a dropdown per branch under Manage (and when
+  adding one), shown as a tag on the board. A **company filter** on the board (All / Tradeline / XPRS / No company
+  set) narrows the table and the summary counts, and the Manage list; it's remembered in the browser.
+  New column `branch_branch.company` (migration); set through `PUT /branches/{id}` with `company`.
+
 ## 1.5.0 (2026-10-13)
 
 - **PIN column on the board** with a Copy button, in the live table and under Manage, for users who can manage
