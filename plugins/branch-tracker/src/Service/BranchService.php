@@ -26,6 +26,7 @@ final class BranchService
 
     public function __construct(
         private readonly PinHasher $pinHasher,
+        private readonly PinVault $pinVault,
     ) {
     }
 
@@ -58,7 +59,7 @@ final class BranchService
 
     /**
      * @return array{0: Branch, 1: string} the branch and its PIN (generated when $pin is null).
-     *         The PIN is only ever available here, at creation.
+     *         Managers can see it later in the board's PIN column (stored encrypted, PinVault).
      */
     public function create(Station $station, string $code, string $name, ?string $pin = null, bool $allowLegacyPin = false): array
     {
@@ -70,6 +71,7 @@ final class BranchService
 
         $pin = $this->choosePin($station, $pin, null, $allowLegacyPin);
         $branch = new Branch($station, $code, $name, $this->pinHasher->hash($station->id, $pin));
+        $branch->pin_encrypted = $this->pinVault->encrypt($pin);
         $this->em->persist($branch);
         $this->em->flush();
 
@@ -107,6 +109,7 @@ final class BranchService
     {
         $pin = $this->choosePin($branch->station, $pin, $branch, $allowLegacyPin);
         $branch->pin_hmac = $this->pinHasher->hash($branch->station->id, $pin);
+        $branch->pin_encrypted = $this->pinVault->encrypt($pin);
         $branch->failed_attempts = 0;
         $branch->locked_until = null;
         $this->endOpenSessions($branch, SessionEndReason::Admin);

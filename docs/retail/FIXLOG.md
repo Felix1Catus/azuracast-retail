@@ -8,6 +8,16 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.19 (2026-10-13)
+
+Branch Board (Tracker 1.5.0). Update with `./docker.sh update`, then fill the PIN column once:
+`./docker.sh cli branch-tracker:recover-pins`.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **PIN column with Copy** on the Branch Board (live table and Manage), for branch managers and administrators only; PINs come from a separate managers-only endpoint, never from the board data viewers or the public board get | `plugins/branch-tracker/templates/dashboard.html`, `BranchesController.php`, `events.php` | Dev server: endpoint 403 without login |
+| — | **PINs kept encrypted** next to the login HMAC (libsodium, key derived from the PIN key); set on create and PIN change. `branch-tracker:recover-pins` recovers existing 4-6 digit PINs from their HMAC once | `PinVault.php`, `BranchService.php`, `RecoverPinsCommand.php`, `Entity/Branch.php`, migration | Dev server: PIN recovered in 0.4 s, decrypts and matches the login hash |
+
 ## 0.23.8-retail.18 (2026-10-13)
 
 Branch Board (Tracker 1.4.0). Update with `./docker.sh update`.

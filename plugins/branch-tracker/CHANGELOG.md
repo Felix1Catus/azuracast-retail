@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.0 (2026-10-13)
+
+- **PIN column on the board** with a Copy button, in the live table and under Manage, for users who can manage
+  branches (and administrators) only; viewers and the public board never get PINs. They come from a separate
+  endpoint, `GET /api/station/{id}/branches/pins` ("manage branches").
+- PINs are now also kept encrypted (`branch_branch.pin_encrypted`, libsodium secretbox with a key derived from the
+  PIN key, never stored), next to the HMAC that login uses. Creating a branch or setting a PIN stores it.
+- `branch-tracker:recover-pins` fills the column once for branches created before this: each PIN is found from
+  its HMAC by trying every PIN of 4 to 6 digits (`--max-digits`). PINs and logins don't change.
+
 ## 1.4.0 (2026-10-13)
 
 - **One-time "what's new" notice in the branch player**, shown once per branch (not per device) in Egyptian Arabic,

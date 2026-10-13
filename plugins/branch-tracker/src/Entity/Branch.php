@@ -46,6 +46,10 @@ class Branch
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     public ?DateTimeImmutable $locked_until = null;
 
+    /** The PIN, encrypted (Service\PinVault), for the managers' PIN column. Null until set or recovered. */
+    #[ORM\Column(length: 255, nullable: true)]
+    public ?string $pin_encrypted = null;
+
     /** Id of the last "what's new" notice (Service\BranchNotice) this branch dismissed. */
     #[ORM\Column(length: 40, nullable: true)]
     public ?string $notice_seen = null;

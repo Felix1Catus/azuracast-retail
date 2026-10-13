@@ -84,7 +84,10 @@
              background: var(--accent-soft); border-radius: 8px; padding: 14px; margin: 14px 0; user-select: all; }
   .dlg-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
   form.inline { display: flex; flex-wrap: wrap; gap: 8px; }
-  body.public .col-ip, body.public .csv, body.public #back, body.public #tab-manage, body.public #logout-all { display: none !important; }
+  .pin-cell { white-space: nowrap; }
+  .pin-cell .pin { font: 700 14px/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: 2px; margin-right: 6px; }
+  .pin-cell button.btn { padding: 2px 8px; font-size: 12px; }
+  body.public .col-pin, body.public .col-ip, body.public .csv, body.public #back, body.public #tab-manage, body.public #logout-all { display: none !important; }
   .badge { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
            background: var(--accent-soft); border-radius: 99px; padding: 3px 10px; }
   @media (max-width: 640px) { .hide-sm { display: none; } input[type="search"] { min-width: 0; width: 100%; } }
@@ -124,6 +127,7 @@
         <thead><tr>
           <th>Branch</th><th>Status</th><th class="hide-sm">Since</th><th class="num">Today</th>
           <th class="num hide-sm">Volume</th><th class="hide-sm">Last seen</th><th class="hide-sm col-ip">IP</th>
+          <th class="col-pin" hidden>PIN</th>
         </tr></thead>
         <tbody id="live-body"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
       </table>
@@ -199,11 +203,11 @@
     </div>
     <div class="panel table-wrap">
       <table>
-        <thead><tr><th>Branch</th><th>Enabled</th><th class="hide-sm">Created</th><th></th></tr></thead>
+        <thead><tr><th>Branch</th><th class="col-pin">PIN</th><th>Enabled</th><th class="hide-sm">Created</th><th></th></tr></thead>
         <tbody id="manage-body"></tbody>
       </table>
     </div>
-    <p class="note">PINs are 4 digits and are shown only once, when created or changed. Changing a PIN or disabling a branch signs that branch out. Acacia Radio admin accounts are managed in Acacia Radio under Administration → Users.</p>
+    <p class="note">PINs are 4 digits. Only users who can manage branches see them (PIN column). Changing a PIN or disabling a branch signs that branch out. Acacia Radio admin accounts are managed in Acacia Radio under Administration → Users.</p>
   </section>
   <footer class="src-foot">{{SOURCE_LINK}}</footer>
 </main>
@@ -284,10 +288,32 @@
 
   // ---------- LIVE ----------
   let liveData = [];
+  // ---------- PINs (managers only: GET /pins needs "manage branches") ----------
+  let pins = {};
+  async function loadPins() {
+    if (!CFG.canManage) return;
+    try { pins = Object.fromEntries((await api('/pins')).map((p) => [p.id, p.pin])); } catch { pins = {}; }
+  }
+  function pinCell(id) {
+    const pin = pins[id];
+    return pin
+      ? `<span class="pin-cell"><span class="pin">${esc(pin)}</span><button class="btn" type="button" data-copy-pin="${esc(pin)}" title="Copy the PIN">Copy</button></span>`
+      : '<span class="muted" title="Unknown: set a new PIN to see it here">—</span>';
+  }
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-copy-pin]');
+    if (!btn) return;
+    try { await navigator.clipboard.writeText(btn.dataset.copyPin); btn.textContent = 'Copied'; }
+    catch { btn.textContent = btn.dataset.copyPin; }
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  });
+  if (CFG.canManage) document.querySelectorAll('th.col-pin').forEach((th) => { th.hidden = false; });
+
   async function loadLive() {
     try {
       const data = await api('/live');
       liveData = data.branches;
+      if (CFG.canManage && !Object.keys(pins).length) await loadPins();
       renderLive();
       stamp('#live-updated');
       fillBranchSelect();
@@ -317,7 +343,7 @@
         <td class="num">${b.listened_today_seconds ? hm(b.listened_today_seconds) : '<span class="muted">0m</span>'}</td>
         <td class="num hide-sm">${s && s.volume !== null ? s.volume + '%' : '<span class="muted">—</span>'}</td>
         <td class="hide-sm">${s ? esc(ago(s.last_seen_at)) : '<span class="muted">—</span>'}</td>
-        <td class="hide-sm code col-ip">${s ? esc(s.ip || '') : ''}</td></tr>`;
+        <td class="hide-sm code col-ip">${s ? esc(s.ip || '') : ''}</td>${CFG.canManage ? `<td class="col-pin">${pinCell(b.id)}</td>` : ''}</tr>`;
     }).join('') : '<tr><td colspan="7" class="empty">No branches match.</td></tr>';
   }
   $('#live-filter').addEventListener('input', renderLive);
@@ -437,17 +463,19 @@
   });
   async function loadManage() {
     try { renderSettings(await api('/settings')); } catch {}
+    await loadPins();
     try {
       const list = await api('');
       $('#manage-body').innerHTML = list.map((b) => `<tr data-id="${b.id}" data-code="${esc(b.code)}" data-name="${esc(b.name)}">
         <td>${esc(b.name)} <span class="code">${esc(b.code)}</span>${b.has_open_session ? '<span class="tag">signed in</span>' : ''}</td>
+        <td class="col-pin">${pinCell(b.id)}</td>
         <td><input type="checkbox" data-act="toggle" ${b.is_enabled ? 'checked' : ''} aria-label="Enabled"></td>
         <td class="hide-sm muted">${esc(fmtDT.format(new Date(b.created_at)))}</td>
         <td><div class="row-actions">
           <button class="btn" data-act="rename">Rename</button>
           <button class="btn" data-act="pin">Set PIN</button>
           <button class="btn danger" data-act="delete">Delete</button></div></td></tr>`).join('');
-    } catch (e) { $('#manage-body').innerHTML = `<tr><td colspan="4" class="empty error">${esc(e.message)}</td></tr>`; }
+    } catch (e) { $('#manage-body').innerHTML = `<tr><td colspan="5" class="empty error">${esc(e.message)}</td></tr>`; }
   }
   $('#manage-body').addEventListener('click', async (e) => {
     const act = e.target.dataset.act; if (!act || act === 'toggle') return;
