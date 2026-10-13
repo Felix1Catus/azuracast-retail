@@ -8,6 +8,19 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.17 (2026-10-13)
+
+Faster installs and updates. Update with `./docker.sh update-self && ./docker.sh update` (the new `docker.sh`
+downloads the images; the old one still builds them, which also works).
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Prebuilt release images:** GitHub Actions builds both images for every release tag and publishes them as `ghcr.io/felix1catus/acacia-radio:<version>` and `...-music-downloader:<version>`. The installer and `./docker.sh update` download them (a few minutes instead of 15–40) and build locally only when they can't (arm64, `--build`, `ACACIA_IMAGE_REGISTRY=none`) | `.github/workflows/release-images.yml`, `util/install_retail.sh`, `docker.sh` | Dev server update from the registry |
+| — | **Quieter installer:** one line per step with a spinner and timings, all command output in `/var/log/acacia-install.log`, the log's last lines when a step fails, a summary at the end; partial git clone; checks Docker Compose is 2.24 or newer; `--build` and `--help` | `util/install_retail.sh` | Step runner tested (success, fallback, failure); shellcheck |
+| — | **Leaner image:** the final image holds only what runs on the server (no frontend sources, tests, docs or development files) | `Dockerfile`, `.dockerignore` | Image built and started with a fresh database: all migrations ran, pages and plugins answer |
+| — | **`/source` redirects to the repository** at the exact commit the server runs (or the repository's front page when unknown), instead of building an archive on the server | `SourceCodeAction.php`, `routes/public.php`, `PanelFooter.vue` | Fresh image: 302 to `github.com/Felix1Catus/azuracast-retail/tree/<commit>` |
+| — | **Documentation:** new README and install guide; development notes, known issues and the migration guide moved into `docs/retail/` | `README.md`, `docs/retail/` | — |
+
 ## 0.23.8-retail.16 (2026-10-13)
 
 New built-in module: Azan & Quran (plugin 0.2.0). Update with `./docker.sh update`; then, per channel that uses
