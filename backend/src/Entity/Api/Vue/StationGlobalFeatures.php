@@ -39,7 +39,9 @@ final readonly class StationGlobalFeatures
         #[OA\Property]
         public bool $branchBoard = false,
         #[OA\Property]
-        public bool $musicDownloader = false
+        public bool $musicDownloader = false,
+        #[OA\Property]
+        public bool $azanQuran = false
     ) {
     }
 }

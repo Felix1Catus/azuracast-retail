@@ -1827,6 +1827,7 @@ export interface VueStationFeatures {
     autoDjQueue: boolean;
     branchBoard: boolean;
     musicDownloader: boolean;
+    azanQuran: boolean;
 }
 
 export interface VueStationGlobals {

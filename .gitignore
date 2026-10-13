@@ -63,4 +63,6 @@ tmp/cache/*---*
 !/plugins/branch-tracker/**
 !/plugins/music-downloader/
 !/plugins/music-downloader/**
+!/plugins/azan-quran/
+!/plugins/azan-quran/**
 /plugins/music-downloader/**/__pycache__/

@@ -128,6 +128,18 @@ Acacia Radio. Data (Spotify logins, cookies, download history) is in the `music_
 `docker-compose.override.yml`) before `./docker.sh update`. `music-downloader.env` and the data volume have the
 same names, so logins, cookies and history carry over.
 
+## 3c. Azan & Quran (built in)
+
+For channels that play in shops: at each prayer time the music stops for 3 minutes and then carries on (the
+stream keeps running, so players stay connected), and a Quran recording plays for the hour before opening,
+fading into the music at opening time. Prayer times come from the Aladhan API for each channel's city. It's
+**Azan & Quran** in the station menu, for users with the station permission *Manage Azan & Quran*; the opening
+hours are shared by all channels and set by administrators. After turning it on for a channel, restart that
+channel once (the page says so). Details: [plugins/azan-quran/README.md](../../plugins/azan-quran/README.md).
+
+The module is developed in the private [acacia-azan-quran repository](https://github.com/Felix1Catus/acacia-azan-quran)
+and copied here (`plugins/azan-quran`). It needs no extra container.
+
 ## 4. Updating
 
 Updates come from this repository's releases (tags `v<Acacia Radio version>-retail.<n>`), never from upstream. The install keeps a checkout of the source. By default it lives at `/opt/acacia-radio`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is public, so no credentials are needed.

@@ -23,6 +23,7 @@ enum StationFeatures
     case Requests;
     case BranchBoard;
     case MusicDownloader;
+    case AzanQuran;
 
     public function supportedForStation(
         Station $station,
@@ -42,6 +43,9 @@ enum StationFeatures
             // the module to skip its injected button.
             self::MusicDownloader => class_exists('Plugin\MusicDownloader\Permissions')
                 && '' !== (string)getenv('MUSIC_DOWNLOADER_WORKER_TOKEN'),
+            // Azan & Quran (built-in module, plugins/azan-quran; upstream: Felix1Catus/acacia-azan-quran). Its
+            // presence also tells the module to skip its injected button.
+            self::AzanQuran => class_exists('Plugin\AzanQuran\Permissions'),
             // Retail edition: these are not part of the product (docs/retail/REDESIGN.md). Their pages, API
             // routes and background tasks are gone or gated on this; the code is removed later (#13).
             self::Sftp,

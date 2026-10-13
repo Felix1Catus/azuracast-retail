@@ -9,7 +9,7 @@ Acacia Radio is distributed under the same licence (see [LICENSE.md](../../LICEN
 - **Source code.** Everyone who uses an Acacia Radio installation over a network can get its complete corresponding
   source code from that installation at `/source` (section 13).
 - **Modifications.** This version changes the product name, branding and defaults, removes features not needed
-  for hosted channels, and adds the Music Downloader and Branch Board modules. The git history of
+  for hosted channels, and adds the Music Downloader, Azan & Quran and Branch Board modules. The git history of
   https://github.com/Felix1Catus/azuracast-retail records every change, with dates.
 
 "AzuraCast" is the name of the original project. Acacia Radio is not affiliated with or endorsed by it.

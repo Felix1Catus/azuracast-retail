@@ -51,6 +51,7 @@ const blankStationGlobals: VueStationGlobals = {
         autoDjQueue: false,
         branchBoard: false,
         musicDownloader: false,
+        azanQuran: false,
     },
     ipGeoAttribution: "N/A",
     backendType: BackendAdapters.None,

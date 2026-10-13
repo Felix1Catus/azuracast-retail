@@ -7,6 +7,9 @@ music library, playlists, schedule, streams and public player. It runs in Docker
   Users get roles per channel, so each customer sees and manages only their own.
 - **Music Downloader:** paste a Spotify playlist, album or track link, choose a folder, and the music is added
   to the channel's library ([details](plugins/music-downloader/README.md)).
+- **Azan & Quran:** the music pauses for 3 minutes at each prayer time (times for each channel's city), and a
+  Quran recording plays for the hour before opening, fading into the music at opening time
+  ([details](plugins/azan-quran/README.md)).
 - **Branch Board:** in-store radio for chains of shops. Each branch's player signs in with a PIN, with a live
   board, listening reports and an optional stream lock ([details](plugins/branch-tracker/README.md)).
 - **One web address:** players reach every channel through the site at `/listen/<channel>/<mount>`, over

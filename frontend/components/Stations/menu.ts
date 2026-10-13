@@ -14,6 +14,7 @@ import IconIcCloudDownload from "~icons/ic/baseline-cloud-download";
 import IconIcImage from "~icons/ic/baseline-image";
 import IconIcInsertChart from "~icons/ic/baseline-insert-chart";
 import IconIcLibraryMusic from "~icons/ic/baseline-library-music";
+import IconIcMosque from "~icons/ic/baseline-mosque";
 import IconIcPublic from "~icons/ic/baseline-public";
 import IconIcQueueMusic from "~icons/ic/baseline-queue-music";
 import IconIcSettingsApplication from "~icons/ic/baseline-settings-applications";
@@ -165,6 +166,16 @@ export function useStationsMenu() {
             visible: () =>
                 station.value.features.musicDownloader &&
                 userAllowedForStation("download music" as StationPermissions),
+        },
+        {
+            // Built-in Azan & Quran module (plugins/azan-quran): prayer-time pauses and the Quran before opening.
+            key: "azan_quran",
+            label: $gettext("Azan & Quran"),
+            icon: () => IconIcMosque,
+            url: `/azan-quran/${station.value.id}`,
+            visible: () =>
+                station.value.features.azanQuran &&
+                userAllowedForStation("manage azan quran" as StationPermissions),
         },
         {
             key: "reports",

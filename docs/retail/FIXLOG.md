@@ -8,6 +8,17 @@ These are the changes Acacia Radio makes to upstream, newest first. Each entry g
 
 Upstream syncs are listed too.
 
+## 0.23.8-retail.16 (2026-10-13)
+
+New built-in module: Azan & Quran (plugin 0.2.0). Update with `./docker.sh update`; then, per channel that uses
+it, turn it on in **Azan & Quran** and restart the channel once.
+
+| # | Change | Files | Verified |
+|---|---|---|---|
+| — | **Prayer-time pauses:** at each prayer time (Aladhan API, the channel's city and calculation method, cached a month ahead) the music stops for 3 minutes and then carries on; the stream never stops, so players stay connected | `plugins/azan-quran/` (`Sync/CueTask.php`, `Service/Planner.php`, `Service/PrayerTimes.php`) | Dev server, live (Cairo): 3:00 of silence on the minute, then music |
+| — | **Quran before opening:** a chosen recording plays for the hour before opening and fades into the music over 15 s at opening time (a Liquidsoap command the module adds); opening/closing hours are shared by all channels | `plugins/azan-quran/` (`Radio/LiquidsoapFade.php`) | Dev server, live: cut in on the minute, faded out, music 15 s after opening time |
+| — | **Station menu item** "Azan & Quran" (permission *Manage Azan & Quran*) instead of the module's floating button | `StationFeatures.php`, `GetDashboardAction.php`, `StationGlobalFeatures.php`, `menu.ts`, `ApiInterfaces.ts`, `useStationQuery.ts` | Dev server |
+
 ## 0.23.8-retail.15 (2026-10-12)
 
 Music Downloader 0.2.2. Update with `./docker.sh update`, then sign the YouTube account in again once.
