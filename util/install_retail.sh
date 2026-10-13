@@ -1,44 +1,51 @@
 #!/usr/bin/env bash
 #
-# Acacia Radio: one-command install on a fresh Ubuntu/Debian server.
+# Acacia Radio installer for a fresh Ubuntu or Debian server.
 #
-#   sudo bash install_retail.sh [options]
+#   curl -fsSL https://raw.githubusercontent.com/Felix1Catus/azuracast-retail/main/util/install_retail.sh -o install.sh
+#   sudo bash install.sh --domain radio.example.com
 #
-# What it does (each step is skipped when already done, so it is safe to run again):
-#   1. checks the machine (root, OS, disk, memory, ports)
-#   2. installs Docker Engine, the Compose and Buildx plugins and git (Docker's official apt repository)
-#   3. clones or updates the source checkout and checks out a release
-#   4. builds the image (util/build_image.sh)
-#   5. writes the install directory (docker-compose.yml, docker.sh, .env, acacia.env, music-downloader.env)
-#   6. starts Acacia Radio and waits until it answers
-#   7. with --domain: sets the site URL and gets a Let's Encrypt certificate
-#
-# Options:
-#   --dir PATH          install directory (default /var/acacia)
-#   --src-dir PATH      source checkout (default /opt/acacia-radio)
-#   --source URL|PATH   git source (default https://github.com/Felix1Catus/azuracast-retail.git)
-#   --ref REF           release tag, tag or branch (default: newest v*-retail.* tag)
-#   --domain NAMES      public domain(s), comma-separated (first = site URL); enables HTTPS via Let's Encrypt
-#                       (DNS must already point here), e.g. --domain example.com,www.example.com
-#   --email ADDRESS     Let's Encrypt contact address (default admin@<domain>)
-#   --http-port N       HTTP port (default 80)
-#   --https-port N      HTTPS port (default 443)
-#   --yes               don't ask for confirmation
-#
-# The repository is public; no credentials are needed. For a private copy, set RETAIL_GIT_TOKEN to a read-only
-# GitHub token before running; it is stored for `./docker.sh update` in <src-dir>/.git/retail-credentials (mode 600).
+# Every step is skipped when it's already done, so running it again is safe (and is how you repair an install).
+# The terminal shows one line per step; the output of every command goes to /var/log/acacia-install.log.
 #
 set -euo pipefail
 
 INSTALL_DIR=/var/acacia
 SRC_DIR=/opt/acacia-radio
 SOURCE=https://github.com/Felix1Catus/azuracast-retail.git
+REGISTRY="${ACACIA_IMAGE_REGISTRY:-ghcr.io/felix1catus}"
 REF=""
 DOMAIN=""
 EMAIL=""
 HTTP_PORT=80
 HTTPS_PORT=443
 ASSUME_YES=0
+FORCE_BUILD=0
+LOG=/var/log/acacia-install.log
+
+usage() {
+  cat <<'EOF'
+Acacia Radio installer
+
+Usage: sudo bash install.sh [options]
+
+  --domain NAMES     Public domain(s), comma-separated; the first one is the site address.
+                     Gets a free Let's Encrypt certificate (DNS must already point here).
+  --email ADDRESS    Contact address for Let's Encrypt (default: admin@<domain>)
+  --ref REF          Release to install, e.g. v0.23.8-retail.17 (default: the newest release)
+  --dir PATH         Install directory (default: /var/acacia)
+  --src-dir PATH     Source checkout used for updates (default: /opt/acacia-radio)
+  --http-port N      HTTP port (default: 80)
+  --https-port N     HTTPS port (default: 443)
+  --build            Build the images on this server instead of downloading them (15-40 min)
+  -y, --yes          Don't ask for confirmation
+  -h, --help         Show this help
+
+Environment:
+  ACACIA_IMAGE_REGISTRY   where the prebuilt images come from (default ghcr.io/felix1catus)
+  RETAIL_GIT_TOKEN        read-only GitHub token, only needed for a private copy of the repository
+EOF
+}
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -50,235 +57,354 @@ while [[ $# -gt 0 ]]; do
     --email) EMAIL="$2"; shift 2 ;;
     --http-port) HTTP_PORT="$2"; shift 2 ;;
     --https-port) HTTPS_PORT="$2"; shift 2 ;;
+    --build) FORCE_BUILD=1; shift ;;
     --yes|-y) ASSUME_YES=1; shift ;;
-    -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
-    *) echo "Unknown option: $1 (see --help)"; exit 1 ;;
+    -h|--help) usage; exit 0 ;;
+    *) printf 'Unknown option: %s\n\n' "$1"; usage; exit 1 ;;
   esac
 done
 
-STEP=0
-step() { STEP=$((STEP + 1)); printf '\n\033[1;36m[%d/7] %s\033[0m\n' "$STEP" "$*"; }
-info() { printf '      %s\n' "$*"; }
-warn() { printf '\033[1;33m      ! %s\033[0m\n' "$*"; }
-fail() { printf '\033[1;31m      x %s\033[0m\n' "$*"; exit 1; }
-ok()   { printf '\033[1;32m      ✓ %s\033[0m\n' "$*"; }
+# ------------------------------------------------------------------------------------------------ output
+
+if [[ -t 1 ]]; then
+  TTY=1
+  B=$'\033[1m'; D=$'\033[2m'; R=$'\033[0m'
+  GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; CYAN=$'\033[36m'
+else
+  TTY=0; B=""; D=""; R=""; GREEN=""; RED=""; YELLOW=""; CYAN=""
+fi
+SPIN=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
+START_ALL=$SECONDS
+
+took() { # time since $1 (a $SECONDS value), as "42s" or "3m 05s"
+  local s=$((SECONDS - $1))
+  if ((s >= 60)); then printf '%dm %02ds' $((s / 60)) $((s % 60)); else printf '%ds' "$s"; fi
+}
+ok()      { printf '  %s✓%s %s%s\n' "$GREEN" "$R" "$1" "${2:+  ${D}$2${R}}"; }
+note()    { printf '    %s%s%s\n' "$D" "$1" "$R"; }
+warn()    { printf '  %s!%s %s\n' "$YELLOW" "$R" "$1"; }
+section() { printf '\n%s%s%s\n' "$B" "$1" "$R"; }
+die() {
+  printf '  %s✗%s %s\n' "$RED" "$R" "$1"
+  if [[ -n "${2:-}" ]]; then printf '    %s\n' "$2"; fi
+  exit 1
+}
+
+# run LABEL CMD...: run a command or shell function, its output going to the log, with a spinner and the time it
+# took. DONE=... sets the success line. SOFT=1 returns the error instead of stopping (for steps with a fallback).
+run() {
+  local label="$1" start=$SECONDS rc=0 i=0 pid done_label="${DONE:-$1}" soft="${SOFT:-0}"
+  shift
+  printf '\n### %s  (%s)\n$ %s\n' "$label" "$(date '+%F %T')" "$*" >> "$LOG"
+  if ((TTY)); then
+    ("$@") >> "$LOG" 2>&1 &
+    pid=$!
+    while kill -0 "$pid" 2> /dev/null; do
+      printf '\r  %s%s%s %s %s%s%s ' "$CYAN" "${SPIN[i++ % ${#SPIN[@]}]}" "$R" "$label" "$D" "$(took "$start")" "$R"
+      sleep 0.12
+    done
+    wait "$pid" || rc=$?
+    printf '\r\033[K'
+  else
+    printf '  … %s\n' "$label"
+    ("$@") >> "$LOG" 2>&1 &
+    wait $! || rc=$?
+  fi
+  if ((rc == 0)); then
+    ok "$done_label" "$(took "$start")"
+    return 0
+  fi
+  printf '  %s✗%s %s  %s(failed after %s)%s\n' "$RED" "$R" "$label" "$D" "$(took "$start")" "$R"
+  ((soft)) && return "$rc"
+  printf '\n  %sLast lines of %s:%s\n' "$D" "$LOG" "$R"
+  tail -n 20 "$LOG" | sed 's/^/    /'
+  printf '\n  Fix the problem and run the installer again; finished steps are skipped.\n\n'
+  exit "$rc"
+}
+
+# ------------------------------------------------------------------------------------------------ banner
+
+printf '\n  %sAcacia Radio%s %sinstaller%s\n' "$B$GREEN" "$R" "$D" "$R"
+printf '  %s──────────────────────%s\n' "$D" "$R"
+
+[[ $EUID -eq 0 ]] || die "Run the installer as root:" "sudo bash $0 $*"
+mkdir -p "$(dirname "$LOG")"
+printf '\n=========== Acacia Radio install, %s ===========\n' "$(date '+%F %T')" >> "$LOG"
 
 # ------------------------------------------------------------------------------------------------ 1. checks
-step "Checking this machine"
-[[ $EUID -eq 0 ]] || fail "Run as root (sudo bash $0)."
+
+section "Checking this server"
 # shellcheck disable=SC1091
 . /etc/os-release
 case "${ID:-}" in
-  ubuntu|debian) ok "$PRETTY_NAME" ;;
-  *) fail "Unsupported OS '${PRETTY_NAME:-unknown}'. Ubuntu or Debian is required." ;;
+  ubuntu|debian) ;;
+  *) die "${PRETTY_NAME:-This system} isn't supported." "Acacia Radio installs on Ubuntu or Debian." ;;
 esac
 ARCH=$(dpkg --print-architecture)
-[[ "$ARCH" == amd64 || "$ARCH" == arm64 ]] || fail "Unsupported architecture: $ARCH"
-ok "Architecture $ARCH"
-
-mkdir -p "$(dirname "$SRC_DIR")" "$INSTALL_DIR"
-FREE_GB=$(df -Pk "$(dirname "$SRC_DIR")" | awk 'NR==2 {print int($4/1024/1024)}')
-if (( FREE_GB < 12 )); then
-  if [[ -f "$INSTALL_DIR/docker-compose.yml" ]]; then
-    # Re-run on an existing install: the image is usually built already.
-    warn "Only ${FREE_GB} GB free; building a new image needs about 12 GB (an existing image is reused)."
-  else
-    fail "Only ${FREE_GB} GB free; the image build needs about 12 GB."
-  fi
-else
-  ok "${FREE_GB} GB free disk"
-fi
+[[ "$ARCH" == amd64 || "$ARCH" == arm64 ]] || die "The $ARCH architecture isn't supported (amd64 and arm64 are)."
+CPUS=$(nproc 2> /dev/null || echo 1)
 MEM_MB=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
-(( MEM_MB >= 1900 )) || warn "Only ${MEM_MB} MB RAM; 2 GB or more is recommended."
-ok "${MEM_MB} MB RAM"
+mkdir -p "$(dirname "$SRC_DIR")" "$INSTALL_DIR"
+FREE_GB=$(df -Pk /var/lib 2> /dev/null | awk 'NR==2 {print int($4/1024/1024)}')
+ok "$PRETTY_NAME · $ARCH · $CPUS CPU · $((MEM_MB / 1024)).$(((MEM_MB % 1024) * 10 / 1024)) GB RAM · $FREE_GB GB free"
 
-if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx acacia; then
+# Prebuilt images are published for amd64; other machines build them here.
+if ((FORCE_BUILD == 0)) && [[ "$ARCH" == amd64 && "$REGISTRY" != none ]]; then
+  MODE=pull; NEED_GB=8
+else
+  MODE=build; NEED_GB=14
+fi
+EXISTING=0
+if [[ -f "$INSTALL_DIR/docker-compose.yml" ]]; then EXISTING=1; fi
+if ((FREE_GB < NEED_GB)); then
+  if ((EXISTING)); then
+    warn "Only $FREE_GB GB of disk is free; new images need about $NEED_GB GB."
+  else
+    die "Only $FREE_GB GB of disk is free; Acacia Radio needs about $NEED_GB GB."
+  fi
+fi
+if ((MEM_MB < 1900)); then warn "Only $MEM_MB MB of RAM; 2 GB or more is recommended."; fi
+
+if ! docker ps --format '{{.Names}}' 2> /dev/null | grep -qx acacia; then
   for p in "$HTTP_PORT" "$HTTPS_PORT"; do
-    if ss -Hltn "sport = :$p" 2>/dev/null | grep -q .; then
-      fail "Port $p is already in use ($(ss -Hltnp "sport = :$p" | awk '{print $NF}' | head -1)). Stop that service or use --http-port/--https-port."
+    if ss -Hltn "sport = :$p" 2> /dev/null | grep -q .; then
+      die "Port $p is already in use by $(ss -Hltnp "sport = :$p" | grep -o 'users:(("[^"]*' | cut -d'"' -f2 | head -1)." \
+        "Stop that service, or install on other ports with --http-port and --https-port."
     fi
   done
-  ok "Ports $HTTP_PORT and $HTTPS_PORT are free"
 fi
+ok "Ports $HTTP_PORT and $HTTPS_PORT are available"
 
 PRIMARY_DOMAIN="${DOMAIN%%,*}"
-if [[ -z "$EMAIL" && -n "$DOMAIN" ]]; then
-  EMAIL="admin@$PRIMARY_DOMAIN"
+if [[ -z "$EMAIL" && -n "$DOMAIN" ]]; then EMAIL="admin@$PRIMARY_DOMAIN"; fi
+
+section "Plan"
+note "Install directory   $INSTALL_DIR"
+note "Release             ${REF:-the newest one}"
+if [[ $MODE == pull ]]; then
+  note "Images              download (a few minutes)"
+else
+  note "Images              build on this server (15-40 min)"
 fi
-echo
-info "Install directory : $INSTALL_DIR"
-info "Source checkout   : $SRC_DIR  (from $SOURCE)"
-info "Release           : ${REF:-newest release}"
-info "Ports             : HTTP $HTTP_PORT, HTTPS $HTTPS_PORT"
-info "Domain            : ${DOMAIN:-none (set it later in Administration > System Settings)}"
-if [[ $ASSUME_YES -ne 1 ]]; then
-  read -r -p "      Continue? [Y/n] " answer
-  [[ -z "$answer" || "$answer" =~ ^[Yy] ]] || exit 0
+note "Ports               HTTP $HTTP_PORT, HTTPS $HTTPS_PORT"
+NO_DOMAIN="this server's IP address (add a domain later)"
+note "Address             ${DOMAIN:-$NO_DOMAIN}"
+if ((ASSUME_YES == 0)) && [[ -t 0 ]]; then
+  printf '\n  Continue? [Y/n] '
+  read -r answer
+  [[ -z "$answer" || "$answer" =~ ^[Yy] ]] || { printf '  Cancelled.\n\n'; exit 0; }
 fi
 
 # ------------------------------------------------------------------------------------------------ 2. docker
-step "Installing Docker"
+
+section "Preparing the server"
 export DEBIAN_FRONTEND=noninteractive
-if command -v docker >/dev/null && docker compose version >/dev/null 2>&1 && docker buildx version >/dev/null 2>&1; then
-  ok "$(docker --version | cut -d, -f1) is already installed"
-else
+
+install_docker() {
   apt-get update -qq
-  apt-get install -y -qq ca-certificates curl gnupg git iproute2 >/dev/null
+  apt-get install -y -qq ca-certificates curl gnupg git iproute2 openssl
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL "https://download.docker.com/linux/$ID/gpg" -o /etc/apt/keyrings/docker.asc
   chmod a+r /etc/apt/keyrings/docker.asc
   echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/$ID ${VERSION_CODENAME} stable" \
     > /etc/apt/sources.list.d/docker.list
   apt-get update -qq
-  apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin >/dev/null
-  ok "Docker installed"
-fi
-if ! command -v git >/dev/null; then
-  apt-get install -y -qq git >/dev/null
-  ok "git installed"
-fi
-
-if ! docker info >/dev/null 2>&1; then
-  if command -v systemctl >/dev/null && systemctl list-unit-files docker.service >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
-    systemctl enable --now docker >/dev/null
+  apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+}
+start_docker() {
+  if command -v systemctl > /dev/null && [[ -d /run/systemd/system ]]; then
+    systemctl enable --now docker
   else
-    # No systemd (containers, some minimal images): run the daemon directly, detached from this session so a
-    # closed terminal or Ctrl-C can't signal it.
+    # No systemd (containers, some minimal images): run the daemon detached from this session.
     setsid nohup dockerd > /var/log/dockerd.log 2>&1 < /dev/null &
   fi
-  for _ in $(seq 1 30); do docker info >/dev/null 2>&1 && break; sleep 1; done
+  for _ in $(seq 1 30); do
+    if docker info > /dev/null 2>&1; then return 0; fi
+    sleep 1
+  done
+  echo "The Docker daemon didn't start; see journalctl -u docker or /var/log/dockerd.log." >&2
+  return 1
+}
+
+if command -v docker > /dev/null && docker compose version > /dev/null 2>&1 && docker buildx version > /dev/null 2>&1; then
+  ok "Docker $(docker --version | awk '{print $3}' | tr -d ,) is installed"
+else
+  DONE="Installed Docker" run "Installing Docker" install_docker
 fi
-docker info >/dev/null 2>&1 || fail "The Docker daemon is not running (see /var/log/dockerd.log or journalctl -u docker)."
-ok "Docker daemon is running"
+if ! command -v git > /dev/null; then run "Installing git" apt-get install -y -qq git; fi
+if ! command -v openssl > /dev/null; then run "Installing openssl" apt-get install -y -qq openssl; fi
+if ! docker info > /dev/null 2>&1; then DONE="Docker is running" run "Starting Docker" start_docker; fi
+
+# docker-compose.yml uses optional env files, which need Compose 2.24 or newer.
+COMPOSE_VERSION=$(docker compose version --short 2> /dev/null | sed 's/^v//')
+if [[ "$(printf '%s\n2.24.0\n' "$COMPOSE_VERSION" | sort -V | head -1)" != 2.24.0 ]]; then
+  DONE="Updated Docker Compose" run "Updating Docker Compose ($COMPOSE_VERSION is too old)" \
+    bash -c 'apt-get update -qq && apt-get install -y -qq docker-compose-plugin'
+fi
 
 # ------------------------------------------------------------------------------------------------ 3. source
-step "Getting the Acacia Radio source"
+
 GIT=(git)
 if [[ -n "${RETAIL_GIT_TOKEN:-}" ]]; then
-  # The token is passed through git's credential protocol, never put in a URL.
+  # The token goes through git's credential protocol, never into a URL.
   GIT=(git -c credential.helper= -c "credential.helper=!f() { echo username=x-access-token; echo password=\$RETAIL_GIT_TOKEN; }; f")
 fi
-
-if [[ -d "$SRC_DIR/.git" ]]; then
-  "${GIT[@]}" -C "$SRC_DIR" fetch --quiet --tags --force origin
-  ok "Updated $SRC_DIR"
-else
-  "${GIT[@]}" clone --quiet "$SOURCE" "$SRC_DIR"
-  ok "Cloned into $SRC_DIR"
-fi
-
-if [[ -n "${RETAIL_GIT_TOKEN:-}" ]]; then
-  CRED="$SRC_DIR/.git/retail-credentials"
-  umask 077
-  printf 'https://x-access-token:%s@github.com\n' "$RETAIL_GIT_TOKEN" > "$CRED"
-  git -C "$SRC_DIR" config credential.helper "store --file=$CRED"
-  ok "Saved read access for later updates ($CRED, mode 600)"
-fi
+get_source() {
+  if [[ -d "$SRC_DIR/.git" ]]; then
+    "${GIT[@]}" -C "$SRC_DIR" fetch --quiet --tags --force origin
+  else
+    # Partial clone: the history and tags (for updates), but file contents only for the release checked out.
+    "${GIT[@]}" clone --quiet --filter=blob:none --no-checkout "$SOURCE" "$SRC_DIR"
+  fi
+  if [[ -n "${RETAIL_GIT_TOKEN:-}" ]]; then
+    local cred="$SRC_DIR/.git/retail-credentials"
+    (umask 077; printf 'https://x-access-token:%s@github.com\n' "$RETAIL_GIT_TOKEN" > "$cred")
+    git -C "$SRC_DIR" config credential.helper "store --file=$cred"
+  fi
+}
+DONE="Downloaded the source" run "Downloading Acacia Radio" get_source
 
 if [[ -z "$REF" ]]; then
   REF=$(git -C "$SRC_DIR" tag -l 'v*-retail.*' --sort=-v:refname | head -n 1)
-  [[ -n "$REF" ]] || fail "No v*-retail.* release found; pass --ref."
+  [[ -n "$REF" ]] || die "No release found in $SOURCE." "Pass one with --ref."
 fi
-if git -C "$SRC_DIR" rev-parse --quiet --verify "refs/tags/$REF" >/dev/null; then
-  IMAGE="acacia-radio:${REF#v}"
-  CHECKOUT="$REF"
-elif git -C "$SRC_DIR" rev-parse --quiet --verify "origin/$REF" >/dev/null; then
-  CHECKOUT="origin/$REF"
-  IMAGE="acacia-radio:$(git -C "$SRC_DIR" rev-parse --short "$CHECKOUT")"
+if git -C "$SRC_DIR" rev-parse --quiet --verify "refs/tags/$REF" > /dev/null; then
+  IMAGE="acacia-radio:${REF#v}"; CHECKOUT="$REF"
+elif git -C "$SRC_DIR" rev-parse --quiet --verify "origin/$REF" > /dev/null; then
+  # A branch: no prebuilt images.
+  CHECKOUT="origin/$REF"; IMAGE="acacia-radio:$(git -C "$SRC_DIR" rev-parse --short "$CHECKOUT")"; MODE=build
 else
-  fail "Unknown release, tag or branch: $REF"
+  die "Unknown release: $REF"
 fi
-git -C "$SRC_DIR" checkout --quiet --detach "$CHECKOUT"
-ok "Checked out $REF ($(git -C "$SRC_DIR" rev-parse --short HEAD))"
+git -C "$SRC_DIR" checkout --quiet --detach "$CHECKOUT" >> "$LOG" 2>&1 || die "Couldn't check out $REF; see $LOG."
+VERSION_LABEL="${REF#v}"
+ok "Release $VERSION_LABEL" "$(git -C "$SRC_DIR" log -1 --format=%cd --date=short)"
 
-# ------------------------------------------------------------------------------------------------ 4. image
-step "Building the image $IMAGE (first build: 15-40 min)"
+# ------------------------------------------------------------------------------------------------ 4. images
+
+section "Getting the images"
 WORKER_IMAGE="$("$SRC_DIR/util/music_downloader_tag.sh" "$IMAGE")"
-if docker image inspect "$IMAGE" >/dev/null 2>&1 && docker image inspect "$WORKER_IMAGE" >/dev/null 2>&1; then
-  ok "$IMAGE already exists"
-else
+# Chained with &&: this runs inside an "if", where bash ignores set -e.
+pull_images() {
+  local version="${IMAGE##*:}"
+  docker pull "$REGISTRY/acacia-radio:$version" \
+    && docker pull "$REGISTRY/acacia-radio-music-downloader:$version" \
+    && docker tag "$REGISTRY/acacia-radio:$version" "$IMAGE" \
+    && docker tag "$REGISTRY/acacia-radio-music-downloader:$version" "$WORKER_IMAGE" \
+    && { docker rmi "$REGISTRY/acacia-radio:$version" "$REGISTRY/acacia-radio-music-downloader:$version" > /dev/null || true; }
+}
+build_images() {
   BUILD_ATTEMPTS="${BUILD_ATTEMPTS:-3}" "$SRC_DIR/util/build_image.sh" "$IMAGE"
-  ok "Built $IMAGE"
+}
+
+if docker image inspect "$IMAGE" > /dev/null 2>&1 && docker image inspect "$WORKER_IMAGE" > /dev/null 2>&1; then
+  ok "The images for $VERSION_LABEL are already here"
+elif [[ $MODE == pull ]] && SOFT=1 DONE="Downloaded the images" run "Downloading the images (about 1.5 GB)" pull_images; then
+  :
+else
+  if [[ $MODE == pull ]]; then warn "No prebuilt images for $VERSION_LABEL; building them here instead."; fi
+  DONE="Built the images" run "Building the images (15-40 min)" build_images
 fi
 
 # ------------------------------------------------------------------------------------------------ 5. files
-step "Writing $INSTALL_DIR"
+
+section "Setting up $INSTALL_DIR"
 cd "$INSTALL_DIR"
+set_env() { # FILE KEY VALUE: replace or append KEY=VALUE
+  if grep -q "^$2=" "$1"; then sed -i "s#^$2=.*#$2=$3#" "$1"; else echo "$2=$3" >> "$1"; fi
+}
+secret() { openssl rand -hex "$1"; }
+
 for f in docker-compose.yml docker.sh; do
-  if [[ -f "$f" ]] && ! cmp -s "$f" "$SRC_DIR/${f/docker-compose.yml/docker-compose.retail.yml}"; then
+  src="$SRC_DIR/$f"
+  if [[ $f == docker-compose.yml ]]; then src="$SRC_DIR/docker-compose.retail.yml"; fi
+  if [[ -f "$f" ]] && ! cmp -s "$f" "$src"; then
     cp "$f" "$f.bak-$(date +%Y%m%d%H%M%S)"
-    info "Kept the previous $f as $f.bak-*"
+    note "Kept your previous $f as $f.bak-*"
   fi
 done
 cp "$SRC_DIR/docker-compose.retail.yml" docker-compose.yml
 cp "$SRC_DIR/docker.sh" docker.sh && chmod +x docker.sh
 
-set_env() { # file key value: replace or append KEY=value
-  if grep -q "^$2=" "$1"; then sed -i "s#^$2=.*#$2=$3#" "$1"; else echo "$2=$3" >> "$1"; fi
-}
-[[ -f .env ]] || cp "$SRC_DIR/sample.env" .env
+if [[ ! -f .env ]]; then cp "$SRC_DIR/sample.env" .env; fi
 set_env .env ACACIA_HTTP_PORT "$HTTP_PORT"
 set_env .env ACACIA_HTTPS_PORT "$HTTPS_PORT"
 set_env .env ACACIA_IMAGE "$IMAGE"
+set_env .env MUSIC_DOWNLOADER_IMAGE "$WORKER_IMAGE"
 set_env .env RETAIL_SOURCE_DIR "$SRC_DIR"
 if [[ ! -f acacia.env ]]; then
   cp "$SRC_DIR/acacia.sample.env" acacia.env
-  set_env acacia.env MYSQL_PASSWORD "$(openssl rand -hex 16 2>/dev/null || head -c16 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+  set_env acacia.env MYSQL_PASSWORD "$(secret 16)"
   chmod 600 acacia.env
-  ok "Created acacia.env with a random database password"
 fi
-# Music Downloader: worker image and the secret shared by Acacia Radio and the worker (docker-compose.retail.yml).
-set_env .env MUSIC_DOWNLOADER_IMAGE "$WORKER_IMAGE"
 if [[ ! -s music-downloader.env ]]; then
-  MD_TOKEN="$(openssl rand -hex 32 2>/dev/null || head -c32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+  MD_TOKEN="$(secret 32)"
   (umask 077; printf '# Shared secret between Acacia Radio and the Music Downloader worker.\nMUSIC_DOWNLOADER_WORKER_TOKEN=%s\nMD_WORKER_TOKEN=%s\n' "$MD_TOKEN" "$MD_TOKEN" > music-downloader.env)
-  ok "Created music-downloader.env"
 fi
-docker compose config -q
-ok "docker-compose.yml, docker.sh, .env, acacia.env and music-downloader.env are in place"
+docker compose config -q >> "$LOG" 2>&1 || die "The generated docker-compose.yml is invalid; see $LOG."
+ok "Configuration written" "docker-compose.yml · .env · acacia.env · music-downloader.env"
 
 # ------------------------------------------------------------------------------------------------ 6. start
-step "Starting Acacia Radio"
-docker compose up -d --remove-orphans
-info "Waiting for Acacia Radio to answer (first start sets up the database, about 1-3 min)..."
-STATUS=""
-for _ in $(seq 1 90); do
-  STATUS=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$HTTP_PORT/api/status" || true)
-  [[ "$STATUS" == 200 ]] && break
-  sleep 4
-done
-[[ "$STATUS" == 200 ]] || fail "Acacia Radio did not answer on port $HTTP_PORT (see: docker compose logs web)."
-ok "Acacia Radio is running"
+
+section "Starting Acacia Radio"
+start_stack() { docker compose up -d --remove-orphans; }
+wait_ready() {
+  local status=""
+  for _ in $(seq 1 120); do
+    status=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$HTTP_PORT/api/status" || true)
+    if [[ "$status" == 200 ]]; then return 0; fi
+    sleep 3
+  done
+  echo "Acacia Radio didn't answer on port $HTTP_PORT (last HTTP status: ${status:-none})."
+  docker compose logs --tail 60 web
+  return 1
+}
+DONE="Containers started" run "Starting the containers" start_stack
+DONE="Acacia Radio is up" run "Waiting for the first start (sets up the database, 1-3 min)" wait_ready
 
 CLI=(docker compose exec -T --user=acacia web acacia_cli)
-# Only HTTP/HTTPS are published, so players must use the /listen/ proxy.
-"${CLI[@]}" acacia:settings:set use_radio_proxy true >/dev/null && ok "Radio proxy (/listen/) on"
+# Only HTTP and HTTPS are published, so players reach the streams through /listen/.
+"${CLI[@]}" acacia:settings:set use_radio_proxy true >> "$LOG" 2>&1 || warn "Couldn't turn on the radio proxy; see $LOG."
 
 # ------------------------------------------------------------------------------------------------ 7. domain
-step "Domain and HTTPS"
-if [[ -n "$DOMAIN" ]]; then
-  "${CLI[@]}" acacia:settings:set base_url "https://$PRIMARY_DOMAIN" >/dev/null
-  "${CLI[@]}" acacia:settings:set acme_domains "$DOMAIN" >/dev/null
-  "${CLI[@]}" acacia:settings:set acme_email "$EMAIL" >/dev/null
-  if "${CLI[@]}" acacia:acme:get-certificate; then
-    ok "Certificate issued for $DOMAIN"
-  else
-    warn "No certificate yet. Check that $DOMAIN points to this server and port 80 is reachable, then run:"
-    warn "  cd $INSTALL_DIR && docker compose exec --user=acacia web acacia_cli acacia:acme:get-certificate"
-  fi
-else
-  info "Skipped (no --domain). Set it later: Administration > System Settings > Services > LetsEncrypt."
-fi
 
 if [[ -n "$DOMAIN" ]]; then
-  URL="https://$PRIMARY_DOMAIN"
+  section "Domain and HTTPS"
+  {
+    "${CLI[@]}" acacia:settings:set base_url "https://$PRIMARY_DOMAIN"
+    "${CLI[@]}" acacia:settings:set acme_domains "$DOMAIN"
+    "${CLI[@]}" acacia:settings:set acme_email "$EMAIL"
+  } >> "$LOG" 2>&1 || warn "Couldn't save the domain settings; see $LOG."
+  get_certificate() { "${CLI[@]}" acacia:acme:get-certificate; }
+  if SOFT=1 DONE="HTTPS certificate for $DOMAIN" run "Getting an HTTPS certificate" get_certificate; then
+    URL="https://$PRIMARY_DOMAIN"
+  else
+    URL="http://$PRIMARY_DOMAIN"
+    note "Check that $PRIMARY_DOMAIN points to this server and port 80 is open, then run:"
+    note "cd $INSTALL_DIR && docker compose exec --user=acacia web acacia_cli acacia:acme:get-certificate"
+  fi
 else
-  # Public address if the server can find it, else its first local address.
-  IP=$(curl -s -m 5 https://api.ipify.org 2>/dev/null || true)
-  [[ "$IP" =~ ^[0-9.]+$ ]] || IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+  IP=$(curl -s -m 5 https://api.ipify.org 2> /dev/null || true)
+  [[ "$IP" =~ ^[0-9.]+$ ]] || IP=$(hostname -I 2> /dev/null | awk '{print $1}')
   URL="http://$IP"
-  [[ "$HTTP_PORT" != 80 ]] && URL="$URL:$HTTP_PORT"
+  if [[ "$HTTP_PORT" != 80 ]]; then URL="$URL:$HTTP_PORT"; fi
 fi
-printf '\n\033[1;32mAcaciaRadio Retail %s is installed.\033[0m\n' "$REF"
-info "Open $URL (on a new install: create the admin account and the first station there)."
-info "Updates: cd $INSTALL_DIR && ./docker.sh backup && ./docker.sh update"
+
+# ------------------------------------------------------------------------------------------------ done
+
+box() { printf '  %s│%s  %-58s%s│%s\n' "$GREEN" "$R" "$1" "$GREEN" "$R"; }
+APP_SIZE=$(docker image inspect "$IMAGE" --format '{{.Size}}' | awk '{printf "%.1f GB", $1 / 1e9}')
+printf '\n  %s╭────────────────────────────────────────────────────────────╮%s\n' "$GREEN" "$R"
+box "Acacia Radio $VERSION_LABEL is ready"
+box ""
+box "Open $URL"
+box "and create the administrator account and the first station."
+box ""
+box "Installed in $(took "$START_ALL") · image $APP_SIZE"
+printf '  %s╰────────────────────────────────────────────────────────────╯%s\n\n' "$GREEN" "$R"
+printf '  %sIn %s:%s\n' "$D" "$INSTALL_DIR" "$R"
+printf '    ./docker.sh update        update to the newest release\n'
+printf '    ./docker.sh backup        back up the database, settings and media\n'
+printf '    ./docker.sh rollback      go back to the version before the last update\n'
+printf '    docker compose logs -f    follow the logs\n\n'
+printf '  %sInstall log: %s%s\n\n' "$D" "$LOG" "$R"

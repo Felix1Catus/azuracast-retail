@@ -575,7 +575,8 @@ install-dev() {
 #
 # Acacia Radio updates come from the fork's own repository, never from upstream.
 # A retail install keeps a checkout of the source (RETAIL_SOURCE_DIR in .env, default /opt/acacia-radio);
-# `update` checks out a release there, builds the image locally and restarts on it. See docs/retail/INSTALL.md.
+# `update` checks out a release there, downloads its prebuilt images (or builds them locally) and restarts on
+# them. See docs/retail/INSTALL.md.
 #
 is-retail() {
   # Installs from before the rebrand still have the old image name in docker-compose.yml until `update` migrates them.
@@ -629,6 +630,25 @@ volume-prefix() {
   .env --file .env
   .env get COMPOSE_PROJECT_NAME
   echo "${REPLY:-acacia}"
+}
+
+# Download the prebuilt release images (published by .github/workflows/release-images.yml) and tag them with the
+# local names the rest of this script uses. Returns non-zero when they can't be pulled; the caller then builds.
+#   ACACIA_IMAGE_REGISTRY  registry and owner (default ghcr.io/felix1catus); "none" always builds locally
+retail-pull-images() {
+  local SRC="$1" IMAGE="$2" VERSION REGISTRY WORKER
+  VERSION="${IMAGE##*:}"
+  REGISTRY="${ACACIA_IMAGE_REGISTRY:-ghcr.io/felix1catus}"
+  [[ "$REGISTRY" == none ]] && return 1
+  WORKER="$("$SRC/util/music_downloader_tag.sh" "$IMAGE")"
+
+  echo "Downloading the release images from $REGISTRY..."
+  d pull -q "$REGISTRY/acacia-radio:$VERSION" > /dev/null 2>&1 || return 1
+  d pull -q "$REGISTRY/acacia-radio-music-downloader:$VERSION" > /dev/null 2>&1 || return 1
+  d tag "$REGISTRY/acacia-radio:$VERSION" "$IMAGE" || return 1
+  d tag "$REGISTRY/acacia-radio-music-downloader:$VERSION" "$WORKER" || return 1
+  # Keep only the local names, so old versions are pruned like locally built ones.
+  d rmi "$REGISTRY/acacia-radio:$VERSION" "$REGISTRY/acacia-radio-music-downloader:$VERSION" > /dev/null 2>&1 || true
 }
 
 retail-music-downloader-setup() {
@@ -697,10 +717,17 @@ retail-update() {
   fi
 
   git -C "$SRC" checkout --quiet --detach "$TARGET" || exit 1
-  "$SRC/util/build_image.sh" "$IMAGE" || {
-    echo "The build failed; the running installation was not changed."
-    exit 1
-  }
+  if [[ "$TARGET" != origin/* ]] && retail-pull-images "$SRC" "$IMAGE"; then
+    echo "Downloaded the release images."
+  else
+    if [[ "$TARGET" != origin/* ]]; then
+      echo "No prebuilt images for $TARGET; building them here (15-40 min)."
+    fi
+    "$SRC/util/build_image.sh" "$IMAGE" || {
+      echo "The build failed; the running installation was not changed."
+      exit 1
+    }
+  fi
 
   # Settings from before the rebrand get their new names first, so the keys below aren't written twice.
   retail-migrate-rebrand

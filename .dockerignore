@@ -5,3 +5,6 @@
 /vendor
 **/__pycache__
 util/branding/acacia-logo.svg
+# Built as its own image (acacia-radio-music-downloader), not part of this one.
+plugins/music-downloader/worker
+plugins/music-downloader/tests

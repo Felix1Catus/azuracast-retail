@@ -1,6 +1,6 @@
-# Acacia Radio: fork notes
+# Developing and releasing Acacia Radio
 
-Acacia Radio is a hosted-radio and in-store-radio focused fork of the upstream project (see [docs/retail/ATTRIBUTION.md](docs/retail/ATTRIBUTION.md)), used by TLRadio
+Acacia Radio is a hosted-radio and in-store-radio focused fork of the upstream project (see [docs/retail/ATTRIBUTION.md](ATTRIBUTION.md)), used by TLRadio
 (tradelineradio.com). Branch tracking (the Tracker module) ships built in under `plugins/branch-tracker`; it is
 developed in [azuracast-tracker-plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin), which still works on
 upstream, and synced here with `util/sync_tracker.sh`.
@@ -19,8 +19,8 @@ upstream, and synced here with `util/sync_tracker.sh`.
 | | |
 |---|---|
 | Upstream | **`ebf75a267`** (2026-10-06), merged on top of the baseline below. No new database migrations since the baseline |
-| Fork release | `0.23.8-retail.1`, see [docs/retail/FIXLOG.md](docs/retail/FIXLOG.md) |
-| Install | [docs/retail/INSTALL.md](docs/retail/INSTALL.md) |
+| Fork release | `0.23.8-retail.1`, see [docs/retail/FIXLOG.md](FIXLOG.md) |
+| Install | [docs/retail/INSTALL.md](INSTALL.md) |
 
 ## Branches and remotes
 
@@ -82,11 +82,11 @@ argument returns to the newest release.
 
 ## Docs
 
-- [docs/retail/INSTALL.md](docs/retail/INSTALL.md): build, install, switch an existing server, troubleshooting
-- [docs/retail/FIXLOG.md](docs/retail/FIXLOG.md): every fork change, with issue and verification
-- [docs/retail/ARCHITECTURE.md](docs/retail/ARCHITECTURE.md): component map
-- [docs/retail/REVIEW.md](docs/retail/REVIEW.md): bugs and improvements (R-1 … R-14)
-- [docs/retail/REDESIGN.md](docs/retail/REDESIGN.md): retail edition plan and phases
+- [docs/retail/INSTALL.md](INSTALL.md): build, install, switch an existing server, troubleshooting
+- [docs/retail/FIXLOG.md](FIXLOG.md): every fork change, with issue and verification
+- [docs/retail/ARCHITECTURE.md](ARCHITECTURE.md): component map
+- [docs/retail/REVIEW.md](REVIEW.md): bugs and improvements (R-1 … R-14)
+- [docs/retail/REDESIGN.md](REDESIGN.md): retail edition plan and phases
 
 ## License: AGPL-3.0-or-later
 

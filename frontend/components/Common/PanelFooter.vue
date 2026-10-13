@@ -9,7 +9,9 @@
         &bull;
         <a
             href="/source"
-            :title="$gettext('Download the source code of this version (GNU AGPL v3)')"
+            target="_blank"
+            rel="noopener"
+            :title="$gettext('Source code of this version on GitHub (GNU AGPL v3)')"
         >{{ $gettext('Source code') }}</a>
     </footer>
 </template>

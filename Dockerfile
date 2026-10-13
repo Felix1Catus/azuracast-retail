@@ -203,7 +203,8 @@ RUN composer install --no-ansi --no-interaction \
     fi
 
 #
-# Final build (Just environment vars and squishing the FS)
+# Final build: only what runs on the server. Frontend sources, tests, docs and development tooling stay in the
+# repository (the "assets" stage above builds the frontend from them).
 #
 FROM pre-final AS final
 
@@ -211,7 +212,12 @@ USER acacia
 
 WORKDIR /var/acacia/www
 
-COPY --chown=acacia:acacia . .
+COPY --chown=acacia:acacia composer.json composer.lock LICENSE.md docker-compose.sample.yml ./
+COPY --chown=acacia:acacia backend ./backend
+COPY --chown=acacia:acacia web ./web
+COPY --chown=acacia:acacia resources ./resources
+COPY --chown=acacia:acacia plugins ./plugins
+COPY --chown=acacia:acacia util/branding/build_fallback_audio.sh ./util/branding/build_fallback_audio.sh
 
 ARG COMPOSER_MAX_PARALLEL_HTTP=12
 

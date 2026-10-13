@@ -1,203 +1,176 @@
-# Installing Acacia Radio
-
-Acacia Radio runs exactly like a Docker install of Acacia Radio: one container, the same data volumes and the same `docker.sh` helper. The differences:
-- **Image:** you build the image from this repository, so you never pull `ghcr.io/azuracast/azuracast`.
-- **Ports:** only HTTP and HTTPS are published.
-- **Updates:** upstream updates are switched off.
-
-**Plugins:** plugins written for Acacia Radio, such as the [Tracker plugin](https://github.com/Felix1Catus/azuracast-tracker-plugin), install the same way.
+# Installing and running Acacia Radio
 
 | | |
 |---|---|
-| Based on | upstream 0.23.8 rolling (upstream `ebf75a267`, Oct 2026); current release `v0.23.8-retail.2` |
-| Server | Linux with Docker Engine 24+ and the Compose plugin, 2 CPU / 4 GB RAM or more, ports 80 and 443 |
-| Build machine | The server itself or any Linux/WSL machine with Docker and git (about 10 GB free for the build) |
+| Server | Ubuntu or Debian, amd64 or arm64, with 2 CPU, 4 GB RAM and 20 GB of disk or more |
+| Network | Ports 80 and 443 free and reachable from the internet; for HTTPS, a domain whose DNS points at the server |
+| Software | Nothing: the installer sets up Docker Engine and the Compose plugin (2.24 or newer) |
 
-## 1. Build the image
+- [1. Install](#1-install)
+- [2. After installing](#2-after-installing)
+- [3. Updates, backups and rollback](#3-updates-backups-and-rollback)
+- [4. Built-in modules](#4-built-in-modules)
+- [5. Building the images yourself](#5-building-the-images-yourself)
+- [6. Troubleshooting](#6-troubleshooting)
 
-```bash
-git clone https://github.com/Felix1Catus/azuracast-retail.git
-cd acacia-radio
-util/build_image.sh acacia-radio:0.23.8-retail.2      # pick any tag
-docker tag acacia-radio:0.23.8-retail.2 acacia-radio:latest
-```
+## 1. Install
 
-The build compiles the frontend, translations and API docs inside Docker. It takes 15 to 30 minutes the first time, and much less afterwards. If it fails on network errors, see [Troubleshooting](#5-troubleshooting).
-
-**Building on another machine:** if you build somewhere other than the server, copy the image over:
+As root, on the server:
 
 ```bash
-docker save acacia-radio:0.23.8-retail.1 | gzip | ssh root@SERVER 'gunzip | docker load'
-ssh root@SERVER docker tag acacia-radio:0.23.8-retail.1 acacia-radio:latest
+curl -fsSL https://raw.githubusercontent.com/Felix1Catus/azuracast-retail/main/util/install_retail.sh -o install.sh
+sudo bash install.sh --domain radio.example.com --email you@example.com
 ```
 
-## 2a. New server (one command)
+Without a domain yet, leave out `--domain` and `--email`: the site runs on plain HTTP at the server's address
+until you add one.
 
-This works on a fresh Ubuntu or Debian server (amd64 or arm64) with at least 2 GB RAM, about 12 GB free disk, ports 80 and 443 free, and the domain's DNS already pointing at the server. As root:
+The installer shows one line per step and writes the output of every command to
+`/var/log/acacia-install.log`. When a step fails, it shows the last lines of that log and stops; fix the
+problem and run it again, and the steps that are already done are skipped. It:
 
-```bash
-curl -fsSLo install_retail.sh https://raw.githubusercontent.com/Felix1Catus/azuracast-retail/main/util/install_retail.sh
-less install_retail.sh                        # optional: read it first
-sudo bash install_retail.sh --domain radio.example.com --email you@example.com
-```
-
-Without a domain yet, leave out `--domain` and `--email`; the site then runs on plain HTTP at the server's address until you add one. The repository is public, so no token is needed. If it is ever made private again, set `RETAIL_GIT_TOKEN` to a read-only token first; the installer passes it to git and keeps it for updates.
-
-The installer:
-1. checks the machine
-2. installs Docker (from Docker's apt repository) and git
-3. clones the source to `/opt/acacia-radio` and checks out the newest release
-4. builds the image (15–40 min the first time)
-5. writes `/var/acacia`: the retail compose file, `docker.sh`, `.env` with ports 80/443, and `acacia.env` with a random database password
-6. starts Acacia Radio and turns on the `/listen/` radio proxy
-7. with `--domain`: sets the site URL and gets a Let's Encrypt certificate
-
-It is safe to run again: finished steps are skipped and existing settings are kept.
+1. checks the server: system, architecture, memory, disk and that ports 80/443 are free
+2. installs Docker (from Docker's own apt repository), git and openssl if they're missing
+3. downloads the source to `/opt/acacia-radio` (a partial clone: the history for updates, the files of one release)
+4. downloads the release images from `ghcr.io/felix1catus` (about 1.5 GB, a few minutes). On arm64, with
+   `--build`, or when they can't be downloaded, it builds them on the server instead (15–40 minutes)
+5. writes `/var/acacia`: `docker-compose.yml`, `docker.sh`, `.env` (ports, image versions), `acacia.env` (with a
+   random database password) and `music-downloader.env` (a random shared secret)
+6. starts the containers and waits until the site answers (the first start sets up the database)
+7. turns on the `/listen/` radio proxy, and with `--domain`, sets the site address and gets a Let's Encrypt
+   certificate
 
 | Option | Default |
 |---|---|
+| `--domain NAMES` | none: HTTPS is set up later. Several names are comma-separated; the first is the site address |
+| `--email ADDRESS` | `admin@<domain>` (Let's Encrypt contact) |
+| `--ref REF` | the newest `v*-retail.*` release; a branch name builds that branch |
 | `--dir PATH` | `/var/acacia` |
 | `--src-dir PATH` | `/opt/acacia-radio` |
-| `--ref REF` | newest `v*-retail.*` release |
-| `--domain NAME`, `--email ADDRESS` | none: HTTPS is set up later |
 | `--http-port N`, `--https-port N` | `80`, `443` |
+| `--build` | download the images |
 | `--yes` | ask before starting |
 
-**Ports:** Docker binds 80 and 443 directly on the server, and nothing else is published. Port 80 has to stay reachable from the internet so Let's Encrypt can issue and renew the certificate. If another web server already uses 80/443, the installer stops and names it. Stop that server, or choose other ports and put a reverse proxy in front.
-
-**Afterwards:**
-1. Open the site and complete the setup wizard (admin account, first station).
-2. Without `--domain`, set up HTTPS later in **Administration → System Settings → Services** (Let's Encrypt).
-
-## 2b. Switching an existing Acacia Radio install to the fork
-
-This applies to an install on upstream 0.23.8 (for example tradelineradio.com). The fork adds **no database migrations**, so the database stays compatible both ways and a rollback is just a matter of switching the compose file back.
-
-```bash
-cd /var/acacia                                      # or wherever docker-compose.yml lives
-./docker.sh backup                                     # 1. backup first
-docker compose exec web acacia_cli acacia:settings:list | grep use_radio_proxy   # must be 1
-cp docker-compose.yml docker-compose.yml.upstream      # 2. keep the old file for rollback
-cp ~/acacia-radio/docker-compose.retail.yml docker-compose.yml
-docker compose up -d --remove-orphans                  # 3. recreates "acacia" on the fork image and removes the updater
-```
-
-Keep `docker-compose.override.yml` as it is: it holds plugin mounts such as the Tracker plugin.
-
-**Before you switch:** if any player connects to `http://SERVER:8000/...` directly instead of `/listen/...`, it stops working, because the fork only publishes 80/443. To check, open a player and look at the stream URL.
-
-**Check after the switch:**
-1. `https://SERVER/source` downloads a `.tar.gz`.
-2. The panel footer shows **Source code**.
-3. **Administration → System Maintenance** shows no update prompts.
-4. Players are playing.
-
-**Roll back:**
-
-```bash
-cp docker-compose.yml.upstream docker-compose.yml && docker compose up -d --remove-orphans
-```
-
-## 3. Branch Board (Tracker, built in)
-
-Acacia Radio ships the Tracker module in the image (`plugins/branch-tracker`), so there is nothing to install. It includes:
-- branch PIN login and the branch player
-- live presence
-- the Branch Board, as **Branch Board** in the station menu, for users with *View Branches*
-- reports, "log out all" and the public read-only board
-
-Its database tables are created by migrations when the container starts.
-
-**Moving an install that used the plugin:** remove the plugin mount from `docker-compose.override.yml` (the installer marked it `managed-by: azuracast-tracker-plugin installer`). Then run `docker compose up -d`. The built-in module uses the same tables, so branches, PINs, sessions and history carry over and branches stay logged in. If the mount stays, the mounted copy takes over from the built-in one. That works, but it pins you to that plugin version.
-
-The module is synced from the [Tracker repository](https://github.com/Felix1Catus/azuracast-tracker-plugin) with `util/sync_tracker.sh <path to a Tracker checkout>`.
-
-## 3b. Music Downloader (built in)
-
-Staff paste a Spotify playlist, album or track link, choose a folder of the station's media, and the tracks are
-downloaded there (spotDL: track list from Spotify, audio from YouTube). It's **Music Downloader** in the station
-menu, for users with the station permission *Download Music*. Details, Spotify app setup and YouTube cookies:
-[plugins/music-downloader/README.md](../../plugins/music-downloader/README.md).
-
-It runs in two extra containers from `docker-compose.retail.yml`: `music-downloader` (the worker, built by
-`util/build_image.sh` as `acacia-radio-music-downloader:<version>`) and `music-downloader-pot` (YouTube
-tokens). The installer and `./docker.sh update` create `music-downloader.env`, the secret they share with
-Acacia Radio. Data (Spotify logins, cookies, download history) is in the `music_downloader_data` volume.
-
-**Moving an install that used the plugin:** run the plugin's `install.sh --uninstall` (or remove its parts from
-`docker-compose.override.yml`) before `./docker.sh update`. `music-downloader.env` and the data volume have the
-same names, so logins, cookies and history carry over.
-
-## 3c. Azan & Quran (built in)
-
-For channels that play in shops: at each prayer time the music stops for 3 minutes and then carries on (the
-stream keeps running, so players stay connected), and a Quran recording plays for the hour before opening,
-fading into the music at opening time. Prayer times come from the Aladhan API for each channel's city. It's
-**Azan & Quran** in the station menu, for users with the station permission *Manage Azan & Quran*; the opening
-hours are shared by all channels and set by administrators. After turning it on for a channel, restart that
-channel once (the page says so). Details: [plugins/azan-quran/README.md](../../plugins/azan-quran/README.md).
-
-The module is developed in the private [acacia-azan-quran repository](https://github.com/Felix1Catus/acacia-azan-quran)
-and copied here (`plugins/azan-quran`). It needs no extra container.
-
-## 4. Updating
-
-Updates come from this repository's releases (tags `v<Acacia Radio version>-retail.<n>`), never from upstream. The install keeps a checkout of the source. By default it lives at `/opt/acacia-radio`; to put it elsewhere, set `RETAIL_SOURCE_DIR` in `.env`. The repository is public, so no credentials are needed.
-
-```bash
-git clone https://github.com/Felix1Catus/azuracast-retail.git /opt/acacia-radio   # once
-cd /var/acacia
-./docker.sh backup
-./docker.sh update            # newest release; or: ./docker.sh update v0.23.8-retail.2 / main
-./docker.sh rollback          # back to the image that ran before the last update
-./docker.sh update-self       # refresh docker.sh from the checkout
-```
-
-`update` does the following:
-1. Fetches the releases.
-2. Checks out the chosen release in the source checkout.
-3. Builds `acacia-radio:<version>` with `util/build_image.sh`.
-4. Records the running image as `ACACIA_PREVIOUS_IMAGE`, sets `ACACIA_IMAGE` in `.env`, and runs `docker compose up -d`.
-
-Database migrations run as the container starts. If the build fails, the running install is not touched.
-
-## 5. Troubleshooting
-
-### Where the logs are
-
-| What | Command |
+| Environment variable | |
 |---|---|
-| Container (startup, migrations, supervisor) | `docker compose logs -f web` |
-| Application log | `docker compose exec web sh -c 'tail -f /var/acacia/www_tmp/app-$(date +%Y-%m-%d).log'` |
-| Now Playing, worker, nginx, cron, Centrifugo | `/var/acacia/www_tmp/app_nowplaying-*.log`, `app_worker-*.log`, `service_*.log` (list them with `docker compose exec web ls /var/acacia/www_tmp/`) |
-| Station (Liquidsoap, Icecast) | Panel: station → **Logs** |
+| `ACACIA_IMAGE_REGISTRY` | where the images come from (default `ghcr.io/felix1catus`); `none` always builds |
+| `RETAIL_GIT_TOKEN` | a read-only GitHub token, only for a private copy of the repository; kept for updates in `<src-dir>/.git/retail-credentials` (mode 600) |
 
-### Known problems
+**Ports:** Docker publishes only 80 and 443. Port 80 must stay reachable from the internet so Let's Encrypt can
+issue and renew the certificate. If another web server already uses 80 or 443, the installer names it and
+stops: stop that server, or choose other ports with `--http-port`/`--https-port` and put a reverse proxy in front.
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| Panel loads without menus or JavaScript | Image built with plain `docker build` from an old checkout, so frontend assets are missing | Build with `util/build_image.sh` (it uses the `assets` stage) |
-| Build fails with `i/o timeout`, `Could not resolve host` or `curl error 28` | Unreliable DNS or network on the build machine (common on WSL) | `COMPOSER_MAX_PARALLEL_HTTP=2 BUILD_ATTEMPTS=4 util/build_image.sh`. If DNS keeps failing, build with a builder that has its own resolvers (see below) |
-| `Callable App\...\X does not exist` after copying a PHP file into a running container | The image uses a classmap-authoritative autoloader | Rebuild the image, or run `composer dump-autoload --classmap-authoritative` in the container |
-| Plugin routes return 404 after installing or updating a plugin | Stale route cache (fixed in the fork: the cache is keyed on route files) | Older images: `rm /var/acacia/www_tmp/app_routes*.cache.php` and restart |
-| Nothing updates after a restore (Now Playing frozen, AutoDJ silent) | `sync_disabled` left on by the restore (fixed in the fork) | `docker compose exec web acacia_cli acacia:settings:set sync_disabled false` |
-| Branch board shows every branch offline | Older images dropped listener rows when analytics was *none* or *no IP* (fixed). Or players use a direct port | Use the current image; keep **Use Web Proxy for Radio** on |
-| Players can't connect after the switch | Players used `:8000` direct ports, which the fork does not publish | Turn on **Use Web Proxy for Radio** and reload the players |
-| `./docker.sh update` says "Acacia Radio source not found" | No source checkout on the server | Clone the repository to `/opt/acacia-radio` or set `RETAIL_SOURCE_DIR` in `.env` ([Updating](#4-updating)) |
-| Webhooks don't fire | **Administration → System Settings → Enable all webhooks** is off (the fork makes that switch actually work) | Turn it on |
+## 2. After installing
 
-### Builder with its own DNS
+1. Open the site and create the administrator account and the first channel (station).
+2. Without `--domain`: add the domain and turn on Let's Encrypt in **Administration → System Settings →
+   Services**.
+3. Upload music under the channel's **Media**, set up **Playlists**, and add users under **Administration →
+   Users** with a role that only covers their channel.
+4. Players connect to `https://<domain>/listen/<channel>/<mount>` (the channel's **Profile** shows the exact
+   address). Keep **Use Web Proxy for Radio** on: the stations' own ports are not published.
 
-Use this when the build machine's DNS keeps failing:
+## 3. Updates, backups and rollback
+
+Run these in `/var/acacia`:
+
+```bash
+./docker.sh backup                      # database, settings and media into a .tar.gz
+./docker.sh update                      # the newest release
+./docker.sh update v0.23.8-retail.17    # or a specific release (a branch name builds that branch)
+./docker.sh rollback                    # back to the version that ran before the last update
+./docker.sh restore backup.tar.gz       # restore a backup
+./docker.sh update-self                 # refresh docker.sh itself from the source checkout
+```
+
+`update`:
+1. fetches the releases into the source checkout (`RETAIL_SOURCE_DIR` in `.env`, default `/opt/acacia-radio`)
+   and checks out the chosen one
+2. downloads its images (`ghcr.io/felix1catus/acacia-radio:<version>` and `...-music-downloader:<version>`), or
+   builds them when they can't be downloaded; if a build fails, the running install isn't touched
+3. remembers the running version for `rollback`, brings `docker-compose.yml` up to the release's template (your
+   changes belong in `docker-compose.override.yml`), and restarts on the new version
+4. removes older images, keeping the running one and the rollback target
+
+Database migrations run as the server starts. Everyone is logged out by an update or rollback.
+
+## 4. Built-in modules
+
+Each module has an item in the channel menu and its own permission (**Administration → Roles**).
+
+**Branch Board** (`plugins/branch-tracker`, permission *View Branches*): branch PIN login and player, live
+presence, the board, reports, "log out all", a public read-only board and an optional stream lock. Its tables
+are created when the server starts. [Details](../../plugins/branch-tracker/README.md).
+
+**Music Downloader** (`plugins/music-downloader`, permission *Download Music*): Spotify playlist, album or track
+links into a folder of the channel's media. Setup (Spotify app, connecting a YouTube account) is under
+**Settings** at the bottom of its page. It runs in three extra containers: the worker, a browser used only while
+a YouTube account is connected, and a YouTube token helper. Its data is in the `music_downloader_data` volume.
+[Details](../../plugins/music-downloader/README.md).
+
+**Azan & Quran** (`plugins/azan-quran`, permission *Manage Azan & Quran*): a 3-minute pause at each prayer time
+for the channel's city, and a Quran recording for the hour before opening that fades into the music at opening
+time. The opening hours are shared by all channels and set by administrators. After turning it on for a
+channel, restart that channel once. [Details](../../plugins/azan-quran/README.md).
+
+## 5. Building the images yourself
+
+The release images are built by GitHub Actions for every release tag
+([release-images.yml](../../.github/workflows/release-images.yml)). To build them yourself, on the server or any
+Linux machine with Docker and git (about 12 GB free):
+
+```bash
+git clone https://github.com/Felix1Catus/azuracast-retail.git acacia-radio && cd acacia-radio
+git checkout v0.23.8-retail.17
+util/build_image.sh acacia-radio:0.23.8-retail.17
+# -> acacia-radio:0.23.8-retail.17 and acacia-radio-music-downloader:0.23.8-retail.17
+```
+
+The build compiles the frontend, translations and API docs inside Docker: 15–40 minutes the first time, much
+less afterwards. To move the images to a server:
+
+```bash
+docker save acacia-radio:0.23.8-retail.17 acacia-radio-music-downloader:0.23.8-retail.17 | gzip \
+  | ssh root@SERVER 'gunzip | docker load'
+```
+
+**A build machine with unreliable DNS** (common on WSL): use a builder with its own resolvers.
 
 ```bash
 mkdir -p ~/.config/acacia-radio
 printf '[dns]\n  nameservers = ["1.1.1.1", "8.8.8.8"]\n' > ~/.config/acacia-radio/buildkitd.toml
 docker buildx create --name retail-builder --driver docker-container \
   --buildkitd-config ~/.config/acacia-radio/buildkitd.toml --bootstrap
-# Registry logins use the builder container's own resolver; point it at public DNS too (resets if the builder restarts).
 docker exec buildx_buildkit_retail-builder0 sh -c 'printf "nameserver 1.1.1.1\nnameserver 8.8.8.8\n" > /etc/resolv.conf'
 BUILDX_BUILDER=retail-builder BUILD_ATTEMPTS=4 util/build_image.sh acacia-radio:dev
 ```
 
-Every fix the fork makes is listed in [FIXLOG.md](FIXLOG.md).
+Moving an existing install over to Acacia Radio: see [MIGRATING.md](MIGRATING.md).
+
+## 6. Troubleshooting
+
+### Where the logs are
+
+| What | Where |
+|---|---|
+| The installer | `/var/log/acacia-install.log` |
+| Server start, migrations, services | `docker compose logs -f web` |
+| Application | `docker compose exec web sh -c 'tail -f /var/acacia/www_tmp/app-$(date +%Y-%m-%d).log'` |
+| Now Playing, worker, nginx, cron | `/var/acacia/www_tmp/app_nowplaying-*.log`, `app_worker-*.log`, `service_*.log` in the `web` container |
+| A channel's Liquidsoap and Icecast | Panel: the channel → **Logs** |
+| Music Downloader | `docker compose logs -f music-downloader` |
+
+### Known problems
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| The installer stops at "Ports 80 and 443" | Another web server runs on the machine | Stop it, or install on other ports with `--http-port`/`--https-port` |
+| No HTTPS certificate after installing | DNS doesn't point at the server yet, or port 80 is blocked | Fix DNS or the firewall, then `docker compose exec --user=acacia web acacia_cli acacia:acme:get-certificate` |
+| "No prebuilt images" during an install or update | The release is still being built by GitHub Actions (about 30 minutes after it's published), or the machine is arm64 | Nothing to do: it builds locally instead. Or wait and run it again |
+| Image build fails with `i/o timeout`, `Could not resolve host` or `curl error 28` | Unreliable DNS or network on the build machine | `COMPOSER_MAX_PARALLEL_HTTP=2 BUILD_ATTEMPTS=4 util/build_image.sh`, or the builder with its own DNS above |
+| `./docker.sh update` says "source not found" | No source checkout on the server | `git clone https://github.com/Felix1Catus/azuracast-retail.git /opt/acacia-radio`, or set `RETAIL_SOURCE_DIR` in `.env` |
+| Players can't connect | They use a station port (`:8000`) instead of `/listen/` | Turn on **Use Web Proxy for Radio** and use the `/listen/` address |
+| Branch Board shows every branch offline | Players connect through a station port | Same as above |
+| Nothing updates after a restore (Now Playing frozen, AutoDJ silent) | Synchronisation left off by the restore | `./docker.sh cli acacia:settings:set sync_disabled false` |
+| `Callable App\...\X does not exist` after copying a PHP file into a running container | The image uses a classmap-authoritative autoloader | Rebuild the image, or run `composer dump-autoload --classmap-authoritative` in the container |
+| Webhooks don't fire | **Administration → System Settings → Enable all webhooks** is off | Turn it on |

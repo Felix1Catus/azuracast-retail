@@ -86,7 +86,7 @@ A plain `docker build` therefore produced a panel with no JavaScript.
 - Later, point update checks at this repo's releases.
 
 ### R-9 · Classmap-authoritative autoloading: **Fixed (documented)**
-The image uses `composer dump-autoload --classmap-authoritative`. Copying a new PHP class into a running container (hot-fix or dev) gives `Callable … does not exist` until `composer dump-autoload` is rerun. Document this in FORK.md, or use the dev image for iterating.
+The image uses `composer dump-autoload --classmap-authoritative`. Copying a new PHP class into a running container (hot-fix or dev) gives `Callable … does not exist` until `composer dump-autoload` is rerun. Document this in DEVELOPMENT.md, or use the dev image for iterating.
 
 ## Security and hardening
 
