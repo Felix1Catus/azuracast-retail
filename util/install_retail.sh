@@ -333,6 +333,13 @@ set_env .env ACACIA_IMAGE "$IMAGE"
 set_env .env MUSIC_DOWNLOADER_IMAGE "$WORKER_IMAGE"
 set_env .env RETAIL_SOURCE_DIR "$SRC_DIR"
 if [[ ! -f acacia.env ]]; then
+  # A new acacia.env gets a new database password, which an existing database won't accept.
+  PROJECT=$(sed -n 's/^COMPOSE_PROJECT_NAME=//p' .env | tail -1)
+  PROJECT="${PROJECT:-acacia}"
+  if docker volume inspect "${PROJECT}_db_data" > /dev/null 2>&1; then
+    die "There's a database from an earlier install (volume ${PROJECT}_db_data), but no acacia.env with its password." \
+      "Put the earlier acacia.env back in $INSTALL_DIR, or remove the old data first: docker volume rm ${PROJECT}_db_data"
+  fi
   cp "$SRC_DIR/acacia.sample.env" acacia.env
   set_env acacia.env MYSQL_PASSWORD "$(secret 16)"
   chmod 600 acacia.env
@@ -398,9 +405,9 @@ printf '\n  %s╭─────────────────────
 box "Acacia Radio $VERSION_LABEL is ready"
 box ""
 box "Open $URL"
-box "and create the administrator account and the first station."
+box "and create the administrator account and first station."
 box ""
-box "Installed in $(took "$START_ALL") · image $APP_SIZE"
+box "Installed in $(took "$START_ALL"), image $APP_SIZE"
 printf '  %s╰────────────────────────────────────────────────────────────╯%s\n\n' "$GREEN" "$R"
 printf '  %sIn %s:%s\n' "$D" "$INSTALL_DIR" "$R"
 printf '    ./docker.sh update        update to the newest release\n'

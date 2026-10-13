@@ -56,7 +56,7 @@ curl -fsSL https://raw.githubusercontent.com/Felix1Catus/azuracast-retail/main/u
 sudo bash install.sh --domain radio.example.com
 ```
 
-It takes about **five minutes**: the installer sets up Docker, downloads the ready-made images, writes the
+It takes **two or three minutes**: the installer sets up Docker, downloads the ready-made images, writes the
 configuration, starts everything and gets an HTTPS certificate. The terminal stays tidy, one line per step,
 and the full detail goes to `/var/log/acacia-install.log`:
 
@@ -65,20 +65,34 @@ and the full detail goes to `/var/log/acacia-install.log`:
   ──────────────────────
 
 Checking this server
-  ✓ Ubuntu 24.04.1 LTS · amd64 · 4 CPU · 7.8 GB RAM · 61 GB free
+  ✓ Ubuntu 24.04.3 LTS · amd64 · 2 CPU · 3.8 GB RAM · 58 GB free
   ✓ Ports 80 and 443 are available
 
 Preparing the server
-  ✓ Installed Docker  41s
-  ✓ Downloaded the source  3s
+  ✓ Installed Docker  21s
+  ✓ Downloaded the source  1s
   ✓ Release 0.23.8-retail.17  2026-10-13
 
 Getting the images
-  ✓ Downloaded the images  2m 10s
-  ...
+  ✓ Downloaded the images  52s
+
+Setting up /var/acacia
+  ✓ Configuration written  docker-compose.yml · .env · acacia.env · music-downloader.env
+
+Starting Acacia Radio
+  ✓ Containers started  2s
+  ✓ Acacia Radio is up  18s
+
+Domain and HTTPS
+  ✓ HTTPS certificate for radio.example.com  9s
+
   ╭────────────────────────────────────────────────────────────╮
   │  Acacia Radio 0.23.8-retail.17 is ready                    │
+  │                                                            │
   │  Open https://radio.example.com                            │
+  │  and create the administrator account and first station.   │
+  │                                                            │
+  │  Installed in 1m 47s, image 3.0 GB                         │
   ╰────────────────────────────────────────────────────────────╯
 ```
 
