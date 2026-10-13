@@ -40,7 +40,7 @@ music library, playlists, schedule, stream and public player, and each customer 
 
 | Module | What it does |
 |---|---|
-| **[Branch Board](plugins/branch-tracker/README.md)** | In-store radio for chains of shops. Each branch's player signs in with a PIN; a live board shows which branches are playing, with listening reports, "log out all" and an optional stream lock. |
+| **[Branch Board](plugins/branch-tracker/README.md)** | In-store radio for chains of shops. Each branch's player signs in with a PIN; a live board shows which branches are playing and at what volume, with listening reports, "log out all" and an optional stream lock. Managers see and copy each branch's PIN, group branches by company with a filter, and can show every branch a one-time "what's new" message. |
 | **[Music Downloader](plugins/music-downloader/README.md)** | Paste a Spotify playlist, album or track link, choose a folder, and the tracks are added to the channel's library. Connect a YouTube account once from the settings page; the server keeps it working and tells you if it ever needs a new sign-in. |
 | **[Azan & Quran](plugins/azan-quran/README.md)** | For shops in the region: the music pauses for 3 minutes at each prayer time (times for each channel's city, updated daily) and a Quran recording plays for the hour before opening, fading into the music at opening time. |
 
